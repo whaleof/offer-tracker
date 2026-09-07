@@ -301,9 +301,22 @@
   .pcard h3{font-size:14px;color:var(--ink);display:flex;align-items:center;gap:7px;margin-bottom:4px}
   .pcard .pdesc{font-size:12px;color:var(--ink-light);margin-bottom:10px}
   .pcard.full{grid-column:1/-1}
-  /* 闪卡 */
+
+  /* ═══ v9.1 功能卡·实底彩卡（学航海志：编号+圆贴纸+米白面板+底部状态条） ═══ */
+  .fcard{background:var(--fc,#357052);color:var(--fci,#fff);border:2px solid rgba(45,42,38,.75);border-radius:16px;padding:16px 18px 14px;box-shadow:4px 4px 0 rgba(45,42,38,.18);display:flex;flex-direction:column;gap:8px}
+  .fcard.full{grid-column:1/-1}
+  .fcard .fc-top{display:flex;align-items:flex-start;gap:10px}
+  .fcard .fc-tag{background:rgba(255,255,255,.16);border-radius:9999px;padding:3px 12px;font-size:11px;letter-spacing:.06em;font-weight:600}
+  .fcard .fc-sticker{margin-left:auto;width:52px;height:52px;border-radius:50%;background:#F6EFDD;border:2px solid rgba(45,42,38,.6);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 52px}
+  .fcard h3{font-size:21px;font-weight:800;letter-spacing:.02em;margin:0;line-height:1.3}
+  .fcard .fcd{font-size:12.5px;line-height:1.7;opacity:.92;margin:0}
+  .fcard .fc-panel{background:#FBF7EC;color:var(--ink);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(45,42,38,.35)}
+  .fcard .fc-bar{background:#F6EFDD;color:#4A3B32;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:600;border:1.5px solid rgba(45,42,38,.35)}
+  .fcard .fc-pills{display:flex;gap:6px;flex-wrap:wrap}
+  .fcard .fc-pills span{background:rgba(255,255,255,.18);border-radius:9999px;padding:2px 10px;font-size:11px;font-weight:600}
+  /* 闪卡（在米白面板内） */
   .flash{cursor:pointer;user-select:none}
-  .flash .fc{background:var(--brand-soft);border:1px solid var(--line);border-radius:var(--radius-card);min-height:150px;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .flash .fc{background:#fff;border:1.5px dashed rgba(45,42,38,.4);border-radius:12px;min-height:120px;padding:16px 18px;display:flex;flex-direction:column;justify-content:center;gap:8px}
   .flash .fc .fcat{font-size:11px;font-weight:700;color:var(--brand)}
   .flash .fc .fq{font-size:15px;font-weight:600;color:var(--ink);line-height:1.7}
   .flash .fc .fa{font-size:13px;color:var(--ink-mid);line-height:1.85;white-space:pre-wrap}
@@ -697,26 +710,31 @@ const VIEWS = {
     // ① 闪卡
     const fl = this.flash;
     const card = QBANK_SEED[fl.i];
-    const flashHtml = `<div class="pcard full">
-      <h3>🃏 面试闪卡</h3>
-      <div class="pdesc">内置 ${QBANK_SEED.length} 道校招高频题 · 点卡片翻转看回答方向 · 选岗位后可让 AI 按你的亮点定制</div>
-      <div class="flash" onclick="VIEWS.flash.flip=!VIEWS.flash.flip;renderMain()">
-        <div class="fc">
-          <span class="fcat">${card.c}</span>
-          ${fl.flip ? `<div class="fa">${esc(card.a)}</div>` : `<div class="fq">${esc(card.q)}</div>`}
-          <span class="fhint">${fl.flip?"点我翻回题目":"点我翻转看回答方向"}</span>
+    const flashHtml = `<div class="fcard full" style="--fc:#357052">
+      <div class="fc-top"><span class="fc-tag">训练营地 · 01</span><span class="fc-sticker">🃏</span></div>
+      <h3>面试闪卡</h3>
+      <p class="fcd">练习高频面试题，翻转卡片看回答方向</p>
+      <div class="fc-pills"><span>⚡ AI 定制答题方向</span>${j?'<span>🎯 已绑定当前岗位</span>':'<span>通用题库 22 题</span>'}</div>
+      <div class="fc-panel">
+        <div class="flash" onclick="VIEWS.flash.flip=!VIEWS.flash.flip;renderMain()">
+          <div class="fc">
+            <span class="fcat">${card.c}</span>
+            ${fl.flip ? `<div class="fa">${esc(card.a)}</div>` : `<div class="fq">${esc(card.q)}</div>`}
+            <span class="fhint">${fl.flip?"点我翻回题目":"点我翻转看回答方向"}</span>
+          </div>
+        </div>
+        ${this._flashAI}
+        <div class="flashnav">
+          <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+${QBANK_SEED.length}-1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">‹ 上一题</button>
+          <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">下一题 ›</button>
+          <button class="btn small" onclick="AI.flashAdvice(VIEWS.flash.i)">AI 按我的亮点定制答题方向</button>
         </div>
       </div>
-      ${this._flashAI}
-      <div class="flashnav">
-        <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+${QBANK_SEED.length}-1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">‹ 上一题</button>
-        <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">下一题 ›</button>
-        <button class="btn small" onclick="AI.flashAdvice(VIEWS.flash.i)">AI 按我的亮点定制答题方向</button>
-        <span class="fi">${fl.i+1} / ${QBANK_SEED.length}</span>
-      </div>
+      <div class="fc-bar">共 ${QBANK_SEED.length} 道高频题 · 当前第 ${fl.i+1} 题 · 点卡片翻转</div>
     </div>`;
     // ② 深度分析
     const hasAna = j && j.analysis && (j.analysis.prep || j.analysis.match);
+    const reportN = (j?.analysis?.prep?1:0) + (j?.analysis?.match?1:0);
     const ana = j ? `
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <button class="btn small" onclick="AI.prep('${j.id}',true)">${j.analysis&&j.analysis.prep?"重新生成面试准备包":"生成面试准备包"}</button>
@@ -725,7 +743,7 @@ const VIEWS = {
       <div class="ai-status" id="ana-st"></div>
       ${hasAna ? (j.analysis.prep?UI.renderPrep(j.analysis.prep):"") + (j.analysis.match?UI.renderMatch(j.analysis.match):"")
         : `<div style="font-size:12px;color:var(--ink-light)">生成后自动保存。要更准就先去岗位详情把 JD 原文粘进「JD 原文」字段（编辑里）</div>`}`
-      : `<div style="font-size:12px;color:var(--ink-light)">先在上面选一个岗位，AI 才知道帮你分析谁</div>`;
+      : `<div style="font-size:12px;color:var(--ink-light)">先在上方选一个岗位，AI 才知道帮你分析谁</div>`;
     // ③ 复盘
     const rvN = j ? (j.reviews||[]).reduce((s,r)=>s+(r.questions||[]).length,0)
                   : js.reduce((s,x)=>s+(x.reviews||[]).reduce((a,r)=>a+(r.questions||[]).length,0),0);
@@ -741,15 +759,39 @@ const VIEWS = {
       : `<div style="font-size:12px;color:var(--ink-light)">选一个岗位后生成，话术会带岗位 JD 和你的亮点</div>`;
     return jobSel + `<div class="prepgrid">
       ${flashHtml}
-      <div class="pcard"><h3>🔬 深度分析</h3><div class="pdesc">面试准备包 + 匹配度分析表（AI 基于 JD 原文和你的亮点）</div>${ana}</div>
-      <div class="pcard"><h3>📊 漏斗分析</h3><div class="pdesc">看清从投递到 Offer 的转化，定位下一步重点</div>${this.funnelChart()}</div>
-      <div class="pcard"><h3>💬 BOSS 打招呼</h3><div class="pdesc">有针对性的开场话术，直接复制去用</div>${greet}</div>
-      <div class="pcard"><h3>📝 面试复盘 & 题库</h3><div class="pdesc">面试完记被问的题，自动进题库，被问倒的 AI 给思路</div>
-        <div style="font-size:13px">已积累 <b>${rvN}</b> 道被问过的题</div>
-        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn small" onclick="${j?`UI.openDetail('${j.id}')`:`alert('先在上面选一个岗位')`}">＋ 添加复盘</button>
-          <button class="btn small" onclick="VIEWS.module='jobs';VIEWS.filter.view='qbank';renderMain()">看题库 →</button>
+      <div class="fcard" style="--fc:#C9552E">
+        <div class="fc-top"><span class="fc-tag">海图管理所 · 02</span><span class="fc-sticker">🧭</span></div>
+        <h3>深度分析</h3>
+        <p class="fcd">岗位亮点、能力缺口、面试预测题一站分析</p>
+        <div class="fc-panel">${ana}</div>
+        <div class="fc-bar">${j ? (reportN ? reportN+" 份分析报告 · 生成后自动保存" : "还没有分析报告 · 点上面按钮生成") : "先在上方选一个岗位"}</div>
+      </div>
+      <div class="fcard" style="--fc:#2F7E97">
+        <div class="fc-top"><span class="fc-tag">航海观测台 · 03</span><span class="fc-sticker">🛟</span></div>
+        <h3>漏斗分析</h3>
+        <p class="fcd">看清从投递到 Offer 的转化，定位下一步重点</p>
+        <div class="fc-panel">${this.funnelChart()}</div>
+        <div class="fc-bar">按状态历史统计 · 每次推进自动更新</div>
+      </div>
+      <div class="fcard" style="--fc:#D9942B">
+        <div class="fc-top"><span class="fc-tag">外交文书局 · 04</span><span class="fc-sticker">✉️</span></div>
+        <h3>BOSS 打招呼</h3>
+        <p class="fcd">用 JD 和真实经历，生成有针对性的开场话术</p>
+        <div class="fc-panel">${greet}</div>
+        <div class="fc-bar">${j ? (j.greeting ? "已保存话术 · 可直接复制去 BOSS" : "生成满意后记得保存到岗位") : "先在上方选一个岗位"}</div>
+      </div>
+      <div class="fcard" style="--fc:#E9C46A;--fci:#4A3510">
+        <div class="fc-top"><span class="fc-tag" style="background:rgba(0,0,0,.08)">首录写码头 · 05</span><span class="fc-sticker">📝</span></div>
+        <h3>面试复盘 & 题库</h3>
+        <p class="fcd">记录面试问答，被问倒的题自动进题库，AI 给思路</p>
+        <div class="fc-panel">
+          <div style="font-size:13px">已积累 <b>${rvN}</b> 道被问过的题${j?` · 当前岗位复盘 ${(j.reviews||[]).length} 次`:""}</div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn small" onclick="${j?`UI.openDetail('${j.id}')`:`alert('先在上方选一个岗位')`}">＋ 添加复盘</button>
+            <button class="btn small" onclick="VIEWS.module='jobs';VIEWS.filter.view='qbank';renderMain()">看题库 →</button>
+          </div>
         </div>
+        <div class="fc-bar">复盘跨岗位共享 · 面试前按公司过一遍</div>
       </div>
     </div>`;
   },
@@ -765,20 +807,35 @@ const VIEWS = {
     const days = first==="9999-12-31" ? 0 : Math.max(1, Math.ceil((Date.now()-new Date(first))/864e5));
     const bio = (AI.cfg && AI.cfg.bio) || "";
     return `
-      <div class="pcard"><h3>⚡ 等级</h3><div class="pdesc">添加、推进、复盘都涨积分——这是你的作战记录</div>
-        <div class="bignum">Lv.${l.lv}</div>
-        <div style="font-size:13px;color:var(--ink-mid)">${l.name} · ⚡ ${l.p} 积分</div>
-        <div style="margin-top:10px;height:8px;background:var(--paper-3);border-radius:99px;overflow:hidden"><div style="height:100%;width:${l.pct}%;background:var(--brand)"></div></div>
-        <div style="font-size:11px;color:var(--ink-light);margin-top:4px">${l.next?`再 ${l.next.at-l.p} 分升 ${l.next.name}`:"已满级"}</div>
-      </div>
-      <div class="pcard"><h3>📈 战况</h3><div class="pdesc">${days?`开战 ${days} 天以来`:"添加岗位后开始统计"}</div>
-        <div class="mestats">
-          <div><b>${js.length}</b>岗位</div><div><b>${applied}</b>已投</div><div><b>${iv}</b>面试中</div><div><b>${of}</b>Offer</div><div><b>${rvN}</b>复盘题</div>
+      <div class="fcard" style="--fc:#357052">
+        <div class="fc-top"><span class="fc-tag">航程记录</span><span class="fc-sticker">⚡</span></div>
+        <h3>等级</h3>
+        <div style="font-size:46px;font-weight:800;line-height:1.1">Lv.${l.lv}<span style="font-size:14px;font-weight:600;opacity:.85;margin-left:10px">${l.name} · ⚡ ${l.p} 分</span></div>
+        <div class="fc-panel">
+          <div style="height:10px;background:var(--paper-3);border-radius:99px;overflow:hidden"><div style="height:100%;width:${l.pct}%;background:var(--brand)"></div></div>
         </div>
+        <div class="fc-bar">${l.next?`再 ${l.next.at-l.p} 分升 ${l.next.name}`:"已满级"} · 添加/推进/复盘都涨积分</div>
       </div>
-      <div class="pcard full"><h3>🎯 我的定位</h3><div class="pdesc">AI 生成打招呼语和答题方向时拿它当背景，写得越具体越准</div>
-        ${bio?`<div style="font-size:13.5px;line-height:1.9">${esc(bio)}</div>`:`<div style="font-size:13px;color:var(--ink-light)">还没填写</div>`}
-        <button class="btn small" style="margin-top:10px" onclick="UI.openAISettings()">编辑我的亮点</button>
+      <div class="fcard" style="--fc:#2F7E97">
+        <div class="fc-top"><span class="fc-tag">战况速报</span><span class="fc-sticker">📈</span></div>
+        <h3>战况</h3>
+        <p class="fcd">${days?`开战 ${days} 天以来`:"添加岗位后开始统计"}</p>
+        <div class="fc-panel">
+          <div class="mestats">
+            <div><b>${js.length}</b>岗位</div><div><b>${applied}</b>已投</div><div><b>${iv}</b>面试中</div><div><b>${of}</b>Offer</div><div><b>${rvN}</b>复盘题</div>
+          </div>
+        </div>
+        <div class="fc-bar">数据只存在你自己浏览器 · 可导出备份</div>
+      </div>
+      <div class="fcard full" style="--fc:#D9942B">
+        <div class="fc-top"><span class="fc-tag">船长日志</span><span class="fc-sticker">🎯</span></div>
+        <h3>我的定位</h3>
+        <p class="fcd">AI 生成打招呼语和答题方向时拿它当背景，写得越具体越准</p>
+        <div class="fc-panel">
+          ${bio?`<div style="font-size:13.5px;line-height:1.9">${esc(bio)}</div>`:`<div style="font-size:13px;color:var(--ink-light)">还没填写</div>`}
+          <button class="btn small" style="margin-top:10px" onclick="UI.openAISettings()">编辑我的亮点</button>
+        </div>
+        <div class="fc-bar">这段文字会喂给闪卡定制 / 深度分析 / 打招呼语</div>
       </div>`;
   },
 
