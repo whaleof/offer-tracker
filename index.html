@@ -108,6 +108,33 @@
   .qmeta{font-size:12px;color:var(--ink-light);margin-top:4px}
   .empty b{color:var(--pink-deep)}
   .note{font-size:12px;color:var(--ink-light);padding:0 20px}
+  /* ── 月历小卡（有事件才标记，点日期内联展开） ── */
+  .calwrap{max-width:620px;margin:14px auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .cal-head{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+  .cal-head b{font-size:14px;color:var(--pink-deep);margin:0 4px}
+  .cal-nav{border:1px solid var(--line);background:var(--card);border-radius:6px;width:26px;height:26px;color:var(--ink-mid);line-height:1}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal-wd{font-size:11px;color:var(--ink-light);text-align:center;padding:2px 0}
+  .cal-cell{min-height:46px;border-radius:8px;padding:3px 5px;font-size:12px;border:1px solid transparent;cursor:pointer;text-align:left;background:none;color:var(--ink)}
+  .cal-cell:hover{background:var(--pink-bg)}
+  .cal-cell.blank{cursor:default;min-height:46px}
+  .cal-cell.blank:hover{background:none}
+  .cal-cell.today{border-color:var(--pink)}
+  .cal-cell.sel{background:var(--pink-card)}
+  .cal-cell .dots{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+  .cal-cell .dots i{width:5px;height:5px;border-radius:50%;display:inline-block}
+  .cal-panel{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+  .cal-ev{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
+  .cal-ev:hover{background:var(--pink-bg)}
+  .cal-ev .cdot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+  .cal-ev .ct{margin-left:auto;font-size:11px;color:var(--ink-light)}
+  /* ── AI 区块 ── */
+  .ai-box{background:var(--pink-bg);border-radius:8px;padding:8px 10px;margin-top:6px;font-size:12px;line-height:1.75;white-space:pre-wrap;color:var(--ink)}
+  body.dark .ai-box{background:rgba(224,138,165,.08)}
+  .ai-status{font-size:12px;color:var(--ink-mid);margin-top:6px;min-height:14px}
+  .ai-status.err{color:var(--bad)}
+  .qrow{display:flex;align-items:flex-start;gap:8px;margin-top:6px}
+  .qrow .qt{flex:1}
   @media (max-width:640px){.form-grid{grid-template-columns:1fr}.toolbar input[type=search]{width:100%}}
 </style>
 </head>
@@ -123,6 +150,7 @@
     <button class="btn" onclick="IO.exportCSV()">导出CSV</button>
     <button class="btn" onclick="document.getElementById('importFile').click()">导入</button>
     <button class="btn" onclick="UI.toggleDemoMenu(this)">演示</button>
+    <button class="btn" id="aiBtn" onclick="UI.openAISettings()">AI 设置</button>
     <button class="btn" id="themeBtn" onclick="THEME.toggle(this)">🌙</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="IO.importJSON(this)">
   </div>
@@ -162,13 +190,39 @@
   </div>
 </div>
 
+<!-- AI 设置 -->
+<div class="mask" id="aiMask" onclick="if(event.target===this)UI.close('aiMask')">
+  <div class="modal" style="max-width:430px">
+    <h2>AI 设置</h2>
+    <p style="font-size:12px;color:var(--ink-mid);line-height:1.7;margin-bottom:12px">
+      Key 只存在<b>你自己浏览器</b>的 localStorage 里，不进仓库、不经过任何服务器——谁用谁填自己的，费用自己可控。
+      DeepSeek 官网 platform.deepseek.com 注册即有赠送额度；智谱 glm-4-flash 有免费档。</p>
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin-bottom:4px">提供方</label>
+    <select id="ai_provider"></select>
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin:10px 0 4px">API Key</label>
+    <input id="ai_key" type="password" placeholder="sk-… 或 智谱 key" autocomplete="off">
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin:10px 0 4px">我的亮点（AI 的背景信息，用于打招呼语和答题思路）</label>
+    <textarea id="ai_bio" rows="3" placeholder="如：软件工程本科，自研 AI 工作台迭代 13 周，产品直觉 + AI 协作 + 数据思维"></textarea>
+    <div class="ai-status" id="ai-set-st"></div>
+    <div class="mbtns">
+      <button class="btn" onclick="UI.close('aiMask')">取消</button>
+      <button class="btn primary" onclick="UI.saveAISettings()">保存</button>
+    </div>
+  </div>
+</div>
+
 <script>
 "use strict";
 /* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
 const CONFIG = {
-  DATA_VERSION: 2,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
+  DATA_VERSION: 3,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
   LS_KEY: "job-tracker-v1",
   STALE_DAYS: 7,            // 已投后超过 N 天无状态变化 → 标「无进展」
+  // AI 提供方（OpenAI 兼容）。Key 只存访客自己浏览器（localStorage），绝不硬编码进仓库
+  AI_PROVIDERS: {
+    deepseek: { name:"DeepSeek（便宜，几分钱/次）", base:"https://api.deepseek.com", model:"deepseek-chat" },
+    glm:      { name:"智谱 glm-4-flash（有免费额度）", base:"https://open.bigmodel.cn/api/paas/v4", model:"glm-4-flash" },
+  },
   STAGES: [
     { id:"pool",      name:"待投递",   color:"#888780" },
     { id:"applied",   name:"已投递",   color:"#378ADD" },
@@ -207,7 +261,12 @@ const STORE = {
     if(!d.version) d.version = 1;
     if(!Array.isArray(d.jobs)) d.jobs = [];
     if(d.version < 2) d.version = 2;            // v2：岗位新增 reviews（面试复盘），旧数据补空数组即可
-    d.jobs.forEach(j=>{ if(!Array.isArray(j.reviews)) j.reviews = []; });
+    if(d.version < 3) d.version = 3;            // v3：复盘新增 advice（AI 思路）、岗位新增 greeting（AI 打招呼语）
+    d.jobs.forEach(j=>{
+      if(!Array.isArray(j.reviews)) j.reviews = [];
+      j.reviews.forEach(r=>{ if(!r.advice || typeof r.advice!=="object") r.advice = {}; });
+      if(typeof j.greeting !== "string") j.greeting = "";
+    });
     return d;
   },
   add(job){
@@ -238,6 +297,14 @@ const STORE = {
     const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.reviews) return;
     j.reviews.splice(idx, 1); this.save();
   },
+  addAdvice(id, rIdx, qText, text){
+    // AI 生成的答题思路，按题目原文挂到对应复盘下（题目是 key，重生成直接覆盖）
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.reviews || !j.reviews[rIdx]) return;
+    if(!j.reviews[rIdx].advice || typeof j.reviews[rIdx].advice!=="object") j.reviews[rIdx].advice = {};
+    j.reviews[rIdx].advice[qText] = text;
+    j.updatedAt = new Date().toISOString();
+    this.save();
+  },
   replaceAll(d){ this.data = this.migrate(d); this.save(); },
 };
 
@@ -262,10 +329,29 @@ function staleTag(j){
   const d = daysSince(j.updatedAt);
   return d >= CONFIG.STALE_DAYS ? `<span class="tag stale">已${d}天无进展</span>` : "";
 }
+function isoDay(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+// 月历事件聚合（纯函数）：DDL 红 / 投递 蓝 / 面试复盘 粉
+const CAL = {
+  TYPES: { ddl:{label:"DDL", color:"#A32D2D"}, applied:{label:"投递", color:"#378ADD"}, review:{label:"面试", color:"#D4537E"} },
+  eventsByDate(jobs){
+    const map = {};
+    const put = (date,type,jobId,extra)=>{ if(!date) return;
+      (map[date] = map[date]||[]).push({ type, jobId, ...extra }); };
+    jobs.forEach(j=>{
+      if(j.deadline && daysUntil(j.deadline) >= 0) put(j.deadline, "ddl", j.id, { text:j.company+" DDL" });
+      if(j.appliedAt) put(String(j.appliedAt).slice(0,10), "applied", j.id, { text:"投递 "+j.company });
+      (j.reviews||[]).forEach(r=> put(r.date || (r.at?String(r.at).slice(0,10):""), "review", j.id,
+        { text:(j.company)+" "+(r.round||"复盘") }));
+    });
+    return map;
+  },
+};
 
 /* ═══════════ ④ VIEWS 视图层 ═══════════ */
 const VIEWS = {
   filter: { q:"", stage:"all" },
+  calMonth: null,   // "2026-09"，null=当月
+  calSel: null,     // 选中的日期 "2026-09-10"
 
   visibleJobs(){
     const f = this.filter;
@@ -303,7 +389,7 @@ const VIEWS = {
 
   card(j){
     const st = stageOf(j.status);
-    return `<div class="card" onclick="UI.openDetail('${j.id}')">
+    return `<div class="card" style="border-left:3px solid ${st.color}" onclick="UI.openDetail('${j.id}')">
       <div class="co">${esc(j.company)}</div>
       <div class="role">${esc(j.role)}${j.city? " · "+esc(j.city):""}</div>
       <div class="meta">
@@ -335,14 +421,63 @@ const VIEWS = {
   qbank(){
     // 题库：聚合所有岗位复盘里被问过的题，面试前按公司过一遍
     const items = [];
-    STORE.data.jobs.forEach(j=>(j.reviews||[]).forEach(r=>
-      (r.questions||[]).forEach(q=>items.push({q, co:j.company, round:r.round||"", date:r.date||fmtDate(r.at)}))));
+    STORE.data.jobs.forEach(j=>(j.reviews||[]).forEach((r,ri)=>
+      (r.questions||[]).forEach((q,qi)=>items.push({q, co:j.company, round:r.round||"", date:r.date||fmtDate(r.at), jobId:j.id, ri, qi, advice:(r.advice||{})[q]||""}))));
+    this._qitems = items;
     if(!items.length) return `<div class="empty" style="margin-top:40px">
       <div style="font-size:34px;margin-bottom:8px">🗂️</div><b>题库还是空的</b>
       <div style="font-size:12px;color:var(--ink-light);margin-top:6px">面试完打开对应岗位 → 「面试复盘」→ 添加复盘<br>被问倒的题会自动汇到这里，下次面试前过一遍</div></div>`;
-    return `<div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">共 ${items.length} 道被问过的题 · 下次面试前按公司过一遍</div>` +
-      items.map(it=>`<div class="qitem"><div>${esc(it.q)}</div>
-        <div class="qmeta">${esc(it.co)} · ${esc(it.round)} · ${esc(it.date)}</div></div>`).join("");
+    return `<div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">共 ${items.length} 道被问过的题 · 下次面试前按公司过一遍 · 点「思路」让 AI 给答题要点</div>` +
+      items.map((it,i)=>`<div class="qitem"><div>${esc(it.q)}</div>
+        ${it.advice? `<div class="ai-box" id="qb-adv-${i}">${esc(it.advice)}</div>`:""}
+        <div class="ai-status" id="qb-st-${i}"></div>
+        <div class="qmeta">${esc(it.co)} · ${esc(it.round)} · ${esc(it.date)}
+          <button class="btn small" style="margin-left:8px;padding:2px 8px"
+            onclick="AI.adviceQB(${i})">AI 思路</button>
+        </div></div>`).join("");
+  },
+
+  calendar(){
+    // 本土化月历：有事件才标记，点日期在下方内联展开，不做大日历主视图
+    const now = new Date();
+    const ym = this.calMonth || `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+    const [y,m] = ym.split("-").map(Number);
+    const startDow = (new Date(y, m-1, 1).getDay()+6)%7;   // 周一=0
+    const dim = new Date(y, m, 0).getDate();
+    const ev = CAL.eventsByDate(STORE.data.jobs);
+    const todayStr = isoDay(today());
+    if(this.calSel && !ev[this.calSel] && this.calSel!==todayStr) {} // 选中日无事件也展示空态
+    const sel = this.calSel;
+    const nav = (d)=>{
+      const nd = new Date(y, m-1+d, 1);
+      return `VIEWS.calMonth='${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,"0")}';VIEWS.calSel=null;renderResults()`;
+    };
+    let cells = "";
+    for(let i=0;i<startDow;i++) cells += `<div class="cal-cell blank"></div>`;
+    for(let d=1;d<=dim;d++){
+      const ds = `${ym}-${String(d).padStart(2,"0")}`;
+      const es = ev[ds]||[];
+      const dots = es.slice(0,4).map(e=>`<i style="background:${CAL.TYPES[e.type].color}"></i>`).join("");
+      cells += `<button class="cal-cell ${ds===todayStr?"today":""} ${ds===sel?"sel":""}"
+        onclick="VIEWS.calSel=VIEWS.calSel==='${ds}'?null:'${ds}';renderResults()">${d}<div class="dots">${dots}</div></button>`;
+    }
+    let panel = "";
+    if(sel){
+      const es = ev[sel]||[];
+      panel = `<div class="cal-panel"><b style="font-size:13px">${sel.slice(5)} ${es.length?"· "+es.length+" 件事":"· 没有安排"}</b>
+        ${es.map(e=>`<div class="cal-ev" onclick="UI.openDetail('${e.jobId}')">
+          <span class="cdot" style="background:${CAL.TYPES[e.type].color}"></span>
+          ${CAL.TYPES[e.type].label} · ${esc(e.text)}<span class="ct">点击看详情 →</span></div>`).join("")}</div>`;
+    }
+    return `<div class="calwrap">
+      <div class="cal-head">
+        <button class="cal-nav" onclick="${nav(-1)}">‹</button><b>${y} 年 ${m} 月</b><button class="cal-nav" onclick="${nav(1)}">›</button>
+        <span style="margin-left:auto;font-size:11px;color:var(--ink-light);display:flex;gap:8px">
+          ${Object.values(CAL.TYPES).map(t=>`<span><i style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${t.color};margin-right:3px"></i>${t.label}</span>`).join("")}
+        </span>
+      </div>
+      <div class="cal-grid">${["一","二","三","四","五","六","日"].map(w=>`<div class="cal-wd">${w}</div>`).join("")}${cells}</div>
+      ${panel}</div>`;
   },
 
   news(){
@@ -389,6 +524,7 @@ function renderMain(){
       <span style="margin-left:auto"></span>
       <button class="btn small" onclick="VIEWS.filter.view='board';renderMain()">看板</button>
       <button class="btn small" onclick="VIEWS.filter.view='table';renderMain()">列表</button>
+      <button class="btn small" onclick="VIEWS.filter.view='cal';renderMain()">月历</button>
       <button class="btn small" onclick="VIEWS.filter.view='qbank';renderMain()">题库</button>
       <button class="btn small" id="newsBtn" style="display:none" onclick="VIEWS.filter.view='news';renderMain()">情报</button>
     </div>
@@ -401,6 +537,7 @@ function renderResults(){
   const area = $("#resultsArea"); if(!area) return;
   area.innerHTML = VIEWS.filter.view==="table" ? VIEWS.table()
                  : VIEWS.filter.view==="qbank" ? VIEWS.qbank()
+                 : VIEWS.filter.view==="cal" ? VIEWS.calendar()
                  : VIEWS.filter.view==="news" ? VIEWS.news()
                  : VIEWS.board();
 }
@@ -484,6 +621,17 @@ const UI = {
         <div style="font-size:12px;color:var(--ink-light);margin-top:10px">状态历史</div>
         <ul>${hist}</ul>
       </div>
+      <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
+        <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">BOSS 打招呼语 <span style="color:var(--ink-light)">（AI 按岗位+你的亮点生成）</span></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn small" onclick="AI.greet('${j.id}')">生成打招呼语</button>
+          ${j.greeting? `<button class="btn small" onclick="IO.copyText('${j.id}')">复制</button>`:""}
+          <span class="ai-status" id="greet-st" style="margin:0"></span>
+        </div>
+        <textarea id="greetOut" rows="3" style="width:100%;margin-top:6px;font-size:13px;line-height:1.7"
+          placeholder="点「生成打招呼语」→ 满意就复制去 BOSS 粘贴">${esc(j.greeting||"")}</textarea>
+        <button class="btn small" id="greetSave" style="display:none;margin-top:4px" onclick="STORE.update('${j.id}',{greeting:document.getElementById('greetOut').value.trim()});UI.openDetail('${j.id}')">保存到岗位</button>
+      </div>
       <div style="margin-top:14px">
         <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">面试复盘（被问倒的题自动进题库）</div>
         <div id="reviewList">
@@ -493,7 +641,11 @@ const UI = {
                 <span style="font-size:12px;color:var(--ink-light)">${esc(r.date||fmtDate(r.at))}</span>
                 <button class="btn small" style="margin-left:auto;padding:2px 8px;color:var(--bad);border:1px solid var(--line)"
                   onclick="if(confirm('删除这条复盘？')){STORE.removeReview('${j.id}',${i});UI.openDetail('${j.id}');}">删除</button></div>
-              ${(r.questions||[]).map(q=>`<div style="margin-top:6px">· ${esc(q)}</div>`).join("")}
+              ${(r.questions||[]).map((q,qi)=>`
+                <div class="qrow"><span class="qt">· ${esc(q)}</span>
+                  <button class="btn small" style="padding:2px 8px;flex:0 0 auto" onclick="AI.advice('${j.id}',${i},${qi},'dt')">思路</button></div>
+                ${(r.advice||{})[q]? `<div class="ai-box" id="dt-adv-${i}-${qi}">${esc(r.advice[q])}</div>`:""}
+                <div class="ai-status" id="dt-st-${i}-${qi}"></div>`).join("")}
               ${r.notes? `<div class="qmeta" style="margin-top:6px">${esc(r.notes)}</div>`:""}
             </div>`).join("") || `<div style="font-size:12px;color:var(--ink-light)">还没有复盘记录</div>`}
         </div>
@@ -535,6 +687,110 @@ const UI = {
   },
 
   toggleDemoMenu(btn){ this.open("demoMask"); },
+
+  /* ── AI 设置 ── */
+  openAISettings(msg){
+    const sel = $("#ai_provider");
+    sel.innerHTML = Object.entries(CONFIG.AI_PROVIDERS)
+      .map(([k,p])=>`<option value="${k}" ${AI.cfg&&AI.cfg.provider===k?"selected":""}>${p.name}</option>`).join("");
+    $("#ai_key").value = (AI.cfg&&AI.cfg.key) || "";
+    $("#ai_bio").value = (AI.cfg&&AI.cfg.bio) || "";
+    const st = $("#ai-set-st");
+    st.textContent = msg || (AI.ready()? "已配置 ✓（Key 存本机浏览器）" : "");
+    st.className = "ai-status";
+    this.open("aiMask");
+  },
+  saveAISettings(){
+    const key = $("#ai_key").value.trim();
+    AI.saveCfg({ provider: $("#ai_provider").value, key, bio: $("#ai_bio").value.trim() });
+    this.close("aiMask");
+  },
+};
+
+/* ═══════════ ⑤.5 AI 能力（DeepSeek / 智谱，OpenAI 兼容直连） ═══════════ */
+const AI = {
+  cfg: null,
+  load(){ try{ this.cfg = JSON.parse(localStorage.getItem("ot-ai")||"null"); }catch(e){ this.cfg = null; } this.indicate(); },
+  ready(){ return !!(this.cfg && this.cfg.key && this.cfg.provider); },
+  indicate(){
+    const b = document.getElementById("aiBtn"); if(!b) return;
+    b.textContent = this.ready() ? "AI ✓" : "AI 设置";
+    b.style.borderColor = this.ready() ? "var(--pink)" : "";
+  },
+  saveCfg(c){ this.cfg = c; try{ localStorage.setItem("ot-ai", JSON.stringify(c)); }catch(e){} this.indicate(); },
+  async chat(messages, maxTokens){
+    const p = CONFIG.AI_PROVIDERS[this.cfg.provider] || CONFIG.AI_PROVIDERS.deepseek;
+    let res;
+    try{
+      res = await fetch(p.base+"/chat/completions", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+this.cfg.key },
+        body: JSON.stringify({ model:p.model, messages, temperature:0.5, max_tokens:maxTokens||600 }),
+      });
+    }catch(e){ throw new Error("网络不通（检查代理/网络后再试）"); }
+    if(res.status===401) throw new Error("Key 不对或已失效（401）");
+    if(res.status===402) throw new Error("账户余额不足（402），去提供方官网充值");
+    if(res.status===429) throw new Error("请求太频繁（429），等几秒再试");
+    if(!res.ok){ const t = await res.text(); throw new Error("接口返回 "+res.status+" "+t.slice(0,80)); }
+    const d = await res.json();
+    const out = d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
+    return (out||"").trim();
+  },
+  _check(){
+    if(this.ready()) return true;
+    UI.openAISettings("先用 AI：粘贴你的 API Key（只存本机浏览器，费用自己可控）");
+    return false;
+  },
+  _bio(){ return (this.cfg && this.cfg.bio) || "未填写"; },
+
+  // 复盘 AI：给被问倒的题生成答题思路，存进题库
+  async advice(jobId, rIdx, qIdx, scope){
+    if(!this._check()) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
+    const r = j.reviews && j.reviews[rIdx]; if(!r) return;
+    const q = r.questions[qIdx];
+    const stId = scope+"-st-"+(scope==="dt" ? rIdx+"-"+qIdx : qIdx);
+    const st = document.getElementById(stId);
+    if(st){ st.textContent = "AI 思考中…"; st.className = "ai-status"; }
+    try{
+      const out = await this.chat([
+        { role:"system", content:"你是资深面试教练。只输出干货，不要客套开场白和总结。" },
+        { role:"user", content:
+          `候选人在【${r.round||"面试"}】被问到：${q}\n岗位：${j.role} @ ${j.company}\n候选人亮点：${this._bio()}\n`+
+          `请给答题思路：3-5 条要点，每条一行、每行不超过 25 字；最后另起一行「面试官为什么问：」+ 一句话。` }
+      ], 500);
+      STORE.addAdvice(jobId, rIdx, q, out);
+      if(scope==="dt") UI.openDetail(jobId); else renderResults();
+    }catch(e){
+      if(st){ st.textContent = "生成失败："+e.message; st.className = "ai-status err"; }
+    }
+  },
+  adviceQB(i){
+    const it = (VIEWS._qitems||[])[i]; if(!it) return;
+    this.advice(it.jobId, it.ri, it.qi, "qb");
+  },
+
+  // BOSS 打招呼语生成
+  async greet(jobId){
+    if(!this._check()) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
+    const st = document.getElementById("greet-st");
+    const out = document.getElementById("greetOut");
+    st.textContent = "AI 生成中…"; st.className = "ai-status";
+    try{
+      const text = await this.chat([
+        { role:"system", content:"你是求职助手。只输出打招呼语本身，不要引号、不要解释。" },
+        { role:"user", content:
+          `为 BOSS 直聘写一条给招聘者的打招呼语。\n岗位：${j.role} @ ${j.company}${j.city?"（"+j.city+"）":""}\n我的亮点：${this._bio()}\n简历版本：${j.resume||"默认"}\n`+
+          `要求：80-140 字，口语自然、不吹嘘，突出 1-2 个与岗位的匹配点，结尾表达进一步沟通的意愿。` }
+      ], 300);
+      out.value = text;
+      st.textContent = "";
+      document.getElementById("greetSave").style.display = "";
+    }catch(e){
+      st.textContent = "生成失败："+e.message; st.className = "ai-status err";
+    }
+  },
 };
 
 /* ═══════════ ⑥ IO 导入导出 ═══════════ */
@@ -575,6 +831,21 @@ const IO = {
     a.download = `offer-tracker-${new Date().toISOString().slice(0,10)}.csv`;
     a.click(); URL.revokeObjectURL(a.href);
   },
+  copyText(jobId){
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.greeting) return;
+    const done = ()=> alert("已复制，去 BOSS 直接粘贴即可");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(j.greeting).then(done).catch(()=>{
+        const ta = document.createElement("textarea"); ta.value = j.greeting;
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+        document.body.removeChild(ta); done();
+      });
+    }else{
+      const ta = document.createElement("textarea"); ta.value = j.greeting;
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+      document.body.removeChild(ta); done();
+    }
+  },
   clearAll(){
     if(!confirm("确定清空全部岗位数据？此操作不可恢复（建议先导出备份）")) return;
     STORE.replaceAll({ version:CONFIG.DATA_VERSION, jobs:[] }); renderMain();
@@ -584,7 +855,7 @@ const IO = {
 /* ═══════════ ⑦ DEMO 演示数据（脱敏，供作品集展示） ═══════════ */
 const DEMO = {
   seed: [
-    { company:"某大厂 A", role:"AI 产品经理（校招）", city:"杭州", channel:"官网", status:"interview", deadline:null, appliedAt:"2026-09-01", resume:"AI产品方向 v3", salary:"—", next:"周三一面，准备项目深挖", notes:"内推进度顺利，一面重点问工作台项目", reviews:[{round:"一面",date:"2026-09-03",questions:["介绍一下你最有代表性的项目，深挖一个关键决策","AI 产品的冷启动你怎么做","产品数据下跌你如何排查"],notes:"项目讲细了但没讲结果指标，下次用数字收尾"}], off:-2 },
+    { company:"某大厂 A", role:"AI 产品经理（校招）", city:"杭州", channel:"官网", status:"interview", deadline:null, appliedAt:"2026-09-01", resume:"AI产品方向 v3", salary:"—", next:"周三一面，准备项目深挖", notes:"内推进度顺利，一面重点问工作台项目", greeting:"您好！我在官网看到 AI 产品经理（校招）岗位。我是软件工程应届生，自研 AI 工作台迭代 13 周、18 个模块，对 AI 产品的落地有真实一手体感，简历已按该岗位定制（AI产品方向 v3），期待进一步沟通！", reviews:[{round:"一面",date:"2026-09-03",questions:["介绍一下你最有代表性的项目，深挖一个关键决策","AI 产品的冷启动你怎么做","产品数据下跌你如何排查"],advice:{"介绍一下你最有代表性的项目，深挖一个关键决策":"用工作台项目，按 STAR 收尾\n关键决策：模块按操作频率排序而非数据相关性\n讲一个推翻自己的案例（提示条被删）体现迭代\n收尾给数字：13 周 17 版 / 2162 条数据\n面试官为什么问：验证你是不是真做过、有没有决策深度"},notes:"项目讲细了但没讲结果指标，下次用数字收尾"}], off:-2 },
     { company:"某游戏 B", role:"游戏 AI 产品策划", city:"广州", channel:"官网", status:"test", deadline:null, appliedAt:"2026-08-28", resume:"游戏AI版 v2", salary:"—", next:"做行测题库，周四截止", notes:"届别窗口在线外但投了，搏一搏", off:-3 },
     { company:"某云 C", role:"产品体验设计", city:"上海", channel:"内推", status:"applied", deadline:null, appliedAt:"2026-09-05", resume:"体验设计版 v1", salary:"—", next:"等筛选，超7天发邮件催", notes:"学长内推，简历已确认收到", off:3 },
     { company:"某厂 D", role:"AI 应用产品（校招）", city:"深圳", channel:"官网", status:"applied", deadline:null, appliedAt:"2026-08-30", resume:"AI产品方向 v3", salary:"—", next:"无回复，准备催HR", notes:"—", off:2 },
@@ -602,6 +873,7 @@ const DEMO = {
         id:"demo"+i, company:s.company, role:s.role, city:s.city, channel:s.channel,
         status:s.status, deadline:s.deadline||"", appliedAt:s.appliedAt||"",
         resume:s.resume, salary:s.salary, next:s.next, notes:s.notes, reviews:s.reviews||[],
+        greeting:s.greeting||"",
         history:[{status:s.status, at:up.toISOString()}],
         createdAt:up.toISOString(), updatedAt:up.toISOString(),
       };
@@ -634,6 +906,7 @@ const NEWS = {
 THEME.set(THEME.get());
 document.getElementById("themeBtn").textContent = THEME.get()==="dark" ? "☀️" : "🌙";
 NEWS.load();
+AI.load();
 STORE.load();
 renderMain();
 </script>
