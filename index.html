@@ -287,33 +287,43 @@
   .rv-co i{font-style:normal;margin-left:5px;font-size:11px}
 
   /* ══════════ v9 · 模块导航（学航海志：投递管理/面试备战/画像） ══════════ */
-  .mainnav{display:flex;gap:8px;padding:12px 20px 0;flex-wrap:wrap}
-  .mainnav button{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-pill);padding:8px 20px;font-size:13.5px;font-weight:600;color:var(--ink-mid)}
-  .mainnav button.on{background:var(--brand);border-color:var(--brand);color:#fff}
-  .mainnav button:not(.on):hover{border-color:var(--brand);color:var(--brand)}
-  /* 面试备战：功能卡网格，一卡一功能 */
-  .prepwrap{max-width:1080px;margin:0 auto;padding:12px 20px}
+  .mainnav{display:flex;gap:10px;padding:12px 20px 0;flex-wrap:wrap;justify-content:center}
+  .mainnav button{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-pill);padding:8px 22px;font-size:13.5px;font-weight:600;color:var(--ink-mid)}
+  .mainnav button.on{background:var(--ink);border-color:var(--ink);color:#F6EFDD}
+  .mainnav button:not(.on):hover{border-color:var(--ink);color:var(--ink)}
+  /* 面试备战：三列入口卡（学航海志：卡=入口，点开进功能） */
+  .prepwrap{max-width:1200px;margin:0 auto;padding:12px 20px}
   .prepjob{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:10px 16px;margin-bottom:12px;flex-wrap:wrap}
   .prepjob select{max-width:340px;width:auto;font-size:13px}
-  .prepgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:860px){.prepgrid{grid-template-columns:1fr}}
+  .prepgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:980px){.prepgrid{grid-template-columns:1fr 1fr}}
+  @media (max-width:680px){.prepgrid{grid-template-columns:1fr}}
   .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:16px 18px}
   .pcard h3{font-size:14px;color:var(--ink);display:flex;align-items:center;gap:7px;margin-bottom:4px}
   .pcard .pdesc{font-size:12px;color:var(--ink-light);margin-bottom:10px}
   .pcard.full{grid-column:1/-1}
 
-  /* ═══ v9.1 功能卡·实底彩卡（学航海志：编号+圆贴纸+米白面板+底部状态条） ═══ */
-  .fcard{background:var(--fc,#357052);color:var(--fci,#fff);border:2px solid rgba(45,42,38,.75);border-radius:16px;padding:16px 18px 14px;box-shadow:4px 4px 0 rgba(45,42,38,.18);display:flex;flex-direction:column;gap:8px}
+  /* ═══ v9.2 功能入口卡·实底彩卡（紧凑入口：点卡片打开功能面板） ═══ */
+  .fcard{position:relative;background:var(--fc,#357052);color:var(--fci,#fff);border:2px solid rgba(45,42,38,.75);border-radius:16px;padding:16px 18px 14px;box-shadow:4px 4px 0 rgba(45,42,38,.18);display:flex;flex-direction:column;gap:8px;min-height:238px}
+  .fcard.click{cursor:pointer;transition:transform .12s,box-shadow .12s}
+  .fcard.click:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(45,42,38,.22)}
   .fcard.full{grid-column:1/-1}
-  .fcard .fc-top{display:flex;align-items:flex-start;gap:10px}
+  .fcard .fc-top{display:flex;align-items:flex-start}
   .fcard .fc-tag{background:rgba(255,255,255,.16);border-radius:9999px;padding:3px 12px;font-size:11px;letter-spacing:.06em;font-weight:600}
-  .fcard .fc-sticker{margin-left:auto;width:52px;height:52px;border-radius:50%;background:#F6EFDD;border:2px solid rgba(45,42,38,.6);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 52px}
-  .fcard h3{font-size:21px;font-weight:800;letter-spacing:.02em;margin:0;line-height:1.3}
-  .fcard .fcd{font-size:12.5px;line-height:1.7;opacity:.92;margin:0}
+  .fcard .fc-sticker{position:absolute;right:16px;top:86px;width:58px;height:58px;border-radius:50%;background:#F6EFDD;border:2px solid rgba(45,42,38,.6);display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 58px;box-shadow:2px 2px 0 rgba(45,42,38,.2)}
+  .fcard h3{font-size:21px;font-weight:800;letter-spacing:.02em;margin:2px 0 0;line-height:1.3}
+  .fcard .fcd{font-size:12.5px;line-height:1.7;opacity:.92;margin:0;padding-right:64px}
   .fcard .fc-panel{background:#FBF7EC;color:var(--ink);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(45,42,38,.35)}
-  .fcard .fc-bar{background:#F6EFDD;color:#4A3B32;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:600;border:1.5px solid rgba(45,42,38,.35)}
+  .fcard .fc-bar{margin-top:auto;background:#F6EFDD;color:#4A3B32;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:600;border:1.5px solid rgba(45,42,38,.35)}
   .fcard .fc-pills{display:flex;gap:6px;flex-wrap:wrap}
   .fcard .fc-pills span{background:rgba(255,255,255,.18);border-radius:9999px;padding:2px 10px;font-size:11px;font-weight:600}
+  /* 画像页变体：贴纸回到流式布局、卡不设最小高 */
+  .fcard.me{min-height:0}
+  .fcard.me .fc-sticker{position:static;margin-left:auto;width:52px;height:52px;flex:0 0 52px;font-size:24px}
+  /* 功能工作台弹窗 */
+  .toolmodal{background:var(--card);border:2px solid rgba(45,42,38,.75);border-radius:18px;padding:20px 22px;box-shadow:6px 6px 0 rgba(45,42,38,.18);max-width:780px;width:100%}
+  .toolmodal h2{font-size:17px;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .toolmodal .fc-panel{background:#FBF7EC;border:1.5px solid rgba(45,42,38,.3);border-radius:12px;padding:14px 16px;margin-bottom:12px}
   /* 闪卡（在米白面板内） */
   .flash{cursor:pointer;user-select:none}
   .flash .fc{background:#fff;border:1.5px dashed rgba(45,42,38,.4);border-radius:12px;min-height:120px;padding:16px 18px;display:flex;flex-direction:column;justify-content:center;gap:8px}
@@ -436,6 +446,11 @@
   </div>
 </div>
 
+<!-- 功能工作台（备战页入口卡点开） -->
+<div class="mask" id="toolMask" onclick="if(event.target===this)UI.close('toolMask')">
+  <div class="toolmodal" id="toolBody"></div>
+</div>
+
 <script>
 "use strict";
 /* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
@@ -480,6 +495,7 @@ const CONFIG = {
   ],
 };
 const stageOf = id => CONFIG.STAGES.find(s=>s.id===id) || CONFIG.STAGES[0];
+const reportCnt = j => ((j.analysis&&j.analysis.prep)?1:0) + ((j.analysis&&j.analysis.match)?1:0);
 
 /* 内置高频面试题库（闪卡用）：正面题目 / 背面回答方向。校招产品·AI产品方向通用 */
 const QBANK_SEED = [
@@ -697,101 +713,54 @@ const VIEWS = {
   },
 
   prepModule(){
+    // v9.2：卡=入口（学航海志），点卡片打开功能工作台弹窗
     const js = STORE.data.jobs;
     const j = js.find(x=>x.id===this.prepJobId) || null;
-    const jobSel = `<div class="prepjob">
-      <span style="font-size:12px;color:var(--ink-light)">当前岗位</span>
-      <select onchange="VIEWS.prepJobId=this.value||null;VIEWS.flash.flip=false;renderMain()">
-        <option value="">通用（不绑定岗位）</option>
-        ${js.map(x=>`<option value="${x.id}" ${this.prepJobId===x.id?"selected":""}>${esc(x.company)} · ${esc(x.role)}</option>`).join("")}
-      </select>
-      ${j?`<button class="btn small" onclick="UI.openDetail('${j.id}')">打开岗位详情</button>`:""}
-    </div>`;
-    // ① 闪卡
-    const fl = this.flash;
-    const card = QBANK_SEED[fl.i];
-    const flashHtml = `<div class="fcard full" style="--fc:#357052">
-      <div class="fc-top"><span class="fc-tag">训练营地 · 01</span><span class="fc-sticker">🃏</span></div>
-      <h3>面试闪卡</h3>
-      <p class="fcd">练习高频面试题，翻转卡片看回答方向</p>
-      <div class="fc-pills"><span>⚡ AI 定制答题方向</span>${j?'<span>🎯 已绑定当前岗位</span>':'<span>通用题库 22 题</span>'}</div>
-      <div class="fc-panel">
-        <div class="flash" onclick="VIEWS.flash.flip=!VIEWS.flash.flip;renderMain()">
-          <div class="fc">
-            <span class="fcat">${card.c}</span>
-            ${fl.flip ? `<div class="fa">${esc(card.a)}</div>` : `<div class="fq">${esc(card.q)}</div>`}
-            <span class="fhint">${fl.flip?"点我翻回题目":"点我翻转看回答方向"}</span>
-          </div>
-        </div>
-        ${this._flashAI}
-        <div class="flashnav">
-          <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+${QBANK_SEED.length}-1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">‹ 上一题</button>
-          <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">下一题 ›</button>
-          <button class="btn small" onclick="AI.flashAdvice(VIEWS.flash.i)">AI 按我的亮点定制答题方向</button>
-        </div>
+    const reportN = j ? ((j.analysis?.prep?1:0) + (j.analysis?.match?1:0)) : 0;
+    const rvTotal = js.reduce((s,x)=>s+(x.reviews||[]).length,0);
+    const greetN = js.filter(x=>x.greeting).length;
+    return `<div class="prepgrid">
+      <div class="fcard click" style="--fc:#357052" onclick="UI.openTool('flash')">
+        <div class="fc-top"><span class="fc-tag">训练营地 · 01</span></div>
+        <h3>面试闪卡</h3>
+        <p class="fcd">练习高频面试题，翻转卡片看回答方向</p>
+        <div class="fc-pills"><span>⚡ 练习 +3</span><span>AI 定制方向</span></div>
+        <div class="fc-bar">共 ${QBANK_SEED.length} 道高频题 · 点击开始练习</div>
       </div>
-      <div class="fc-bar">共 ${QBANK_SEED.length} 道高频题 · 当前第 ${fl.i+1} 题 · 点卡片翻转</div>
-    </div>`;
-    // ② 深度分析
-    const hasAna = j && j.analysis && (j.analysis.prep || j.analysis.match);
-    const reportN = (j?.analysis?.prep?1:0) + (j?.analysis?.match?1:0);
-    const ana = j ? `
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <button class="btn small" onclick="AI.prep('${j.id}',true)">${j.analysis&&j.analysis.prep?"重新生成面试准备包":"生成面试准备包"}</button>
-        <button class="btn small" onclick="AI.match('${j.id}',true)">${j.analysis&&j.analysis.match?"重新生成匹配度分析":"生成匹配度分析"}</button>
-      </div>
-      <div class="ai-status" id="ana-st"></div>
-      ${hasAna ? (j.analysis.prep?UI.renderPrep(j.analysis.prep):"") + (j.analysis.match?UI.renderMatch(j.analysis.match):"")
-        : `<div style="font-size:12px;color:var(--ink-light)">生成后自动保存。要更准就先去岗位详情把 JD 原文粘进「JD 原文」字段（编辑里）</div>`}`
-      : `<div style="font-size:12px;color:var(--ink-light)">先在上方选一个岗位，AI 才知道帮你分析谁</div>`;
-    // ③ 复盘
-    const rvN = j ? (j.reviews||[]).reduce((s,r)=>s+(r.questions||[]).length,0)
-                  : js.reduce((s,x)=>s+(x.reviews||[]).reduce((a,r)=>a+(r.questions||[]).length,0),0);
-    // ④ 打招呼
-    const greet = j ? `
-      <button class="btn small" onclick="AI.greet2('${j.id}')">生成打招呼语</button>
-      <textarea id="greet2-out" rows="4" style="margin-top:8px;font-size:13px;line-height:1.7" placeholder="点生成 → 满意就复制去 BOSS 粘贴">${esc(j.greeting||"")}</textarea>
-      <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center">
-        <button class="btn small" onclick="IO.copyGreet2()">复制</button>
-        <button class="btn small" onclick="STORE.update('${j.id}',{greeting:document.getElementById('greet2-out').value.trim()});renderMain()">保存到岗位</button>
-        <span class="ai-status" id="greet2-st" style="margin:0"></span>
-      </div>`
-      : `<div style="font-size:12px;color:var(--ink-light)">选一个岗位后生成，话术会带岗位 JD 和你的亮点</div>`;
-    return jobSel + `<div class="prepgrid">
-      ${flashHtml}
-      <div class="fcard" style="--fc:#C9552E">
-        <div class="fc-top"><span class="fc-tag">海图管理所 · 02</span><span class="fc-sticker">🧭</span></div>
+      <div class="fcard click" style="--fc:#C9552E" onclick="UI.openTool('ana')">
+        <div class="fc-top"><span class="fc-tag">海图管理所 · 02</span></div>
         <h3>深度分析</h3>
         <p class="fcd">岗位亮点、能力缺口、面试预测题一站分析</p>
-        <div class="fc-panel">${ana}</div>
-        <div class="fc-bar">${j ? (reportN ? reportN+" 份分析报告 · 生成后自动保存" : "还没有分析报告 · 点上面按钮生成") : "先在上方选一个岗位"}</div>
+        <div class="fc-pills"><span>📄 准备包</span><span>📊 匹配度表</span></div>
+        <div class="fc-bar">${reportN ? reportN+" 份分析报告 · 点击查看" : "基于 JD 原文 + 你的亮点 · 点击生成"}</div>
       </div>
-      <div class="fcard" style="--fc:#2F7E97">
-        <div class="fc-top"><span class="fc-tag">航海观测台 · 03</span><span class="fc-sticker">🛟</span></div>
+      <div class="fcard click" style="--fc:#E9C46A;--fci:#4A3510" onclick="UI.openTool('review')">
+        <div class="fc-top"><span class="fc-tag" style="background:rgba(0,0,0,.08)">首录写码头 · 03</span></div>
+        <h3>面试复盘</h3>
+        <p class="fcd">记录面试问答，AI 分析改进建议</p>
+        <div class="fc-pills" style="--pbg:rgba(0,0,0,.08)"><span style="background:rgba(0,0,0,.08)">✍️ 复盘 +5</span><span style="background:rgba(0,0,0,.08)">🗣 声望 +5</span></div>
+        <div class="fc-bar">${rvTotal ? "已积累 "+rvTotal+" 次复盘 · 点击新建" : "点击新建复盘"}</div>
+      </div>
+      <div class="fcard click" style="--fc:#2F7E97" onclick="UI.openTool('funnel')">
+        <div class="fc-top"><span class="fc-tag">航海观测台 · 04</span></div>
         <h3>漏斗分析</h3>
         <p class="fcd">看清从投递到 Offer 的转化，定位下一步重点</p>
-        <div class="fc-panel">${this.funnelChart()}</div>
-        <div class="fc-bar">按状态历史统计 · 每次推进自动更新</div>
+        <div class="fc-pills"><span>📈 实时统计</span></div>
+        <div class="fc-bar">四层转化 · 自动标出最薄弱环节</div>
       </div>
-      <div class="fcard" style="--fc:#D9942B">
-        <div class="fc-top"><span class="fc-tag">外交文书局 · 04</span><span class="fc-sticker">✉️</span></div>
+      <div class="fcard click" style="--fc:#D9942B" onclick="UI.openTool('greet')">
+        <div class="fc-top"><span class="fc-tag">外交文书局 · 05</span></div>
         <h3>BOSS 打招呼</h3>
-        <p class="fcd">用 JD 和真实经历，生成有针对性的开场话术</p>
-        <div class="fc-panel">${greet}</div>
-        <div class="fc-bar">${j ? (j.greeting ? "已保存话术 · 可直接复制去 BOSS" : "生成满意后记得保存到岗位") : "先在上方选一个岗位"}</div>
+        <p class="fcd">用 JD 与真实经历，生成有针对性的开场话术</p>
+        <div class="fc-pills"><span>💬 生成话术</span><span>一键复制</span></div>
+        <div class="fc-bar">${greetN ? greetN+" 个岗位已存话术 · 点击生成" : "点击生成第一条话术"}</div>
       </div>
-      <div class="fcard" style="--fc:#E9C46A;--fci:#4A3510">
-        <div class="fc-top"><span class="fc-tag" style="background:rgba(0,0,0,.08)">首录写码头 · 05</span><span class="fc-sticker">📝</span></div>
-        <h3>面试复盘 & 题库</h3>
-        <p class="fcd">记录面试问答，被问倒的题自动进题库，AI 给思路</p>
-        <div class="fc-panel">
-          <div style="font-size:13px">已积累 <b>${rvN}</b> 道被问过的题${j?` · 当前岗位复盘 ${(j.reviews||[]).length} 次`:""}</div>
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn small" onclick="${j?`UI.openDetail('${j.id}')`:`alert('先在上方选一个岗位')`}">＋ 添加复盘</button>
-            <button class="btn small" onclick="VIEWS.module='jobs';VIEWS.filter.view='qbank';renderMain()">看题库 →</button>
-          </div>
-        </div>
-        <div class="fc-bar">复盘跨岗位共享 · 面试前按公司过一遍</div>
+      <div class="fcard click" style="--fc:#6B5B4A" onclick="VIEWS.module='jobs';VIEWS.filter.view='qbank';renderMain()">
+        <div class="fc-top"><span class="fc-tag">藏题阁 · 06</span></div>
+        <h3>题库</h3>
+        <p class="fcd">被问倒的题全部汇在这里，面试前按公司过一遍</p>
+        <div class="fc-pills"><span>🗂 自动收集</span></div>
+        <div class="fc-bar">点击进入题库 →</div>
       </div>
     </div>`;
   },
@@ -807,7 +776,7 @@ const VIEWS = {
     const days = first==="9999-12-31" ? 0 : Math.max(1, Math.ceil((Date.now()-new Date(first))/864e5));
     const bio = (AI.cfg && AI.cfg.bio) || "";
     return `
-      <div class="fcard" style="--fc:#357052">
+      <div class="fcard me" style="--fc:#357052">
         <div class="fc-top"><span class="fc-tag">航程记录</span><span class="fc-sticker">⚡</span></div>
         <h3>等级</h3>
         <div style="font-size:46px;font-weight:800;line-height:1.1">Lv.${l.lv}<span style="font-size:14px;font-weight:600;opacity:.85;margin-left:10px">${l.name} · ⚡ ${l.p} 分</span></div>
@@ -816,7 +785,7 @@ const VIEWS = {
         </div>
         <div class="fc-bar">${l.next?`再 ${l.next.at-l.p} 分升 ${l.next.name}`:"已满级"} · 添加/推进/复盘都涨积分</div>
       </div>
-      <div class="fcard" style="--fc:#2F7E97">
+      <div class="fcard me" style="--fc:#2F7E97">
         <div class="fc-top"><span class="fc-tag">战况速报</span><span class="fc-sticker">📈</span></div>
         <h3>战况</h3>
         <p class="fcd">${days?`开战 ${days} 天以来`:"添加岗位后开始统计"}</p>
@@ -827,7 +796,7 @@ const VIEWS = {
         </div>
         <div class="fc-bar">数据只存在你自己浏览器 · 可导出备份</div>
       </div>
-      <div class="fcard full" style="--fc:#D9942B">
+      <div class="fcard me full" style="--fc:#D9942B">
         <div class="fc-top"><span class="fc-tag">船长日志</span><span class="fc-sticker">🎯</span></div>
         <h3>我的定位</h3>
         <p class="fcd">AI 生成打招呼语和答题方向时拿它当背景，写得越具体越准</p>
@@ -1116,11 +1085,12 @@ function renderMain(){
     </div>`;
     return;
   }
-  // v9 顶层模块导航（学航海志：投递管理 / 面试备战 / 画像）
+  // v9.2 顶层模块导航（学航海志：居中，个人画像/投递管理/面试备战/设置）
   const nav = `<div class="mainnav">
+    <button class="${VIEWS.module==="me"?"on":""}" onclick="VIEWS.module='me';renderMain()">👤 个人画像</button>
     <button class="${VIEWS.module==="jobs"?"on":""}" onclick="VIEWS.module='jobs';renderMain()">📮 投递管理</button>
-    <button class="${VIEWS.module==="prep"?"on":""}" onclick="VIEWS.module='prep';renderMain()">🎯 面试备战</button>
-    <button class="${VIEWS.module==="me"?"on":""}" onclick="VIEWS.module='me';renderMain()">👤 我的画像</button>
+    <button class="${VIEWS.module==="prep"?"on":""}" onclick="VIEWS.module='prep';renderMain()">⚔️ 面试备战</button>
+    <button onclick="UI.openTool('settings')">⚙️ 设置</button>
   </div>`;
   if(VIEWS.module==="prep"){
     $("#main").innerHTML = nav + `<div class="prepwrap">${VIEWS.prepModule()}</div>`;
@@ -1336,6 +1306,128 @@ const UI = {
 
   toggleDemoMenu(btn){ this.closeMenu(); this.open("demoMask"); },
 
+  /* ── 功能工作台弹窗（备战页入口卡点开） ── */
+  _jobSel(){
+    const js = STORE.data.jobs;
+    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+      <span style="font-size:12px;color:var(--ink-light)">当前岗位</span>
+      <select onchange="VIEWS.prepJobId=this.value||null;UI.openTool(UI._tool)">
+        <option value="">通用（不绑定岗位）</option>
+        ${js.map(x=>`<option value="${x.id}" ${VIEWS.prepJobId===x.id?"selected":""}>${esc(x.company)} · ${esc(x.role)}</option>`).join("")}
+      </select>
+    </div>`;
+  },
+  openTool(tool){
+    this._tool = tool;
+    const js = STORE.data.jobs;
+    const j = js.find(x=>x.id===VIEWS.prepJobId) || null;
+    let html = "";
+    if(tool==="flash"){
+      const fl = VIEWS.flash;
+      const card = QBANK_SEED[fl.i];
+      html = `<h2>🃏 面试闪卡 <span style="font-size:12px;color:var(--ink-light);font-weight:400">${fl.i+1} / ${QBANK_SEED.length}</span></h2>
+        <div class="fc-panel">
+          <div class="flash" onclick="VIEWS.flash.flip=!VIEWS.flash.flip;UI.openTool('flash')">
+            <div class="fc">
+              <span class="fcat">${card.c}</span>
+              ${fl.flip ? `<div class="fa">${esc(card.a)}</div>` : `<div class="fq">${esc(card.q)}</div>`}
+              <span class="fhint">${fl.flip?"点我翻回题目":"点我翻转看回答方向"}</span>
+            </div>
+          </div>
+          ${VIEWS._flashAI}
+          <div class="flashnav">
+            <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+${QBANK_SEED.length}-1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';UI.openTool('flash')">‹ 上一题</button>
+            <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';UI.openTool('flash')">下一题 ›</button>
+            <button class="btn small" onclick="AI.flashAdvice(VIEWS.flash.i)">AI 按我的亮点定制答题方向</button>
+            ${j?`<span class="fi">已绑定：${esc(j.company)}</span>`:""}
+          </div>
+        </div>
+        <div class="fc-bar">练完一题点「下一题」，被问倒的题去复盘里记下来</div>`;
+    }
+    else if(tool==="ana"){
+      html = `<h2>🧭 深度分析</h2>${this._jobSel()}
+        <div class="fc-panel">
+          ${j ? `
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <button class="btn small" onclick="AI.prep('${j.id}',true)">${j.analysis&&j.analysis.prep?"重新生成面试准备包":"生成面试准备包"}</button>
+            <button class="btn small" onclick="AI.match('${j.id}',true)">${j.analysis&&j.analysis.match?"重新生成匹配度分析":"生成匹配度分析"}</button>
+          </div>
+          <div class="ai-status" id="ana-st"></div>
+          ${(j.analysis&&(j.analysis.prep||j.analysis.match)) ? (j.analysis.prep?UI.renderPrep(j.analysis.prep):"") + (j.analysis.match?UI.renderMatch(j.analysis.match):"")
+            : `<div style="font-size:12px;color:var(--ink-light)">还没有分析报告。要更准就先在岗位详情把 JD 原文粘进「JD 原文」字段</div>`}`
+          : `<div style="font-size:12px;color:var(--ink-light)">先在上方选一个岗位，AI 才知道帮你分析谁</div>`}
+        </div>
+        <div class="fc-bar">${j ? (reportCnt(j) ? reportCnt(j)+" 份报告已保存到岗位" : "生成后自动保存到岗位") : "先选岗位"}</div>`;
+    }
+    else if(tool==="review"){
+      const recent = js.flatMap(x=>(x.reviews||[]).map(r=>({co:x.company, jobId:x.id, r})))
+        .sort((a,b)=>String(b.r.date||b.r.at||"").localeCompare(String(a.r.date||a.r.at||""))).slice(0,4);
+      html = `<h2>📝 面试复盘</h2>${this._jobSel()}
+        <div class="fc-panel">
+          ${j ? `
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <select id="m_round" style="flex:0 0 110px;width:auto">${["笔试","一面","二面","三面","终面","HR面"].map(r=>`<option>${r}</option>`).join("")}</select>
+            <input id="m_date" type="date" style="flex:1;width:auto" value="${new Date().toISOString().slice(0,10)}">
+          </div>
+          <textarea id="m_questions" rows="3" style="width:100%" placeholder="被问倒的题，一行一题（都会进题库）"></textarea>
+          <textarea id="m_notes" rows="2" style="width:100%;margin-top:6px" placeholder="表现复盘：哪里卡壳 / 下次怎么答"></textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px">
+            <button class="btn small primary" onclick="UI.saveReviewModal('${j.id}')">保存复盘</button>
+          </div>`
+          : `<div style="font-size:12px;color:var(--ink-light)">先在上方选一个岗位，再记录它的面试问答</div>`}
+        </div>
+        ${recent.length?`<div class="fc-panel" style="margin-top:0">
+          <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">最近的复盘</div>
+          ${recent.map(x=>`<div style="font-size:12.5px;padding:3px 0;display:flex;gap:8px;align-items:center">
+            <b>${esc(x.co)}</b><span style="color:var(--ink-mid)">${esc(x.r.round||"复盘")} · ${esc(x.r.date||"")}</span>
+            <button class="btn small" style="margin-left:auto;padding:2px 8px" onclick="UI.close('toolMask');UI.openDetail('${x.jobId}')">查看</button></div>`).join("")}
+        </div>`:""}
+        <div class="fc-bar">被问倒的题自动进题库 · AI 会给改进思路</div>`;
+    }
+    else if(tool==="funnel"){
+      html = `<h2>🛟 漏斗分析</h2>
+        <div class="fc-panel">${VIEWS.funnelChart()}</div>
+        <div class="fc-bar">按状态历史统计「曾经到达该阶段」的岗位数 · 每次推进自动更新</div>`;
+    }
+    else if(tool==="greet"){
+      html = `<h2>✉️ BOSS 打招呼</h2>${this._jobSel()}
+        <div class="fc-panel">
+          ${j ? `
+          <button class="btn small" onclick="AI.greet2('${j.id}')">生成打招呼语</button>
+          <textarea id="greet2-out" rows="4" style="margin-top:8px;font-size:13px;line-height:1.7" placeholder="点生成 → 满意就复制去 BOSS 粘贴">${esc(j.greeting||"")}</textarea>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+            <button class="btn small" onclick="IO.copyGreet2()">复制</button>
+            <button class="btn small" onclick="STORE.update('${j.id}',{greeting:document.getElementById('greet2-out').value.trim()});UI.openTool('greet');renderMain()">保存到岗位</button>
+            <span class="ai-status" id="greet2-st" style="margin:0"></span>
+          </div>`
+          : `<div style="font-size:12px;color:var(--ink-light)">选一个岗位后生成，话术会带岗位 JD 和你的亮点</div>`}
+        </div>
+        <div class="fc-bar">话术基于岗位 JD + 「我的画像」里的亮点生成</div>`;
+    }
+    else if(tool==="settings"){
+      html = `<h2>⚙ 设置</h2>
+        <div class="fc-panel" style="display:flex;flex-direction:column;gap:8px;align-items:stretch">
+          <button class="btn" onclick="UI.openAISettings()">🤖 AI 设置（DeepSeek / 智谱 Key + 我的亮点）</button>
+          <button class="btn" onclick="IO.exportJSON()">📦 导出备份 (JSON)</button>
+          <button class="btn" onclick="IO.exportCSV()">📄 导出 CSV</button>
+          <button class="btn" onclick="document.getElementById('importFile').click()">📥 导入数据</button>
+          <button class="btn" onclick="UI.close('toolMask');UI.open('demoMask')">🎮 演示数据 / 清空</button>
+          <button class="btn" id="themeBtn2" onclick="THEME.toggle(document.getElementById('themeBtn'));this.textContent=(document.body.classList.contains('dark')?'☀️ 切回浅色':'🌙 切换深色')">${document.body.classList.contains("dark")?"☀️ 切回浅色":"🌙 切换深色"}</button>
+        </div>
+        <div class="fc-bar">数据只存本机浏览器 · 换设备用「导出 + 导入」搬家</div>`;
+    }
+    $("#toolBody").innerHTML = html;
+    this.open("toolMask");
+  },
+  saveReviewModal(id){
+    const round = $("#m_round").value, date = $("#m_date").value;
+    const questions = $("#m_questions").value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    const notes = $("#m_notes").value.trim();
+    if(!questions.length && !notes){ alert("至少填一道题，或写一句复盘"); return; }
+    STORE.addReview(id, { round, date, questions, notes });
+    renderMain(); this.openTool("review");
+  },
+
   /* ── AI 深度分析结果渲染 ── */
   renderPrep(text){
     if(!text) return "";
@@ -1548,7 +1640,8 @@ const AI = {
           `【面试前必查】3 条：面试前该查的公司信息/数据/该准备的反问` }
       ], 1000);
       STORE.setAnalysis(jobId, "prep", out);
-      if(silent) renderMain(); else UI.openDetail(jobId);
+      if(silent){ renderMain(); if(document.getElementById("toolMask")&&document.getElementById("toolMask").classList.contains("show")) UI.openTool(UI._tool||"ana"); }
+      else UI.openDetail(jobId);
     }catch(e){
       this._anaSt("生成失败："+e.message, true); this._anaBusy(false);
     }
@@ -1567,7 +1660,8 @@ const AI = {
           `要求：4-6 行；「我的简历证据」基于我的亮点写他可能认可的点，没证据就写「简历中未体现」；「隐患与建议」写面试官可能追问什么、我该怎么补，要具体可执行，不写空话。` }
       ], 1000);
       STORE.setAnalysis(jobId, "match", out);
-      if(silent) renderMain(); else UI.openDetail(jobId);
+      if(silent){ renderMain(); if(document.getElementById("toolMask")&&document.getElementById("toolMask").classList.contains("show")) UI.openTool(UI._tool||"ana"); }
+      else UI.openDetail(jobId);
     }catch(e){
       this._anaSt("生成失败："+e.message, true); this._anaBusy(false);
     }
