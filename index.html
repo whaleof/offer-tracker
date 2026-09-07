@@ -99,6 +99,8 @@
   .stageflow button{border-radius:8px;padding:5px 10px;font-size:12px;background:var(--pink-bg);border:1px solid var(--line);color:var(--ink-mid)}
   .stageflow button.cur{background:var(--pink);color:#fff;border-color:var(--pink)}
   .empty{padding:40px;text-align:center;color:var(--ink-light);font-size:13px}
+  .qitem{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;font-size:13px;line-height:1.6}
+  .qmeta{font-size:12px;color:var(--ink-light);margin-top:4px}
   .empty b{color:var(--pink-deep)}
   .note{font-size:12px;color:var(--ink-light);padding:0 20px}
   @media (max-width:640px){.form-grid{grid-template-columns:1fr}.toolbar input[type=search]{width:100%}}
@@ -157,7 +159,7 @@
 "use strict";
 /* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
 const CONFIG = {
-  DATA_VERSION: 1,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
+  DATA_VERSION: 2,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
   LS_KEY: "job-tracker-v1",
   STALE_DAYS: 7,            // 已投后超过 N 天无状态变化 → 标「无进展」
   STAGES: [
@@ -195,8 +197,10 @@ const STORE = {
   },
   save(){ localStorage.setItem(CONFIG.LS_KEY, JSON.stringify(this.data)); },
   migrate(d){
-    if(!d.version) d.version = 1;               // 未来迁移示例：if(d.version===1){...; d.version=2;}
+    if(!d.version) d.version = 1;
     if(!Array.isArray(d.jobs)) d.jobs = [];
+    if(d.version < 2) d.version = 2;            // v2：岗位新增 reviews（面试复盘），旧数据补空数组即可
+    d.jobs.forEach(j=>{ if(!Array.isArray(j.reviews)) j.reviews = []; });
     return d;
   },
   add(job){
@@ -217,6 +221,16 @@ const STORE = {
     this.save();
   },
   remove(id){ this.data.jobs = this.data.jobs.filter(x=>x.id!==id); this.save(); },
+  addReview(id, r){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j) return;
+    if(!Array.isArray(j.reviews)) j.reviews = [];
+    r.at = new Date().toISOString();
+    j.reviews.unshift(r); this.save();
+  },
+  removeReview(id, idx){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.reviews) return;
+    j.reviews.splice(idx, 1); this.save();
+  },
   replaceAll(d){ this.data = this.migrate(d); this.save(); },
 };
 
@@ -310,6 +324,19 @@ const VIEWS = {
       <th>公司</th><th>岗位</th><th>城市</th><th>渠道</th><th>DDL</th><th>投递日</th><th>状态</th><th>下一步</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
   },
+
+  qbank(){
+    // 题库：聚合所有岗位复盘里被问过的题，面试前按公司过一遍
+    const items = [];
+    STORE.data.jobs.forEach(j=>(j.reviews||[]).forEach(r=>
+      (r.questions||[]).forEach(q=>items.push({q, co:j.company, round:r.round||"", date:r.date||fmtDate(r.at)}))));
+    if(!items.length) return `<div class="empty" style="margin-top:40px">
+      <div style="font-size:34px;margin-bottom:8px">🗂️</div><b>题库还是空的</b>
+      <div style="font-size:12px;color:var(--ink-light);margin-top:6px">面试完打开对应岗位 → 「面试复盘」→ 添加复盘<br>被问倒的题会自动汇到这里，下次面试前过一遍</div></div>`;
+    return `<div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">共 ${items.length} 道被问过的题 · 下次面试前按公司过一遍</div>` +
+      items.map(it=>`<div class="qitem"><div>${esc(it.q)}</div>
+        <div class="qmeta">${esc(it.co)} · ${esc(it.round)} · ${esc(it.date)}</div></div>`).join("");
+  },
 };
 
 function renderMain(){
@@ -342,6 +369,7 @@ function renderMain(){
       <span style="margin-left:auto"></span>
       <button class="btn small" onclick="VIEWS.filter.view='board';renderMain()">看板</button>
       <button class="btn small" onclick="VIEWS.filter.view='table';renderMain()">列表</button>
+      <button class="btn small" onclick="VIEWS.filter.view='qbank';renderMain()">题库</button>
     </div>
     <div id="resultsArea"></div>`;
   renderResults();
@@ -349,7 +377,9 @@ function renderMain(){
 // 搜索时只重绘结果区，不动工具条 → 输入框光标/焦点不丢（踩坑库：全量重绘导致焦点/滚动丢失）
 function renderResults(){
   const area = $("#resultsArea"); if(!area) return;
-  area.innerHTML = VIEWS.filter.view==="table" ? VIEWS.table() : VIEWS.board();
+  area.innerHTML = VIEWS.filter.view==="table" ? VIEWS.table()
+                 : VIEWS.filter.view==="qbank" ? VIEWS.qbank()
+                 : VIEWS.board();
 }
 // 「需跟进」过滤：在 visibleJobs 里特判
 const _origVisible = VIEWS.visibleJobs;
@@ -431,6 +461,22 @@ const UI = {
         <div style="font-size:12px;color:var(--ink-light);margin-top:10px">状态历史</div>
         <ul>${hist}</ul>
       </div>
+      <div style="margin-top:14px">
+        <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">面试复盘（被问倒的题自动进题库）</div>
+        <div id="reviewList">
+          ${(j.reviews||[]).map((r,i)=>`
+            <div class="qitem">
+              <div style="display:flex;align-items:center;gap:8px"><b>${esc(r.round||"复盘")}</b>
+                <span style="font-size:12px;color:var(--ink-light)">${esc(r.date||fmtDate(r.at))}</span>
+                <button class="btn small" style="margin-left:auto;padding:2px 8px;color:var(--bad);border:1px solid var(--line)"
+                  onclick="if(confirm('删除这条复盘？')){STORE.removeReview('${j.id}',${i});UI.openDetail('${j.id}');}">删除</button></div>
+              ${(r.questions||[]).map(q=>`<div style="margin-top:6px">· ${esc(q)}</div>`).join("")}
+              ${r.notes? `<div class="qmeta" style="margin-top:6px">${esc(r.notes)}</div>`:""}
+            </div>`).join("") || `<div style="font-size:12px;color:var(--ink-light)">还没有复盘记录</div>`}
+        </div>
+        <div id="reviewFormSlot" style="margin-top:8px"></div>
+        <button class="btn small" onclick="UI.openReviewForm('${j.id}')">＋ 添加复盘</button>
+      </div>
       <div class="mbtns">
         <button class="btn danger" onclick="if(confirm('确定删除该岗位？删除后不可恢复（重要数据请先导出备份）')){STORE.remove('${j.id}');UI.close('detailMask');renderMain();}">删除</button>
         <button class="btn" onclick="UI.close('detailMask');UI.openForm('${j.id}')">编辑</button>
@@ -438,6 +484,33 @@ const UI = {
       </div>`;
     this.open("detailMask");
   },
+
+  openReviewForm(id){
+    $("#reviewFormSlot").innerHTML = `
+      <div style="background:var(--pink-bg);border-radius:8px;padding:10px;margin-top:4px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <select id="rv_round" style="flex:0 0 110px">
+            ${["笔试","一面","二面","三面","终面","HR面"].map(r=>`<option>${r}</option>`).join("")}
+          </select>
+          <input id="rv_date" type="date" style="flex:1" value="${new Date().toISOString().slice(0,10)}">
+        </div>
+        <textarea id="rv_questions" rows="3" style="width:100%" placeholder="被问倒的题，一行一题（都会进题库）"></textarea>
+        <textarea id="rv_notes" rows="2" style="width:100%;margin-top:6px" placeholder="表现复盘：哪里卡壳 / 下次怎么答"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end">
+          <button class="btn small" onclick="UI.openDetail('${id}')">取消</button>
+          <button class="btn small primary" onclick="UI.saveReview('${id}')">保存复盘</button>
+        </div>
+      </div>`;
+  },
+  saveReview(id){
+    const round = $("#rv_round").value, date = $("#rv_date").value;
+    const questions = $("#rv_questions").value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    const notes = $("#rv_notes").value.trim();
+    if(!questions.length && !notes){ alert("至少填一道题，或写一句复盘"); return; }
+    STORE.addReview(id, { round, date, questions, notes });
+    UI.openDetail(id); renderMain();
+  },
+
   toggleDemoMenu(btn){ this.open("demoMask"); },
 };
 
@@ -471,13 +544,13 @@ const IO = {
 /* ═══════════ ⑦ DEMO 演示数据（脱敏，供作品集展示） ═══════════ */
 const DEMO = {
   seed: [
-    { company:"某大厂 A", role:"AI 产品经理（校招）", city:"杭州", channel:"官网", status:"interview", deadline:null, appliedAt:"2026-09-01", resume:"AI产品方向 v3", salary:"—", next:"周三一面，准备项目深挖", notes:"内推进度顺利，一面重点问工作台项目", off:-2 },
+    { company:"某大厂 A", role:"AI 产品经理（校招）", city:"杭州", channel:"官网", status:"interview", deadline:null, appliedAt:"2026-09-01", resume:"AI产品方向 v3", salary:"—", next:"周三一面，准备项目深挖", notes:"内推进度顺利，一面重点问工作台项目", reviews:[{round:"一面",date:"2026-09-03",questions:["介绍一下你最有代表性的项目，深挖一个关键决策","AI 产品的冷启动你怎么做","产品数据下跌你如何排查"],notes:"项目讲细了但没讲结果指标，下次用数字收尾"}], off:-2 },
     { company:"某游戏 B", role:"游戏 AI 产品策划", city:"广州", channel:"官网", status:"test", deadline:null, appliedAt:"2026-08-28", resume:"游戏AI版 v2", salary:"—", next:"做行测题库，周四截止", notes:"届别窗口在线外但投了，搏一搏", off:-3 },
     { company:"某云 C", role:"产品体验设计", city:"上海", channel:"内推", status:"applied", deadline:null, appliedAt:"2026-09-05", resume:"体验设计版 v1", salary:"—", next:"等筛选，超7天发邮件催", notes:"学长内推，简历已确认收到", off:3 },
     { company:"某厂 D", role:"AI 应用产品（校招）", city:"深圳", channel:"官网", status:"applied", deadline:null, appliedAt:"2026-08-30", resume:"AI产品方向 v3", salary:"—", next:"无回复，准备催HR", notes:"—", off:2 },
     { company:"某厂 E", role:"产品经理（体验方向）", city:"杭州", channel:"BOSS直聘", status:"pool", deadline:"2026-09-15", appliedAt:null, resume:"待定制", salary:"—", next:"明天定制简历后投递", notes:"JD 强调数据思维，工作台数据可以讲", off:null },
     { company:"某新消费 F", role:"AI 产品助理", city:"杭州", channel:"官网", status:"pool", deadline:"2026-09-10", appliedAt:null, resume:"待定制", salary:"—", next:"投递（DDL 3 天内！）", notes:"朋友说团队氛围好", off:null },
-    { company:"某外企 G", role:"Product Intern 转 Fulltime", city:"上海", channel:"官网", status:"rejected", deadline:null, appliedAt:"2026-08-20", resume:"英文版 v1", salary:"—", next:"复盘：英文自述准备不足", notes:"挂在一面，问了英文 project 深挖", off:-6 },
+    { company:"某外企 G", role:"Product Intern 转 Fulltime", city:"上海", channel:"官网", status:"rejected", deadline:null, appliedAt:"2026-08-20", resume:"英文版 v1", salary:"—", next:"复盘：英文自述准备不足", notes:"挂在一面，问了英文 project 深挖", reviews:[{round:"一面",date:"2026-08-24",questions:["英文自我介绍","用英文讲一个你负责的项目"],notes:"英文自述卡壳、语速太快，考前朗读练三遍"}], off:-6 },
     { company:"某独角兽 H", role:"AI 产品经理（校招）", city:"北京", channel:"官网", status:"offer", deadline:null, appliedAt:"2026-08-15", resume:"AI产品方向 v2", salary:"15-20k", next:"对比薪资/成长性，9月底前答复", notes:"背调已过，等正式 offer mail", off:-5 },
   ],
   load(){
@@ -488,7 +561,7 @@ const DEMO = {
       return {
         id:"demo"+i, company:s.company, role:s.role, city:s.city, channel:s.channel,
         status:s.status, deadline:s.deadline||"", appliedAt:s.appliedAt||"",
-        resume:s.resume, salary:s.salary, next:s.next, notes:s.notes,
+        resume:s.resume, salary:s.salary, next:s.next, notes:s.notes, reviews:s.reviews||[],
         history:[{status:s.status, at:up.toISOString()}],
         createdAt:up.toISOString(), updatedAt:up.toISOString(),
       };
