@@ -1,0 +1,11 @@
+{
+  "updated": "2026-09-07",
+  "source": "AI 活动雷达 · 定期更新",
+  "items": [
+    { "title": "百度 Comate 测试版：不限量 Token 体验", "tag": "免费资源", "date": "2026-09-07", "deadline": "2026-09-24", "url": "https://comate.baidu.com/activity0729", "note": "AI 编程 IDE 免费用，做作品/刷项目利器" },
+    { "title": "NVIDIA DGX Spark 黑客松", "tag": "比赛", "date": "2026-09-07", "deadline": "2026-09-19", "note": "Agent Skills 方向，有训练营通道，个人可报名" },
+    { "title": "微信小程序成长计划二期", "tag": "免费资源", "date": "2026-09-07", "deadline": "2026-12-31", "note": "10 亿 Token + 10 万次生图额度，做小程序作品可薅" },
+    { "title": "外滩大会 2026", "tag": "线下活动", "date": "2026-09-05", "deadline": "2026-09-12", "note": "9/9–9/12 上海，AI/金融科技大会，可申请免费票" },
+    { "title": "腾讯云 TokenHub / 阿里百炼新用户额度", "tag": "免费资源", "date": "2026-09-01", "note": "长期兜底额度，跑 Demo 够用" }
+  ]
+}
