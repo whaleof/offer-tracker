@@ -272,6 +272,19 @@
   .matchtable{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--card)}
   .matchtable th,.matchtable td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;line-height:1.7}
   .matchtable th{background:var(--brand-soft);color:var(--brand-deep);font-weight:600;white-space:nowrap}
+  /* 日程紧急（48h 内）与简历版本视图 */
+  .rowcard .r-meta .ev-soon{background:#fbe4ec;color:var(--bad);border-radius:6px;padding:2px 8px;font-weight:600}
+  .rvcards{padding:12px 20px;max-width:1080px;margin:0 auto}
+  .rvcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:14px 18px;margin-bottom:10px}
+  .rvcard .rv-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .rvcard .rv-top b{font-size:14px}
+  .rvcard .rv-cnt{font-size:12px;color:var(--ink-light)}
+  .rvcard .rv-nums{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-mid);margin-top:6px}
+  .rvcard .rv-nums b{color:var(--ink);font-size:15px}
+  .rvcard .rv-cos{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+  .rv-co{border:1px solid var(--line);border-radius:var(--radius-pill);padding:3px 11px;font-size:12px;background:none;cursor:pointer;color:var(--ink-mid)}
+  .rv-co:hover{border-color:var(--brand);color:var(--brand)}
+  .rv-co i{font-style:normal;margin-left:5px;font-size:11px}
 </style>
 </head>
 <body>
@@ -373,7 +386,7 @@
 "use strict";
 /* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
 const CONFIG = {
-  DATA_VERSION: 5,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
+  DATA_VERSION: 6,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
   LS_KEY: "job-tracker-v1",
   STALE_DAYS: 7,            // 已投后超过 N 天无状态变化 → 标「无进展」
   // 游戏化激励（学航海志，静默版：不弹窗不撒花，只在头部等级条上显示）
@@ -431,6 +444,7 @@ const STORE = {
     if(d.version < 3) d.version = 3;            // v3：复盘新增 advice（AI 思路）、岗位新增 greeting（AI 打招呼语）
     if(d.version < 4) d.version = 4;            // v4：游戏化积分 + 岗位日程
     if(d.version < 5) d.version = 5;            // v5：岗位新增 jd（JD 原文）+ analysis（AI 深度分析结果）
+    if(d.version < 6) d.version = 6;            // v6：岗位新增 checks（备考/准备清单）
     if(!d.meta || typeof d.meta!=="object") d.meta = {};   // 无条件保证存在（演示数据/导入数据都可能带 v4 版本号但缺 meta）
     if(typeof d.meta.points !== "number") d.meta.points = 0;
     d.jobs.forEach(j=>{
@@ -442,6 +456,7 @@ const STORE = {
       if(!j.analysis || typeof j.analysis!=="object") j.analysis = { prep:"", match:"" };  // v5：AI 深度分析结果
       if(typeof j.analysis.prep !== "string") j.analysis.prep = "";
       if(typeof j.analysis.match !== "string") j.analysis.match = "";
+      if(!Array.isArray(j.checks)) j.checks = [];   // v6：备考/准备清单 [{t,done}]
     });
     return d;
   },
@@ -511,6 +526,19 @@ const STORE = {
     j.analysis[key] = text;
     j.updatedAt = new Date().toISOString();
     this.save();
+  },
+  addCheck(id, text){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !text) return;
+    if(!Array.isArray(j.checks)) j.checks = [];
+    j.checks.push({ t: text, done: false }); this.save();
+  },
+  toggleCheck(id, idx){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.checks || !j.checks[idx]) return;
+    j.checks[idx].done = !j.checks[idx].done; this.save();
+  },
+  removeCheck(id, idx){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.checks) return;
+    j.checks.splice(idx, 1); this.save();
   },
 };
 
@@ -687,6 +715,7 @@ const VIEWS = {
     const rows = vis.map(j=>{
       const st = stageOf(j.status);
       const ev = (j.events&&j.events[j.events.length-1]) || null;
+      const evSoon = ev && (()=>{ const d=daysUntil(ev.date); return d!==null && d>=0 && d<=2; })();
       return `<div class="rowcard" onclick="UI.openDetail('${j.id}')">
         <div class="r-main" style="flex:1;min-width:0">
           <div class="r-top"><b>${esc(j.company)}</b><span class="r-role">${esc(j.role)}</span></div>
@@ -698,7 +727,7 @@ const VIEWS = {
             ${j.resume?`<span>📄 ${esc(j.resume)}</span>`:""}
             ${j.deadline?`<span>${ddlTag(j.deadline)}</span>`:""}
             ${staleTag(j)}
-            ${ev?`<span>📅 ${esc(ev.label)} ${esc(ev.date.slice(5))}${ev.time?" "+esc(ev.time):""}</span>`:""}
+            ${ev?`<span class="${evSoon?"ev-soon":""}">📅 ${esc(ev.label)} ${esc(ev.date.slice(5))}${ev.time?" "+esc(ev.time):""}${evSoon?" · 快到了":""}</span>`:""}
           </div>
           ${j.next?`<div class="r-next">→ ${esc(j.next)}</div>`:""}
         </div>
@@ -712,6 +741,34 @@ const VIEWS = {
       </div>`;
     }).join("");
     return `<div class="rows">${rows}</div>`;
+  },
+
+  resumeView(){
+    // 简历版本管理（轻）：按「简历版本」聚合——每个版本投到哪、走到多远，看出哪个版本好回
+    const js = STORE.data.jobs.filter(j=>j.resume && j.resume.trim());
+    if(!js.length) return `<div class="empty" style="margin-top:40px">
+      <b>还没有岗位填过简历版本</b>
+      <div style="font-size:12px;color:var(--ink-light);margin-top:6px">编辑岗位时填「简历版本」，这里就能对比每个版本走到多远</div></div>`;
+    const groups = {};
+    js.forEach(j=>{ const k=j.resume.trim(); (groups[k] = groups[k]||[]).push(j); });
+    const keys = Object.keys(groups).sort((a,b)=>groups[b].length-groups[a].length);
+    const cards = keys.map(k=>{
+      const arr = groups[k];
+      const n = id => arr.filter(j=>j.status===id).length;
+      const live = n("applied")+n("test")+n("interview")+n("offer");
+      const cos = arr.map(j=>`<button class="rv-co" onclick="UI.openDetail('${j.id}')">${esc(j.company)}<i style="color:${stageOf(j.status).color}">${stageOf(j.status).name}</i></button>`).join("");
+      return `<div class="rvcard">
+        <div class="rv-top"><b>📄 ${esc(k)}</b>
+          <span class="rv-cnt">投出 ${arr.filter(j=>j.status!=="pool").length} · 有效进行中 ${live}</span></div>
+        <div class="rv-nums">
+          <span><b>${n("applied")}</b> 已投</span><span><b>${n("test")}</b> 测评</span>
+          <span><b>${n("interview")}</b> 面试</span><span><b>${n("offer")}</b> Offer</span>
+          <span><b>${n("rejected")}</b> 挂</span>
+        </div>
+        <div class="rv-cos">${cos}</div>
+      </div>`;
+    }).join("");
+    return `<div class="rvcards">${cards}</div>`;
   },
 
   qbank(){
@@ -822,6 +879,7 @@ function renderMain(){
       <button class="btn small vbtn" data-v="table" onclick="VIEWS.filter.view='table';renderResults()">列表</button>
       <button class="btn small vbtn" data-v="board" onclick="VIEWS.filter.view='board';renderResults()">看板</button>
       <button class="btn small vbtn" data-v="cal" onclick="VIEWS.filter.view='cal';renderResults()">月历</button>
+      <button class="btn small vbtn" data-v="resume" onclick="VIEWS.filter.view='resume';renderResults()">简历</button>
       <button class="btn small vbtn" data-v="qbank" onclick="VIEWS.filter.view='qbank';renderResults()">题库</button>
       <button class="btn small vbtn" data-v="news" id="newsBtn" style="display:none" onclick="VIEWS.filter.view='news';renderResults()">情报</button>
     </div>
@@ -838,6 +896,7 @@ function renderResults(){
                  : v==="qbank" ? VIEWS.qbank()
                  : v==="cal" ? VIEWS.calendar()
                  : v==="news" ? VIEWS.news()
+                 : v==="resume" ? VIEWS.resumeView()
                  : v==="board" ? VIEWS.board()
                  : VIEWS.table();
   if(document.querySelectorAll) document.querySelectorAll(".vbtn").forEach(b=>{
@@ -916,6 +975,21 @@ const UI = {
         <div class="stageflow">${flow}</div>
         <div style="font-size:12px;color:var(--ink-light);margin-top:10px">状态历史</div>
         <ul>${hist}</ul>
+      </div>
+      <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
+        <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">备考 / 准备清单 <span style="color:var(--ink-light)">（测评、笔试、面试前要做的都挂这里，勾掉即完成）</span></div>
+        <div id="checkList">
+          ${(j.checks||[]).map((c,ci)=>`
+            <div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px">
+              <input type="checkbox" ${c.done?"checked":""} style="width:auto;flex:0 0 auto" onclick="event.stopPropagation();STORE.toggleCheck('${j.id}',${ci});UI.openDetail('${j.id}')">
+              <span style="${c.done?"text-decoration:line-through;color:var(--ink-light)":""};flex:1">${esc(c.t)}</span>
+              <button class="btn small" style="padding:1px 7px;color:var(--bad);border:1px solid var(--line)" onclick="event.stopPropagation();STORE.removeCheck('${j.id}',${ci});UI.openDetail('${j.id}')">×</button>
+            </div>`).join("") || `<div style="font-size:12px;color:var(--ink-light)">还没有条目</div>`}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <input id="ck-input" placeholder="加一条，回车确认（如：行测刷 20 题 / 过一遍预测问题）" style="flex:1"
+            onkeydown="if(event.key==='Enter'){STORE.addCheck('${j.id}',this.value.trim());UI.openDetail('${j.id}')}">
+        </div>
       </div>
       <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
         <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">AI 深度分析 <span style="color:var(--ink-light)">（基于 JD 原文 + 你的亮点；换 JD 或改亮点后可重新生成覆盖）</span></div>
