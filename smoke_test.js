@@ -16,7 +16,7 @@ const store = {};
 const fakeEl = { innerHTML: "", textContent: "", style: {}, classList: { add() {}, remove() {}, toggle() {} } };
 const ctx = {
   localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
-  document: { querySelector: () => fakeEl, getElementById: () => fakeEl, body: fakeEl, createElement: () => fakeEl },
+  document: { querySelector: () => fakeEl, getElementById: () => fakeEl, body: fakeEl, createElement: () => fakeEl, addEventListener: () => {} },
   matchMedia: () => ({ matches: false }),
   fetch: () => Promise.reject(new Error("no fetch in test")),
   console, alert: () => {}, confirm: () => true, Date, Math, JSON,
