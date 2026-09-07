@@ -56,7 +56,7 @@ t("删除生效", S.data.jobs.length === 0);
 // 6 演示数据 + 导出回读
 ctx.__X.DEMO.load();
 const snapshot = JSON.parse(JSON.stringify(S.data));
-t("演示数据可导出回读", snapshot.jobs.length === 8 && snapshot.version === 4);
+t("演示数据可导出回读", snapshot.jobs.length === 8 && snapshot.version === 5);
 
 // 6b 演示数据自带复盘题 → 题库视图有内容；自带 AI 思路与打招呼语
 t("演示数据自带复盘题", S.data.jobs.some(j => j.reviews && j.reviews.length > 0));
@@ -89,7 +89,7 @@ t("打招呼语保存到岗位", S.data.jobs.find(j => j.id === demoE.id).greeti
 // 7 v1 旧数据迁移：自动补 reviews、advice、greeting、events、meta.points，版本升 4
 S.replaceAll({ jobs: [{ company: "旧数据", status: "pool" }] });
 const oldJ = S.data.jobs[0];
-t("v1迁移补reviews且版本升4", S.data.version === 4 && Array.isArray(oldJ.reviews));
+t("v1迁移补reviews且版本升4", S.data.version === 5 && Array.isArray(oldJ.reviews));
 t("v1迁移补advice/greeting/events", Array.isArray(oldJ.reviews) && typeof oldJ.greeting === "string" && Array.isArray(oldJ.events));
 
 // 8 添加/删除复盘

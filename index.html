@@ -188,9 +188,9 @@
   /* 看板：列固定 272px 横向滚动，绝不压缩 */
   .board{gap:14px;padding:14px 20px 20px}
   .col{min-width:272px;flex:0 0 272px;background:var(--paper-2);border:1px solid var(--line);padding:12px}
-  .col h3{font-size:13px;margin:0 -12px 10px;padding:8px 14px;letter-spacing:.01em;background:var(--stc-soft,transparent);border-top:2px solid var(--stc);border-bottom:1px solid var(--line)}
-  .col h3 .dot{display:none}
-  .col h3 .cnt{color:var(--stc);font-weight:600}
+  .col h3{font-size:13px;margin:0 -12px 10px;padding:8px 14px;letter-spacing:.01em;background:none;border-top:none;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px}
+  .col h3 .dot{width:9px;height:9px;border-radius:50%}
+  .col h3 .cnt{color:var(--ink-light);font-weight:400}
 
   /* 卡片：左侧 3px 状态色条 + hover 背景提一级（不加浮起动画） */
   .card{border:1px solid var(--line);border-left:3px solid var(--st,var(--ink-light));padding:11px 13px;margin-bottom:9px;transition:border-color .14s,background .14s}
@@ -242,6 +242,36 @@
   .menu button:hover{background:var(--brand-soft);color:var(--brand-deep)}
   .hmore{position:relative}
   @media (max-width:640px){.stat .nm{font-size:34px}.stat{min-width:104px;padding:12px 16px}}
+
+  /* ══════════ v7 · 航海志借鉴：行卡主视图 + 今日最小行动 + AI 深度分析 ══════════ */
+  /* 行卡列表（主视图）：一行一个岗位，信息密度高 */
+  .rows{padding:12px 20px;max-width:1080px;margin:0 auto}
+  .rowcard{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:13px 18px;margin-bottom:10px;cursor:pointer;transition:background .14s,border-color .14s}
+  .rowcard:hover{background:var(--paper-2);border-color:var(--line-strong)}
+  .rowcard .r-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .rowcard .r-top b{font-size:15px;letter-spacing:-.01em}
+  .rowcard .r-role{font-size:13px;color:var(--ink-mid)}
+  .rowcard .r-meta{display:flex;gap:8px 14px;flex-wrap:wrap;font-size:12px;color:var(--ink-mid);margin-top:6px;align-items:center}
+  .rowcard .r-meta .st-pill{border-radius:var(--radius-pill);padding:2px 10px;font-size:12px;font-weight:600;white-space:nowrap}
+  .rowcard .r-next{font-size:12px;color:var(--ink-light);margin-top:7px;border-top:1px dashed var(--line);padding-top:6px}
+  .rowcard .r-side{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto}
+  .rowcard .r-date{font-size:11px;color:var(--ink-light)}
+  .rowcard .st-select{border-radius:var(--radius-pill);padding:4px 10px;font-weight:600}
+  /* 今日最小行动：从数据推导的一条行动（非提示条，点击直达岗位） */
+  .todaycard{display:flex;align-items:center;gap:12px;max-width:1080px;margin:10px 20px 0;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:var(--radius-card);padding:11px 16px;cursor:pointer}
+  .todaycard:hover{background:var(--paper-2)}
+  .todaycard .tc-lb{font-size:11px;color:var(--brand);font-weight:700;white-space:nowrap}
+  .todaycard .tc-tx{font-size:13px;color:var(--ink);flex:1}
+  .todaycard .tc-go{font-size:12px;color:var(--ink-light);white-space:nowrap}
+  /* AI 深度分析结果 */
+  .ana-box{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius-btn);padding:10px 12px;margin-top:8px;font-size:13px;line-height:1.8}
+  .ana-sec{margin-bottom:10px}
+  .ana-sec:last-child{margin-bottom:0}
+  .ana-h{font-size:12px;font-weight:700;color:var(--brand-deep);margin-bottom:3px}
+  .ana-b{white-space:pre-wrap;color:var(--ink)}
+  .matchtable{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--card)}
+  .matchtable th,.matchtable td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;line-height:1.7}
+  .matchtable th{background:var(--brand-soft);color:var(--brand-deep);font-weight:600;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -343,7 +373,7 @@
 "use strict";
 /* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
 const CONFIG = {
-  DATA_VERSION: 4,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
+  DATA_VERSION: 5,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
   LS_KEY: "job-tracker-v1",
   STALE_DAYS: 7,            // 已投后超过 N 天无状态变化 → 标「无进展」
   // 游戏化激励（学航海志，静默版：不弹窗不撒花，只在头部等级条上显示）
@@ -378,7 +408,8 @@ const CONFIG = {
     { key:"salary",   label:"薪资范围",   type:"text",   ph:"可不填" },
     { key:"status",   label:"当前状态",   type:"select", options:"STAGES" },
     { key:"next",     label:"下一步动作", type:"text",   span:2, ph:"如：等测评邮件 / 周五前催HR" },
-    { key:"notes",    label:"备注（JD要点 / 内推人 / 注意事项）", type:"textarea", span:2, rows:3 },
+    { key:"jd",       label:"JD 原文（粘贴进来，AI 深度分析要用）", type:"textarea", span:2, rows:4, ph:"把招聘页的岗位描述整段粘贴到这里" },
+    { key:"notes",    label:"备注（内推人 / 注意事项）", type:"textarea", span:2, rows:2 },
   ],
 };
 const stageOf = id => CONFIG.STAGES.find(s=>s.id===id) || CONFIG.STAGES[0];
@@ -399,6 +430,7 @@ const STORE = {
     if(d.version < 2) d.version = 2;            // v2：岗位新增 reviews（面试复盘），旧数据补空数组即可
     if(d.version < 3) d.version = 3;            // v3：复盘新增 advice（AI 思路）、岗位新增 greeting（AI 打招呼语）
     if(d.version < 4) d.version = 4;            // v4：游戏化积分 + 岗位日程
+    if(d.version < 5) d.version = 5;            // v5：岗位新增 jd（JD 原文）+ analysis（AI 深度分析结果）
     if(!d.meta || typeof d.meta!=="object") d.meta = {};   // 无条件保证存在（演示数据/导入数据都可能带 v4 版本号但缺 meta）
     if(typeof d.meta.points !== "number") d.meta.points = 0;
     d.jobs.forEach(j=>{
@@ -406,6 +438,10 @@ const STORE = {
       j.reviews.forEach(r=>{ if(!r.advice || typeof r.advice!=="object") r.advice = {}; });
       if(typeof j.greeting !== "string") j.greeting = "";
       if(!Array.isArray(j.events)) j.events = [];   // 面试/测评日程节点：{date,time,label}
+      if(typeof j.jd !== "string") j.jd = "";       // v5：JD 原文（AI 深度分析输入）
+      if(!j.analysis || typeof j.analysis!=="object") j.analysis = { prep:"", match:"" };  // v5：AI 深度分析结果
+      if(typeof j.analysis.prep !== "string") j.analysis.prep = "";
+      if(typeof j.analysis.match !== "string") j.analysis.match = "";
     });
     return d;
   },
@@ -469,6 +505,13 @@ const STORE = {
     this.save();
   },
   replaceAll(d){ this.data = this.migrate(d); this.save(); },
+  setAnalysis(id, key, text){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j) return;
+    if(!j.analysis || typeof j.analysis!=="object") j.analysis = { prep:"", match:"" };
+    j.analysis[key] = text;
+    j.updatedAt = new Date().toISOString();
+    this.save();
+  },
 };
 
 /* ═══════════ ③ 工具函数 ═══════════ */
@@ -538,6 +581,42 @@ const VIEWS = {
     return "";
   },
 
+  todayCard(){
+    // 今日最小行动（学航海志「今日航海建议」）：从投递状态推导一条，点击直达岗位
+    const js = STORE.data.jobs;
+    let pick = null, act = "";
+    let upEv = null, upJob = null;
+    js.forEach(j=>(j.events||[]).forEach(e=>{
+      if(!e.date) return;
+      const d = new Date(e.date+"T23:59:59");
+      if(d >= today() && (!upEv || e.date < upEv.date)){ upEv = e; upJob = j; }
+    }));
+    if(upJob){
+      const n = daysUntil(upEv.date);
+      pick = upJob;
+      act = n <= 0 ? `今天就是「${upJob.company}」${upEv.label||"日程"} —— 过一遍题库和自我介绍`
+                   : `「${upJob.company}」${upEv.label||"日程"} 还剩 ${n} 天 —— ${n<=2?"今晚":"这两天"}准备 JD 关键词和预测问题`;
+    }else{
+      const ddl = js.filter(j=>{ const d=daysUntil(j.deadline); return j.status==="pool" && d!==null && d<=3; })
+                    .sort((a,b)=>daysUntil(a.deadline)-daysUntil(b.deadline))[0];
+      if(ddl){ pick = ddl; act = `「${ddl.company}」DDL 还剩 ${daysUntil(ddl.deadline)} 天 —— 今天投出去`; }
+      else{
+        const stale = js.find(j=>staleTag(j)!=="");
+        if(stale){ pick = stale; act = `「${stale.company}」已超 ${CONFIG.STALE_DAYS} 天无进展 —— 今天催一下，或放下转投`; }
+        else{
+          const pool = js.find(j=>j.status==="pool");
+          if(pool){ pick = pool; act = `从待投递里挑一家（比如「${pool.company}」），今天投出去`; }
+        }
+      }
+    }
+    if(!pick) return "";
+    return `<div class="todaycard" onclick="UI.openDetail('${pick.id}')">
+      <span class="tc-lb">今日最小行动</span>
+      <span class="tc-tx">${esc(act)}</span>
+      <span class="tc-go">去准备 →</span>
+    </div>`;
+  },
+
   stats(){
     const js = STORE.data.jobs;
     const n = id => js.filter(j=>j.status===id).length;
@@ -575,7 +654,7 @@ const VIEWS = {
     const cols = CONFIG.STAGES.map(s=>{
       const cards = vis.filter(j=>j.status===s.id).map(j=>this.card(j)).join("");
       return `<div class="col" style="--stc:${s.color};--stc-soft:${s.color}1A" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');UI.dropCard(event,'${s.id}')">
-        <h3>${s.icon||""} ${s.name}
+        <h3><span class="dot" style="background:${s.color}"></span>${s.icon||""} ${s.name}
           <span class="cnt">${vis.filter(j=>j.status===s.id).length}</span></h3>
         ${cards || ""}
         <button class="add" onclick="UI.openForm(null,'${s.id}')">＋ 加到「${s.name}」</button>
@@ -602,23 +681,37 @@ const VIEWS = {
   },
 
   table(){
+    // v7 主视图：行卡列表（学航海志）——一行一岗，右侧状态下拉直改（改状态顺手弹日程窗）
     const vis = this.visibleJobs();
     if(!vis.length) return `<div class="empty">没有匹配的岗位</div>`;
     const rows = vis.map(j=>{
       const st = stageOf(j.status);
-      return `<tr onclick="UI.openDetail('${j.id}')">
-        <td><b>${esc(j.company)}</b></td><td>${esc(j.role)}</td><td>${esc(j.city||"—")}</td>
-        <td>${esc(j.channel||"—")}</td><td>${j.deadline? esc(j.deadline):"—"}</td>
-        <td>${j.appliedAt? esc(fmtDate(j.appliedAt)):"—"}</td>
-        <td><select class="st-select" onclick="event.stopPropagation()" onchange="UI.moveStatus('${j.id}',this.value);renderMain()">
-          ${CONFIG.STAGES.map(s=>`<option value="${s.id}" ${j.status===s.id?"selected":""}>${s.icon||""} ${s.name}</option>`).join("")}
-        </select></td>
-        <td>${esc(j.next||"—")}</td>
-      </tr>`;
+      const ev = (j.events&&j.events[j.events.length-1]) || null;
+      return `<div class="rowcard" onclick="UI.openDetail('${j.id}')">
+        <div class="r-main" style="flex:1;min-width:0">
+          <div class="r-top"><b>${esc(j.company)}</b><span class="r-role">${esc(j.role)}</span></div>
+          <div class="r-meta">
+            <span class="st-pill" style="background:${st.color}1A;color:${st.color}">${st.icon||""} ${st.name}</span>
+            ${j.city?`<span>📍 ${esc(j.city)}</span>`:""}
+            ${j.channel?`<span>💬 ${esc(j.channel)}</span>`:""}
+            ${j.salary&&j.salary!=="—"?`<span>💰 ${esc(j.salary)}</span>`:""}
+            ${j.resume?`<span>📄 ${esc(j.resume)}</span>`:""}
+            ${j.deadline?`<span>${ddlTag(j.deadline)}</span>`:""}
+            ${staleTag(j)}
+            ${ev?`<span>📅 ${esc(ev.label)} ${esc(ev.date.slice(5))}${ev.time?" "+esc(ev.time):""}</span>`:""}
+          </div>
+          ${j.next?`<div class="r-next">→ ${esc(j.next)}</div>`:""}
+        </div>
+        <div class="r-side">
+          <select class="st-select" style="border-color:${st.color};color:${st.color}" onclick="event.stopPropagation()"
+            onchange="UI.moveStatus('${j.id}',this.value);renderMain()">
+            ${CONFIG.STAGES.map(s=>`<option value="${s.id}" ${j.status===s.id?"selected":""}>${s.icon||""} ${s.name}</option>`).join("")}
+          </select>
+          <span class="r-date">${j.appliedAt? esc(fmtDate(j.appliedAt)) : "未投"}</span>
+        </div>
+      </div>`;
     }).join("");
-    return `<table class="listtable"><thead><tr>
-      <th>公司</th><th>岗位</th><th>城市</th><th>渠道</th><th>DDL</th><th>投递日</th><th>状态</th><th>下一步</th>
-    </tr></thead><tbody>${rows}</tbody></table>`;
+    return `<div class="rows">${rows}</div>`;
   },
 
   qbank(){
@@ -720,29 +813,38 @@ function renderMain(){
     .join("");
   $("#main").innerHTML =
     VIEWS.stats() +
+    VIEWS.todayCard() +
     `<div class="toolbar">
       <input type="search" placeholder="搜公司 / 岗位 / 备注…" value="${esc(f.q)}"
         oninput="VIEWS.filter.q=this.value;renderResults()" style="caret-color:var(--brand)">
       ${chips}
       <span style="margin-left:auto"></span>
-      <button class="btn small" onclick="VIEWS.filter.view='board';renderMain()">看板</button>
-      <button class="btn small" onclick="VIEWS.filter.view='table';renderMain()">列表</button>
-      <button class="btn small" onclick="VIEWS.filter.view='cal';renderMain()">月历</button>
-      <button class="btn small" onclick="VIEWS.filter.view='qbank';renderMain()">题库</button>
-      <button class="btn small" id="newsBtn" style="display:none" onclick="VIEWS.filter.view='news';renderMain()">情报</button>
+      <button class="btn small vbtn" data-v="table" onclick="VIEWS.filter.view='table';renderResults()">列表</button>
+      <button class="btn small vbtn" data-v="board" onclick="VIEWS.filter.view='board';renderResults()">看板</button>
+      <button class="btn small vbtn" data-v="cal" onclick="VIEWS.filter.view='cal';renderResults()">月历</button>
+      <button class="btn small vbtn" data-v="qbank" onclick="VIEWS.filter.view='qbank';renderResults()">题库</button>
+      <button class="btn small vbtn" data-v="news" id="newsBtn" style="display:none" onclick="VIEWS.filter.view='news';renderResults()">情报</button>
     </div>
     <div id="resultsArea"></div>`;
   NEWS.applyBtn();
   renderResults();
 }
 // 搜索时只重绘结果区，不动工具条 → 输入框光标/焦点不丢（踩坑库：全量重绘导致焦点/滚动丢失）
+// v7：默认视图=行卡列表（航海志式），看板降为切换视图
 function renderResults(){
   const area = $("#resultsArea"); if(!area) return;
-  area.innerHTML = VIEWS.filter.view==="table" ? VIEWS.table()
-                 : VIEWS.filter.view==="qbank" ? VIEWS.qbank()
-                 : VIEWS.filter.view==="cal" ? VIEWS.calendar()
-                 : VIEWS.filter.view==="news" ? VIEWS.news()
-                 : VIEWS.board();
+  const v = VIEWS.filter.view || "table";
+  area.innerHTML = v==="table" ? VIEWS.table()
+                 : v==="qbank" ? VIEWS.qbank()
+                 : v==="cal" ? VIEWS.calendar()
+                 : v==="news" ? VIEWS.news()
+                 : v==="board" ? VIEWS.board()
+                 : VIEWS.table();
+  if(document.querySelectorAll) document.querySelectorAll(".vbtn").forEach(b=>{
+    b.classList.toggle("on", b.dataset.v === v);
+    b.style.borderColor = b.classList.contains("on") ? "var(--brand)" : "";
+    b.style.color = b.classList.contains("on") ? "var(--brand)" : "";
+  });
 }
 /* 「需跟进 / 待投递 / DDL」过滤已统一并入 visibleJobs */
 
@@ -816,6 +918,17 @@ const UI = {
         <ul>${hist}</ul>
       </div>
       <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
+        <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">AI 深度分析 <span style="color:var(--ink-light)">（基于 JD 原文 + 你的亮点；换 JD 或改亮点后可重新生成覆盖）</span></div>
+        ${!j.jd ? `<div style="font-size:12px;color:var(--ink-light)">还没贴 JD —— 点下面「编辑」把岗位描述粘进「JD 原文」字段，保存后回来生成</div>`
+        : `<div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn small" id="ana-prep-btn" onclick="AI.prep('${j.id}')">${j.analysis&&j.analysis.prep?"重新生成面试准备包":"生成面试准备包"}</button>
+            <button class="btn small" id="ana-match-btn" onclick="AI.match('${j.id}')">${j.analysis&&j.analysis.match?"重新生成匹配度分析":"生成匹配度分析"}</button>
+          </div>`}
+        <div class="ai-status" id="ana-st"></div>
+        <div id="ana-prep">${UI.renderPrep(j.analysis&&j.analysis.prep)}</div>
+        <div id="ana-match">${UI.renderMatch(j.analysis&&j.analysis.match)}</div>
+      </div>
+      <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
         <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">BOSS 打招呼语 <span style="color:var(--ink-light)">（AI 按岗位+你的亮点生成）</span></div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <button class="btn small" onclick="AI.greet('${j.id}')">生成打招呼语</button>
@@ -881,6 +994,29 @@ const UI = {
   },
 
   toggleDemoMenu(btn){ this.closeMenu(); this.open("demoMask"); },
+
+  /* ── AI 深度分析结果渲染 ── */
+  renderPrep(text){
+    if(!text) return "";
+    const parts = text.split(/(?=【[^】]{1,20}】)/).map(s=>s.trim()).filter(Boolean);
+    return `<div class="ana-box">${parts.map(p=>{
+      const m = p.match(/^【([^】]+)】\s*([\s\S]*)$/);
+      return m ? `<div class="ana-sec"><div class="ana-h">${esc(m[1])}</div><div class="ana-b">${esc(m[2]).trim()}</div></div>`
+               : `<div class="ana-b">${esc(p)}</div>`;
+    }).join("")}</div>`;
+  },
+  renderMatch(text){
+    if(!text) return "";
+    const lines = text.split(/\n/).map(l=>l.trim()).filter(l=>l.includes("|"));
+    if(lines.length < 2) return `<div class="ana-box"><div class="ana-b">${esc(text)}</div></div>`;
+    const cells = l => l.replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+    const head = cells(lines[0]);
+    const body = lines.slice(1).filter(l=>!/^[\s|:\-]+$/.test(l)).map(cells);
+    return `<div class="ana-box" style="overflow-x:auto"><table class="matchtable">
+      <thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead>
+      <tbody>${body.map(r=>`<tr>${head.map((_,i)=>`<td>${esc(r[i]||"")}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table></div>`;
+  },
 
   /* ── 拖拽换状态 / 状态直改（学航海志：变更零摩擦 + 可顺手记日程） ── */
   dragCard(e, id){ e.dataTransfer.setData("text/plain", id); e.dataTransfer.effectAllowed = "move"; },
@@ -1017,6 +1153,60 @@ const AI = {
       document.getElementById("greetSave").style.display = "";
     }catch(e){
       st.textContent = "生成失败："+e.message; st.className = "ai-status err";
+    }
+  },
+
+  /* ── AI 深度分析（学航海志）：面试准备包 + 匹配度分析表，结果存岗位 ── */
+  _anaSt(msg, err){
+    const st = document.getElementById("ana-st"); if(!st) return;
+    st.textContent = msg || ""; st.className = "ai-status" + (err ? " err" : "");
+  },
+  _anaBusy(busy){
+    ["ana-prep-btn","ana-match-btn"].forEach(id=>{
+      const b = document.getElementById(id);
+      if(b){ b.disabled = busy; b.style.opacity = busy ? ".5" : ""; }
+    });
+  },
+  _anaCtx(j){
+    return `岗位：${j.role} @ ${j.company}${j.city?"（"+j.city+"）":""}\nJD 原文：\n${j.jd}\n我的亮点：${this._bio()}\n简历版本：${j.resume||"默认"}${j.notes?"\n备注："+j.notes:""}`;
+  },
+  async prep(jobId){
+    if(!this._check()) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.jd) return;
+    this._anaBusy(true); this._anaSt("AI 生成中…约 10-30 秒，生成完自动保存到岗位");
+    try{
+      const out = await this.chat([
+        { role:"system", content:"你是资深求职教练。只输出内容本身，不要客套开场白和总结，严格按照【】分节格式输出。" },
+        { role:"user", content:
+          this._anaCtx(j) +
+          `\n\n请生成面试准备包，严格按以下四节输出（每节用【】标题）：\n`+
+          `【定制自我介绍】结合 JD 关键词和我的亮点，写一段 120 字内的开场自我介绍\n`+
+          `【JD 关键词】这个岗位最看重的 5-8 个关键词，一行列出\n`+
+          `【预测问题】5 个最可能被问的问题，一行一个，每个后面用「→」接一句答题要点\n`+
+          `【面试前必查】3 条：面试前该查的公司信息/数据/该准备的反问` }
+      ], 1000);
+      STORE.setAnalysis(jobId, "prep", out);
+      UI.openDetail(jobId);
+    }catch(e){
+      this._anaSt("生成失败："+e.message, true); this._anaBusy(false);
+    }
+  },
+  async match(jobId){
+    if(!this._check()) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.jd) return;
+    this._anaBusy(true); this._anaSt("AI 生成中…约 10-30 秒，生成完自动保存到岗位");
+    try{
+      const out = await this.chat([
+        { role:"system", content:"你是资深求职教练。只输出 markdown 表格本身，不要任何开场白和总结。表格第一行是表头，第二行是分隔行。" },
+        { role:"user", content:
+          this._anaCtx(j) +
+          `\n\n请站在面试官视角做匹配度分析，输出 markdown 表格，三列：面试官关注维度 | 我的简历证据 | 隐患与建议。\n`+
+          `要求：4-6 行；「我的简历证据」基于我的亮点写他可能认可的点，没证据就写「简历中未体现」；「隐患与建议」写面试官可能追问什么、我该怎么补，要具体可执行，不写空话。` }
+      ], 1000);
+      STORE.setAnalysis(jobId, "match", out);
+      UI.openDetail(jobId);
+    }catch(e){
+      this._anaSt("生成失败："+e.message, true); this._anaBusy(false);
     }
   },
 };
