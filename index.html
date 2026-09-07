@@ -20,25 +20,27 @@
 -->
 <style>
   :root{
-    /* ── 纸面手账 Paper Ledger · 暖纸 + 墨绿 + 陶土 ── */
-    --paper:#FDFBF7; --paper-2:#FAF6F5; --paper-3:#F2EBE3; --card:#FFFFFF; --header-bg:rgba(253,251,247,.94);
-    --ink:#2D2A26; --ink-mid:#6B655C; --ink-light:#9A938A;
-    --brand:#3E7B5A; --brand-deep:#2F6247; --brand-soft:#E8F1EC;
-    --accent:#C4703A; --accent-deep:#A85B2C; --accent-soft:#FAEDE4;
-    --ok:#3E7B5A; --warn:#B0811D; --bad:#A65D4E; --info:#4A6D8C;
-    --line:rgba(45,42,38,.12); --line-strong:rgba(45,42,38,.20);
+    /* ── UI v2 规范（2026-09-07 定稿）· 暖白底 + 樱花粉唯一强调 ── */
+    --paper:#F5F4F0; --paper-2:#EFEEE9; --paper-3:#EAE8E2; --card:#FFFFFF; --header-bg:rgba(245,244,240,.94);
+    --ink:#3a2a30; --ink-mid:#7a6a72; --ink-light:#9a7a85;
+    --brand:#c2416b; --brand-deep:#a83358; --brand-soft:#fdeef3;
+    --accent:#D4537E; --accent-deep:#b83f66; --accent-soft:#fbe4ec;
+    --ok:#639922; --warn:#BA7517; --bad:#E24B4A; --info:#378ADD;
+    --line:rgba(58,42,48,.12); --line-strong:rgba(58,42,48,.20);
     /* 圆角三级制：卡片 18 / 控件 8 / 药丸全圆 */
     --radius:14px; --radius-card:18px; --radius-btn:8px; --radius-pill:9999px;
     /* 兼容旧名，原有样式自动跟随新主题 */
     --pink:var(--brand); --pink-deep:var(--brand-deep); --pink-bg:var(--paper); --pink-card:var(--paper-3);
   }
   body.dark{
-    --paper:#211E1B; --paper-2:#2A2622; --paper-3:#332E29; --card:#2D2925; --header-bg:rgba(33,30,27,.94);
-    --ink:#EDE8E2; --ink-mid:#B0A79C; --ink-light:#857C72;
-    --brand:#6FA98A; --brand-deep:#4E8A6B; --brand-soft:#2C3B34;
-    --accent:#D98B54; --accent-deep:#B97040; --accent-soft:#3A2E26;
-    --ok:#6FA98A; --warn:#D4A03C; --bad:#C77B6B; --info:#7BA0C4;
-    --line:rgba(237,232,226,.14); --line-strong:rgba(237,232,226,.24);
+    --paper:#232022; --paper-2:#2B2729; --paper-3:#332E31; --card:#2C282B; --header-bg:rgba(35,32,34,.94);
+    --ink:#EFE7EA; --ink-mid:#B5A8AE; --ink-light:#8A7C83;
+    --brand:#E06A90; --brand-deep:#C9537A; --brand-soft:#3A2A31;
+    --accent:#E06A90; --accent-deep:#C9537A; --accent-soft:#3A2A31;
+    --ok:#8CBF55; --warn:#D9A34A; --bad:#E87A78; --info:#6BA5E8;
+    --line:rgba(239,231,234,.14); --line-strong:rgba(239,231,234,.24);
+    /* 别名必须在 body.dark 重定义一次：:root 上的 var() 引用在 html 层就解析了，body 换 --paper 影响不到它们 */
+    --pink:var(--brand); --pink-deep:var(--brand-deep); --pink-bg:var(--paper); --pink-card:var(--paper-3);
   }
   *{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
   body{background:var(--pink-bg);color:var(--ink);min-height:100vh;padding-bottom:60px}
@@ -148,48 +150,51 @@
   .qrow .qt{flex:1}
   @media (max-width:640px){.form-grid{grid-template-columns:1fr}.toolbar input[type=search]{width:100%}}
 
-  /* ══════════ 纸面手账 v4 · Paper Ledger ══════════ */
-  /* A 暖纸底 + 极淡横纹（纸的质感，不抢内容） */
-  body{background:var(--paper);background-image:repeating-linear-gradient(180deg,rgba(45,42,38,.022) 0 1px,transparent 1px 28px)}
+  /* ══════════ UI v2 · Paper Ledger → Warm-white spec (2026-09-07 定稿) ══════════ */
+  /* A 暖白底，无纹理（规范：#F5F4F0 替代纯白，不加装饰底纹） */
 
   /* B·D 三级圆角制度：卡片 18 / 控件 8 / 药丸全圆 */
   .card,.col,.modal,.qitem,.listtable,.calwrap,.stat{border-radius:var(--radius-card)}
   .btn,.cal-nav,input,select,textarea{border-radius:var(--radius-btn)}
   .chip{border-radius:var(--radius-pill)}
 
-  /* E 实心底边按钮：无发光阴影，按下有手感 */
-  .btn{box-shadow:0 2px 0 var(--line-strong)}
-  .btn:hover{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-deep)}
-  .btn:active{transform:translateY(2px);box-shadow:0 0 0 var(--line-strong)}
-  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand);box-shadow:0 2px 0 var(--brand-deep)}
+  /* E 按钮：克制 hover——背景只提一级，不变色不加动画 */
+  .btn{box-shadow:0 1px 0 var(--line-strong)}
+  .btn:hover{background:var(--paper-2)}
+  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
   .btn.primary:hover{background:var(--brand-deep);color:#fff}
-  .btn.primary:active{transform:translateY(2px);box-shadow:0 0 0 var(--brand-deep)}
 
   /* C 状态用色点，不用彩色徽章 */
   .st-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 9px}
   .st-badge{background:none;color:var(--ink-mid);padding:0;display:inline-flex;align-items:center;gap:6px;font-size:12px}
-  .tag{background:var(--paper-3);color:var(--ink-mid)}
-  .tag.ddl-soon{background:#F7E4E0;color:var(--bad)}
-  .tag.ddl-week{background:#F7EDDC;color:var(--warn)}
+  .tag{background:var(--paper-2);color:var(--ink-mid)}
+  .tag.ddl-soon{background:#fbe4ec;color:var(--bad)}
+  .tag.ddl-week{background:#faf0e0;color:var(--warn)}
   .tag.stale{background:var(--accent-soft);color:var(--accent-deep)}
 
-  /* 大数字区 · 首屏焦点（只放 3 个） */
-  .stats{display:flex;gap:14px;padding:16px 20px 2px;flex-wrap:wrap}
-  .stat{background:var(--card);border:1px solid var(--line);padding:14px 22px;min-width:132px;box-shadow:0 2px 0 var(--line)}
+  /* 大数字区 · 首屏唯一焦点（规范：40-48px，只放 3 个） */
+  .stats{display:flex;gap:14px;padding:16px 20px 2px;flex-wrap:wrap;align-items:flex-end}
+  .stat{background:none;border:none;padding:2px 0;min-width:132px;box-shadow:none}
   .stat .lb{font-size:12px;color:var(--ink-mid);margin-bottom:1px}
-  .stat .nm{font-size:42px;font-weight:700;color:var(--brand);line-height:1.06;letter-spacing:-.02em}
-  .stat.hl .nm{color:var(--accent)}
+  .stat .nm{font-size:44px;font-weight:700;color:var(--ink);line-height:1.06;letter-spacing:-.02em}
+  .stat.hl .nm{color:var(--brand)}
   .stat .sub2{font-size:11px;color:var(--ink-light);margin-top:2px}
+  /* 今日焦点行：可点击数字，数据在它该在的位置（非提示条） */
+  .focusline{display:flex;gap:8px;padding:10px 20px 0;flex-wrap:wrap;align-items:center}
+  .focusline .fbtn{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-pill);padding:4px 14px;font-size:12px;color:var(--ink-mid);display:inline-flex;align-items:center;gap:6px}
+  .focusline .fbtn b{font-size:14px;color:var(--brand)}
+  .focusline .fbtn:hover{border-color:var(--brand)}
 
   /* 看板：列固定 272px 横向滚动，绝不压缩 */
   .board{gap:14px;padding:14px 20px 20px}
   .col{min-width:272px;flex:0 0 272px;background:var(--paper-2);border:1px solid var(--line);padding:12px}
-  .col h3{font-size:13px;margin-bottom:10px;letter-spacing:.01em}
-  .col h3 .dot{width:9px;height:9px}
+  .col h3{font-size:13px;margin:0 -12px 10px;padding:8px 14px;letter-spacing:.01em;background:var(--stc-soft,transparent);border-top:2px solid var(--stc);border-bottom:1px solid var(--line)}
+  .col h3 .dot{display:none}
+  .col h3 .cnt{color:var(--stc);font-weight:600}
 
-  /* 卡片：左侧 3px 状态色条 + 悬停轻浮 */
-  .card{border:1px solid var(--line);border-left:3px solid var(--st,var(--ink-light));padding:11px 13px;margin-bottom:9px;transition:transform .14s,border-color .14s,box-shadow .14s}
-  .card:hover{transform:translateY(-2px);border-color:var(--brand);border-left-color:var(--st,var(--brand));box-shadow:0 6px 16px rgba(45,42,38,.10)}
+  /* 卡片：左侧 3px 状态色条 + hover 背景提一级（不加浮起动画） */
+  .card{border:1px solid var(--line);border-left:3px solid var(--st,var(--ink-light));padding:11px 13px;margin-bottom:9px;transition:border-color .14s,background .14s}
+  .card:hover{background:var(--brand-soft);border-color:var(--line-strong);border-left-color:var(--st,var(--brand))}
   .card .co{font-size:14px;font-weight:600;letter-spacing:-.01em;padding-right:14px}
   .card .role{font-size:12.5px;color:var(--ink-mid);margin:1px 0 7px}
   .card .next{border-top:1px dashed var(--line-strong)}
@@ -204,10 +209,10 @@
 
   /* 头部等级条（游戏化，静默常驻） */
   .lvbar{display:flex;align-items:center;gap:10px;padding:8px 20px;background:var(--paper-2);border-bottom:1px solid var(--line);font-size:12px;flex-wrap:wrap}
-  .lvbar .lv{background:var(--brand);color:#fff;border-radius:var(--radius-pill);padding:2px 10px;font-weight:600;font-size:12px;white-space:nowrap}
+  .lvbar .lv{border:1px solid var(--line);color:var(--ink-mid);border-radius:var(--radius-pill);padding:2px 10px;font-weight:600;font-size:12px;white-space:nowrap}
   .lvbar .lvname{color:var(--brand-deep);font-weight:600;white-space:nowrap}
-  .lvbar .track{flex:1;min-width:120px;height:8px;background:var(--paper-3);border-radius:var(--radius-pill);overflow:hidden}
-  .lvbar .fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:var(--radius-pill);transition:width .4s}
+  .lvbar .track{flex:1;min-width:120px;height:6px;background:var(--paper-3);border-radius:var(--radius-pill);overflow:hidden}
+  .lvbar .fill{height:100%;background:var(--brand);border-radius:var(--radius-pill);transition:width .4s}
   .lvbar .en{color:var(--accent-deep);font-weight:600;white-space:nowrap}
 
   /* 状态下拉（列表视图直改） */
@@ -355,12 +360,12 @@ const CONFIG = {
     glm:      { name:"智谱 glm-4-flash（有免费额度）", base:"https://open.bigmodel.cn/api/paas/v4", model:"glm-4-flash" },
   },
   STAGES: [
-    { id:"pool",      name:"待投递",   color:"#8A8578", icon:"📋" },
-    { id:"applied",   name:"已投递",   color:"#4A6D8C", icon:"📮" },
-    { id:"test",      name:"测评/笔试", color:"#C97B4A", icon:"✍️" },
-    { id:"interview", name:"面试中",   color:"#3E7B5A", icon:"🎤" },
-    { id:"offer",     name:"Offer",   color:"#C9A227", icon:"🏅" },
-    { id:"rejected",  name:"挂了",     color:"#A65D4E", icon:"🕊️" },
+    { id:"pool",      name:"待投递",   color:"#888780", icon:"📋" },
+    { id:"applied",   name:"已投递",   color:"#378ADD", icon:"📮" },
+    { id:"test",      name:"测评/笔试", color:"#BA7517", icon:"✍️" },
+    { id:"interview", name:"面试中",   color:"#7F77DD", icon:"🎤" },
+    { id:"offer",     name:"Offer",   color:"#639922", icon:"🏅" },
+    { id:"rejected",  name:"挂了",     color:"#E24B4A", icon:"🕊️" },
   ],
   // 表单字段：type 支持 text/select/date/textarea；span=2 占满一行
   FIELDS: [
@@ -490,7 +495,7 @@ function staleTag(j){
 function isoDay(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 // 月历事件聚合（纯函数）：DDL 红 / 投递 蓝 / 面试复盘 粉
 const CAL = {
-  TYPES: { ddl:{label:"DDL", color:"#A65D4E"}, applied:{label:"投递", color:"#4A6D8C"}, review:{label:"复盘", color:"#C97B4A"}, event:{label:"日程", color:"#3E7B5A"} },
+  TYPES: { ddl:{label:"DDL", color:"#E24B4A"}, applied:{label:"投递", color:"#378ADD"}, review:{label:"复盘", color:"#BA7517"}, event:{label:"日程", color:"#7F77DD"} },
   eventsByDate(jobs){
     const map = {};
     const put = (date,type,jobId,extra,time)=>{ if(!date) return;
@@ -514,6 +519,13 @@ const VIEWS = {
 
   visibleJobs(){
     const f = this.filter;
+    if(["__pool","__ddl","__stale"].includes(f.stage)) return STORE.data.jobs.filter(j=>{
+      if(f.stage==="__pool" && j.status!=="pool") return false;
+      if(f.stage==="__stale" && staleTag(j)==="") return false;
+      if(f.stage==="__ddl"){ const d=daysUntil(j.deadline); if(j.status==="rejected"||d===null||d<0||d>7) return false; }
+      if(f.q && !(j.company+j.role+(j.notes||"")).toLowerCase().includes(f.q.toLowerCase())) return false;
+      return true;
+    });
     return STORE.data.jobs.filter(j=>{
       if(f.stage!=="all" && j.status!==f.stage) return false;
       if(f.q && !(j.company+j.role+(j.notes||"")).toLowerCase().includes(f.q.toLowerCase())) return false;
@@ -522,13 +534,8 @@ const VIEWS = {
   },
 
   funnel(){
-    // v4：各状态数量已由大数字区（stats）承担，漏斗只保留转化率一行，避免信息重复
-    const jobs = STORE.data.jobs;
-    const cnt = id => jobs.filter(j=>j.status===id).length;
-    const applied = cnt("applied")+cnt("test")+cnt("interview")+cnt("offer")+cnt("rejected");
-    const rate = (a,b)=> b? `→ ${Math.round(a/b*100)}%` : "";
-    if(!applied) return "";
-    return `<div class="funnel"><span class="frate">转化：投→面 ${rate(cnt("interview"),applied)} · 面→offer ${rate(cnt("offer"),cnt("interview"))} · 投出 ${applied} 家</span></div>`;
+    // v6：转化率已并入大数字区下的今日焦点行，此处保留空实现以兼容旧调用
+    return "";
   },
 
   stats(){
@@ -537,12 +544,18 @@ const VIEWS = {
     const applied = js.filter(j=>j.status!=="pool").length;
     const iv = n("interview"), of = n("offer");
     const stale = js.filter(j=>staleTag(j)!=="").length;
+    const ddlSoon = js.filter(j=>{ const d=daysUntil(j.deadline); return j.status!=="rejected" && d!==null && d>=0 && d<=7; }).length;
     const cell = (lb,nm,sub,hl) => `<div class="stat${hl?" hl":""}"><div class="lb">${lb}</div><div class="nm">${nm}</div><div class="sub2">${sub}</div></div>`;
+    const fb = (lb,nm,filter) => filter ? `<button class="fbtn" onclick="VIEWS.filter.stage=VIEWS.filter.stage==='${filter}'?'all':'${filter}';renderMain()">${lb} <b>${nm}</b></button>` : "";
     return `<div class="stats">
       ${cell("已投递",applied,`共 ${js.length} 个岗位`,false)}
       ${cell("面试中",iv,iv?"正在推进":"暂无",iv>0)}
       ${cell("Offer",of,of?"有回音了":"继续投",of>0)}
-      ${stale?cell("需跟进",stale,`超 ${CONFIG.STALE_DAYS} 天无进展`,true):""}
+    </div>
+    <div class="focusline">
+      ${fb("待投递",n("pool"),"__pool")}${fb("DDL 7 天内",ddlSoon,"__ddl")}${fb("需跟进",stale,"__stale")}
+      <span style="flex:1"></span>
+      <span style="font-size:11px;color:var(--ink-light)">转化：投→面 ${(()=>{const a=applied;return a?Math.round(iv/a*100)+"%":"—"})()} · 面→offer ${iv?Math.round(of/iv*100)+"%":"—"}</span>
     </div>`;
   },
 
@@ -561,8 +574,8 @@ const VIEWS = {
     const vis = this.visibleJobs();
     const cols = CONFIG.STAGES.map(s=>{
       const cards = vis.filter(j=>j.status===s.id).map(j=>this.card(j)).join("");
-      return `<div class="col" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');UI.dropCard(event,'${s.id}')">
-        <h3><span class="dot" style="background:${s.color}"></span>${s.icon||""} ${s.name}
+      return `<div class="col" style="--stc:${s.color};--stc-soft:${s.color}1A" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');UI.dropCard(event,'${s.id}')">
+        <h3>${s.icon||""} ${s.name}
           <span class="cnt">${vis.filter(j=>j.status===s.id).length}</span></h3>
         ${cards || ""}
         <button class="add" onclick="UI.openForm(null,'${s.id}')">＋ 加到「${s.name}」</button>
@@ -614,9 +627,10 @@ const VIEWS = {
     STORE.data.jobs.forEach(j=>(j.reviews||[]).forEach((r,ri)=>
       (r.questions||[]).forEach((q,qi)=>items.push({q, co:j.company, round:r.round||"", date:r.date||fmtDate(r.at), jobId:j.id, ri, qi, advice:(r.advice||{})[q]||""}))));
     this._qitems = items;
+    items.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
     if(!items.length) return `<div class="empty" style="margin-top:40px">
-      <div style="font-size:34px;margin-bottom:8px">🗂️</div><b>题库还是空的</b>
-      <div style="font-size:12px;color:var(--ink-light);margin-top:6px">面试完打开对应岗位 → 「面试复盘」→ 添加复盘<br>被问倒的题会自动汇到这里，下次面试前过一遍</div></div>`;
+      <b>题库还是空的</b>
+      <div style="font-size:12px;color:var(--ink-light);margin-top:6px">面试完在岗位详情里「＋ 添加复盘」，被问倒的题会汇到这里</div></div>`;
     return `<div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">共 ${items.length} 道被问过的题 · 下次面试前按公司过一遍 · 点「思路」让 AI 给答题要点</div>` +
       items.map((it,i)=>`<div class="qitem"><div>${esc(it.q)}</div>
         ${it.advice? `<div class="ai-box" id="qb-adv-${i}">${esc(it.advice)}</div>`:""}
@@ -690,14 +704,13 @@ function renderMain(){
   $("#levelBar").innerHTML = VIEWS.levelBar();   // 等级条常驻（含空态）
   // 空态引导：首次打开不显示空白看板，给三条开始路径（零摩擦）
   if(!STORE.data.jobs.length){
-    $("#main").innerHTML = `<div class="empty" style="margin-top:60px">
-      <div style="font-size:40px;margin-bottom:10px">🎯</div>
-      <b style="font-size:16px">看板是空的，三种开始方式</b>
-      <div style="margin:18px auto 8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn primary" onclick="UI.openForm()">＋ 添加第一个岗位</button>
-        <button class="btn" onclick="DEMO.load()">载入演示数据看看</button>
+    $("#main").innerHTML = `<div class="empty" style="margin-top:80px">
+      <b style="font-size:16px">看板是空的</b>
+      <div style="margin:16px auto 8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" onclick="UI.openForm()">＋ 添加岗位</button>
+        <button class="btn" onclick="DEMO.load()">载入演示数据</button>
       </div>
-      <div style="margin-top:12px">已有真实数据包（my-data.json）？点右上角「导入」选它，一键载入你的投递记录</div>
+      <div style="font-size:12px;color:var(--ink-light);margin-top:8px">有备份 JSON？右上角 ⋯ › 导入</div>
     </div>`;
     return;
   }
@@ -705,15 +718,12 @@ function renderMain(){
     .concat(CONFIG.STAGES.map(s=>
       `<button class="chip ${f.stage===s.id?'on':''}" onclick="VIEWS.filter.stage='${s.id}';renderMain()">${s.icon} ${s.name}</button>`))
     .join("");
-  const staleCount = STORE.data.jobs.filter(j=>staleTag(j)!=="").length;
-  const staleChip = staleCount ? `<button class="chip warn-dot ${f.stage==='__stale'?'on':''}" onclick="VIEWS.filter.stage=VIEWS.filter.stage==='__stale'?'all':'__stale';renderMain()">📣 需跟进 ${staleCount}</button>` : "";
   $("#main").innerHTML =
     VIEWS.stats() +
-    VIEWS.funnel() +
     `<div class="toolbar">
       <input type="search" placeholder="搜公司 / 岗位 / 备注…" value="${esc(f.q)}"
-        oninput="VIEWS.filter.q=this.value;renderResults()" style="caret-color:var(--pink)">
-      ${chips}${staleChip}
+        oninput="VIEWS.filter.q=this.value;renderResults()" style="caret-color:var(--brand)">
+      ${chips}
       <span style="margin-left:auto"></span>
       <button class="btn small" onclick="VIEWS.filter.view='board';renderMain()">看板</button>
       <button class="btn small" onclick="VIEWS.filter.view='table';renderMain()">列表</button>
@@ -734,16 +744,7 @@ function renderResults(){
                  : VIEWS.filter.view==="news" ? VIEWS.news()
                  : VIEWS.board();
 }
-// 「需跟进」过滤：在 visibleJobs 里特判
-const _origVisible = VIEWS.visibleJobs;
-VIEWS.visibleJobs = function(){
-  if(VIEWS.filter.stage==="__stale"){
-    const f = VIEWS.filter;
-    return STORE.data.jobs.filter(j=> staleTag(j)!==""
-      && (!f.q || (j.company+j.role+(j.notes||"")).toLowerCase().includes(f.q.toLowerCase())));
-  }
-  return _origVisible.call(VIEWS);
-};
+/* 「需跟进 / 待投递 / DDL」过滤已统一并入 visibleJobs */
 
 /* ═══════════ ⑤ UI 交互（表单 / 详情） ═══════════ */
 const UI = {
