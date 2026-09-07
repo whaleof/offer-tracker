@@ -285,6 +285,47 @@
   .rv-co{border:1px solid var(--line);border-radius:var(--radius-pill);padding:3px 11px;font-size:12px;background:none;cursor:pointer;color:var(--ink-mid)}
   .rv-co:hover{border-color:var(--brand);color:var(--brand)}
   .rv-co i{font-style:normal;margin-left:5px;font-size:11px}
+
+  /* ══════════ v9 · 模块导航（学航海志：投递管理/面试备战/画像） ══════════ */
+  .mainnav{display:flex;gap:8px;padding:12px 20px 0;flex-wrap:wrap}
+  .mainnav button{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-pill);padding:8px 20px;font-size:13.5px;font-weight:600;color:var(--ink-mid)}
+  .mainnav button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .mainnav button:not(.on):hover{border-color:var(--brand);color:var(--brand)}
+  /* 面试备战：功能卡网格，一卡一功能 */
+  .prepwrap{max-width:1080px;margin:0 auto;padding:12px 20px}
+  .prepjob{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:10px 16px;margin-bottom:12px;flex-wrap:wrap}
+  .prepjob select{max-width:340px;width:auto;font-size:13px}
+  .prepgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:860px){.prepgrid{grid-template-columns:1fr}}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:16px 18px}
+  .pcard h3{font-size:14px;color:var(--ink);display:flex;align-items:center;gap:7px;margin-bottom:4px}
+  .pcard .pdesc{font-size:12px;color:var(--ink-light);margin-bottom:10px}
+  .pcard.full{grid-column:1/-1}
+  /* 闪卡 */
+  .flash{cursor:pointer;user-select:none}
+  .flash .fc{background:var(--brand-soft);border:1px solid var(--line);border-radius:var(--radius-card);min-height:150px;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .flash .fc .fcat{font-size:11px;font-weight:700;color:var(--brand)}
+  .flash .fc .fq{font-size:15px;font-weight:600;color:var(--ink);line-height:1.7}
+  .flash .fc .fa{font-size:13px;color:var(--ink-mid);line-height:1.85;white-space:pre-wrap}
+  .flash .fc .fhint{font-size:11px;color:var(--ink-light);text-align:right}
+  .flashnav{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+  .flashnav .fi{font-size:12px;color:var(--ink-light);margin-left:auto}
+  /* 漏斗 */
+  .fsteps{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+  .fstep{display:flex;align-items:center;gap:10px}
+  .fstep .fbar2{height:34px;border-radius:8px;display:flex;align-items:center;padding:0 12px;font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;min-width:60px}
+  .fstep .flb{font-size:12px;color:var(--ink-mid);white-space:nowrap}
+  .frate2{font-size:11.5px;color:var(--ink-light);margin:0 0 0 4px}
+  .fweak{margin-top:8px;font-size:12.5px;background:#fbe4ec;color:var(--bad);border-radius:8px;padding:7px 11px;display:inline-block}
+  /* 画像页 */
+  .mewrap{max-width:1080px;margin:0 auto;padding:12px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:860px){.mewrap{grid-template-columns:1fr}}
+  .mewrap .pcard .bignum{font-size:42px;font-weight:700;color:var(--brand);line-height:1.1}
+  .mestats{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}
+  .mestats div{font-size:12px;color:var(--ink-mid)}
+  .mestats b{display:block;font-size:22px;color:var(--ink)}
+  .skillchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .skillchips span{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius-pill);padding:3px 12px;font-size:12px;color:var(--ink-mid)}
 </style>
 </head>
 <body>
@@ -426,6 +467,32 @@ const CONFIG = {
   ],
 };
 const stageOf = id => CONFIG.STAGES.find(s=>s.id===id) || CONFIG.STAGES[0];
+
+/* 内置高频面试题库（闪卡用）：正面题目 / 背面回答方向。校招产品·AI产品方向通用 */
+const QBANK_SEED = [
+  { c:"开场",   q:"请做一个自我介绍（2 分钟版）", a:"三段式：①身份一句（学校+方向）②一个最能打的项目：背景→你做了什么→结果数字 ③为什么匹配这个岗位一句收尾。控制在 250 字，背熟但别像背书。" },
+  { c:"项目",   q:"介绍你最有代表性的项目，深挖一个关键决策", a:"用 STAR，但重点放在「决策」：当时有哪几条路→你依据什么选了这条→被推翻过吗→后来怎么迭代。有推翻案例=有真实决策深度，比一帆风顺更可信。" },
+  { c:"项目",   q:"这个项目里你遇到的最大困难是什么？", a:"选「真实的坎」不要选「 spun 困难」：说清现象→你当时怎么定位原因→试了什么→最终怎么解决→沉淀了什么方法论。结尾给一句「下次遇到同类问题我会…」。" },
+  { c:"项目",   q:"如果重做一遍这个项目，你会改什么？", a:"诚实给 1-2 个真改进点（说明你有复盘能力），并解释为什么当时没这么做（约束条件）。忌说「我觉得已经很好了」。" },
+  { c:"产品",   q:"你怎么理解产品经理这个角色？", a:"别背定义。说你的版本：PM 是「对结果负责的人」——上接业务目标、下接资源排期、中间用需求排序和验证把不确定性变成确定性。可举你项目里一次取舍。" },
+  { c:"产品",   q:"给你一个新功能，怎么判断该不该做？", a:"给框架：①价值：解决谁的什么问题，频率×痛点强度 ②成本：开发/维护/风险 ③替代方案：不做会怎样 ④验证：最小成本试错方式（灰度/假门）。收尾强调「先小后大」。" },
+  { c:"产品",   q:"需求优先级怎么排？", a:"报框架不背名词：价值（频率/痛点/战略权重）× 紧急（依赖/窗口期）÷ 成本，再加「依赖关系一票优先」。举例说明你真的排过。" },
+  { c:"产品",   q:"数据下跌你怎么排查？", a:"先校准（是真是假：埋点/统计口径）→拆维度（渠道/版本/人群/时段）→定位突变点→归因（内部改动？外部事件？）→给动作。展示排查顺序感比结论重要。" },
+  { c:"AI产品", q:"AI 产品的幻觉问题你怎么控制？", a:"分层答：数据层（来源可信度分级）→生成层（prompt 约束+few-shot）→产品层（关键信息标注来源、可回溯）→兜底（敏感场景 human-in-the-loop）。有实践案例就带一句。" },
+  { c:"AI产品", q:"AI 产品和传统产品的核心区别是什么？", a:"三个不确定：输出不确定（要做质检与兜底）、成本不确定（token 监控+降级链）、用户预期不确定（管理期望，别承诺 100% 对）。你的工作台里就有实例可讲。" },
+  { c:"AI产品", q:"你怎么看大模型会淘汰哪些产品经理？", a:"不接「淘汰」的焦虑陷阱。答：淘汰的是只会画原型写文档的；留下的是能定义问题、评估模型输出质量、设计人机协作流程的。顺手带出你用 AI 干活的效率证据。" },
+  { c:"AI产品", q:"如果让你给 XX 产品加一个 AI 功能，你加什么？", a:"先反问场景再答（面试官常给模糊题考你澄清习惯）：这个产品用户最高频的痛点是什么→AI 是否是比传统方案好 10 倍的解法→成本可控吗。忌上来就「加个 AI 客服」。" },
+  { c:"行为",   q:"你的缺点是什么？", a:"选「真实但可管理」的：如「容易在细节上过度打磨，现在用时间盒控制」。结构：缺点→意识到的影响→正在用的改进机制。忌「我太追求完美」这种伪缺点。" },
+  { c:"行为",   q:"说一次你和别人意见不一致的经历", a:"选工作/项目场景：对方立场→你的依据（数据/用户视角）→怎么沟通的→结果如何。重点展示「对事不对人+用证据说话」，别选成输赢故事。" },
+  { c:"行为",   q:"你为什么想来我们公司/这个岗位？", a:"三层：①我对这个业务的具体兴趣（说细节证明做过功课）②我的能力与岗位 JD 的具体匹配点 ③这个阶段我能贡献什么+想学什么。忌泛泛「平台大/行业好」。" },
+  { c:"行为",   q:"你还有其他 offer 吗？", a:"诚实但不施压：有就说在流程中（体现竞争力），说明你最看重这家什么（成长性/业务方向），表达优先级。没有就说「目前贵司是第一优先，在集中准备」。" },
+  { c:"情景",   q:"开发说需求做不完，要砍功能，你怎么办？", a:"不吵架不全部让步：①一起评估：哪部分是核心价值不可砍、哪部分可以降级（分期/降配）②给优先级依据 ③对齐目标后向上同步风险。展示「用优先级解决冲突」。" },
+  { c:"情景",   q:"上线前发现一个非致命 bug，发还是不发？", a:"给决策框架不拍脑袋：影响面（多少用户/资损/体验）×修复成本×上线性质。默认：影响核心体验或数据就延，边缘问题先上+热修。展示风险量化思维。" },
+  { c:"情景",   q:"老板的需求你不认同，怎么办？", a:"先执行理解：问清背景和目标（也许你有信息差）→带着数据和替代方案沟通一次→若仍坚持，执行中保留验证数据。展示「先对齐再执行」而非硬顶。" },
+  { c:"反问",   q:"你有什么想问我们的？（反问环节）", a:"准备 2-3 个真问题：①这个岗位前 3 个月做什么算成功 ②团队目前最大的挑战 ③新人成长路径。忌问薪资福利（HR 面再问）、忌不问（显得没兴趣）。" },
+  { c:"压力",   q:"你的简历看起来没有相关实习，为什么我要招你？", a:"不辩解、直接给证据：①你自主做过什么（项目/作品集，讲结果数字）②学习能力证据（用 AI 协作快速补齐技能）③你对这个岗位的准备（JD 逐条对应）。态度：自信不卑不亢。" },
+  { c:"压力",   q:"如果这个校招你最终没拿到 offer，你怎么办？", a:"考的是抗压和规划：坦然承认结果可能不好→说明 Plan B（继续投/补技能/小公司曲线）→强调方向不变。忌「没想过」或崩溃式回答。" },
+];
 
 /* ═══════════ ② STORE 数据层（唯一入口，别绕过它改数据） ═══════════ */
 const STORE = {
@@ -587,6 +654,133 @@ const VIEWS = {
   filter: { q:"", stage:"all" },
   calMonth: null,   // "2026-09"，null=当月
   calSel: null,     // 选中的日期 "2026-09-10"
+  module: "jobs",   // v9 顶层模块：jobs=投递管理 / prep=面试备战 / me=我的画像
+  prepJobId: null,  // 面试备战页选中的岗位
+  flash: { i:0, flip:false },
+  _flashAI: "",
+
+  funnelChart(){
+    // 漏斗：按状态历史统计「曾经到达过该阶段」的岗位数，宽度按占比，标最弱转化
+    const js = STORE.data.jobs;
+    const entered = id => js.filter(x=>(x.history||[]).some(h=>h.status===id)).length;
+    const steps = ["applied","test","interview","offer"].map(id=>({ name:stageOf(id).name, n:entered(id), color:stageOf(id).color }));
+    const max = Math.max(steps[0].n, 1);
+    let weak = null;
+    let html = `<div class="fsteps">`;
+    steps.forEach((s,i)=>{
+      html += `<div class="fstep"><div class="fbar2" style="width:${Math.max(8, s.n/max*66)}%;background:${s.color}">${s.n}</div><span class="flb">${s.name}</span></div>`;
+      if(i<steps.length-1){
+        const r = s.n ? steps[i+1].n/s.n : null;
+        if(r!==null){
+          html += `<div class="frate2">└ 转化 ${Math.round(r*100)}%</div>`;
+          if(s.n>0 && (weak===null || r<weak.r)) weak = { from:s.name, to:steps[i+1].name, r };
+        }
+      }
+    });
+    html += `</div>`;
+    if(weak && weak.r<1) html += `<div class="fweak">最薄弱：${weak.from} → ${weak.to} 只有 ${Math.round(weak.r*100)}% —— 下一步重点补这里</div>`;
+    else html += `<div style="font-size:12px;color:var(--ink-light);margin-top:8px">还没有分层转化数据，先投起来</div>`;
+    return html;
+  },
+
+  prepModule(){
+    const js = STORE.data.jobs;
+    const j = js.find(x=>x.id===this.prepJobId) || null;
+    const jobSel = `<div class="prepjob">
+      <span style="font-size:12px;color:var(--ink-light)">当前岗位</span>
+      <select onchange="VIEWS.prepJobId=this.value||null;VIEWS.flash.flip=false;renderMain()">
+        <option value="">通用（不绑定岗位）</option>
+        ${js.map(x=>`<option value="${x.id}" ${this.prepJobId===x.id?"selected":""}>${esc(x.company)} · ${esc(x.role)}</option>`).join("")}
+      </select>
+      ${j?`<button class="btn small" onclick="UI.openDetail('${j.id}')">打开岗位详情</button>`:""}
+    </div>`;
+    // ① 闪卡
+    const fl = this.flash;
+    const card = QBANK_SEED[fl.i];
+    const flashHtml = `<div class="pcard full">
+      <h3>🃏 面试闪卡</h3>
+      <div class="pdesc">内置 ${QBANK_SEED.length} 道校招高频题 · 点卡片翻转看回答方向 · 选岗位后可让 AI 按你的亮点定制</div>
+      <div class="flash" onclick="VIEWS.flash.flip=!VIEWS.flash.flip;renderMain()">
+        <div class="fc">
+          <span class="fcat">${card.c}</span>
+          ${fl.flip ? `<div class="fa">${esc(card.a)}</div>` : `<div class="fq">${esc(card.q)}</div>`}
+          <span class="fhint">${fl.flip?"点我翻回题目":"点我翻转看回答方向"}</span>
+        </div>
+      </div>
+      ${this._flashAI}
+      <div class="flashnav">
+        <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+${QBANK_SEED.length}-1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">‹ 上一题</button>
+        <button class="btn small" onclick="VIEWS.flash.i=(VIEWS.flash.i+1)%${QBANK_SEED.length};VIEWS.flash.flip=false;VIEWS._flashAI='';renderMain()">下一题 ›</button>
+        <button class="btn small" onclick="AI.flashAdvice(VIEWS.flash.i)">AI 按我的亮点定制答题方向</button>
+        <span class="fi">${fl.i+1} / ${QBANK_SEED.length}</span>
+      </div>
+    </div>`;
+    // ② 深度分析
+    const hasAna = j && j.analysis && (j.analysis.prep || j.analysis.match);
+    const ana = j ? `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <button class="btn small" onclick="AI.prep('${j.id}',true)">${j.analysis&&j.analysis.prep?"重新生成面试准备包":"生成面试准备包"}</button>
+        <button class="btn small" onclick="AI.match('${j.id}',true)">${j.analysis&&j.analysis.match?"重新生成匹配度分析":"生成匹配度分析"}</button>
+      </div>
+      <div class="ai-status" id="ana-st"></div>
+      ${hasAna ? (j.analysis.prep?UI.renderPrep(j.analysis.prep):"") + (j.analysis.match?UI.renderMatch(j.analysis.match):"")
+        : `<div style="font-size:12px;color:var(--ink-light)">生成后自动保存。要更准就先去岗位详情把 JD 原文粘进「JD 原文」字段（编辑里）</div>`}`
+      : `<div style="font-size:12px;color:var(--ink-light)">先在上面选一个岗位，AI 才知道帮你分析谁</div>`;
+    // ③ 复盘
+    const rvN = j ? (j.reviews||[]).reduce((s,r)=>s+(r.questions||[]).length,0)
+                  : js.reduce((s,x)=>s+(x.reviews||[]).reduce((a,r)=>a+(r.questions||[]).length,0),0);
+    // ④ 打招呼
+    const greet = j ? `
+      <button class="btn small" onclick="AI.greet2('${j.id}')">生成打招呼语</button>
+      <textarea id="greet2-out" rows="4" style="margin-top:8px;font-size:13px;line-height:1.7" placeholder="点生成 → 满意就复制去 BOSS 粘贴">${esc(j.greeting||"")}</textarea>
+      <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center">
+        <button class="btn small" onclick="IO.copyGreet2()">复制</button>
+        <button class="btn small" onclick="STORE.update('${j.id}',{greeting:document.getElementById('greet2-out').value.trim()});renderMain()">保存到岗位</button>
+        <span class="ai-status" id="greet2-st" style="margin:0"></span>
+      </div>`
+      : `<div style="font-size:12px;color:var(--ink-light)">选一个岗位后生成，话术会带岗位 JD 和你的亮点</div>`;
+    return jobSel + `<div class="prepgrid">
+      ${flashHtml}
+      <div class="pcard"><h3>🔬 深度分析</h3><div class="pdesc">面试准备包 + 匹配度分析表（AI 基于 JD 原文和你的亮点）</div>${ana}</div>
+      <div class="pcard"><h3>📊 漏斗分析</h3><div class="pdesc">看清从投递到 Offer 的转化，定位下一步重点</div>${this.funnelChart()}</div>
+      <div class="pcard"><h3>💬 BOSS 打招呼</h3><div class="pdesc">有针对性的开场话术，直接复制去用</div>${greet}</div>
+      <div class="pcard"><h3>📝 面试复盘 & 题库</h3><div class="pdesc">面试完记被问的题，自动进题库，被问倒的 AI 给思路</div>
+        <div style="font-size:13px">已积累 <b>${rvN}</b> 道被问过的题</div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn small" onclick="${j?`UI.openDetail('${j.id}')`:`alert('先在上面选一个岗位')`}">＋ 添加复盘</button>
+          <button class="btn small" onclick="VIEWS.module='jobs';VIEWS.filter.view='qbank';renderMain()">看题库 →</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  mePage(){
+    const js = STORE.data.jobs;
+    const l = STORE.level();
+    const applied = js.filter(x=>x.status!=="pool").length;
+    const iv = js.filter(x=>x.status==="interview").length;
+    const of = js.filter(x=>x.status==="offer").length;
+    const rvN = js.reduce((s,x)=>s+(x.reviews||[]).reduce((a,r)=>a+(r.questions||[]).length,0),0);
+    const first = js.reduce((m,x)=>x.createdAt && x.createdAt<m ? x.createdAt : m, "9999-12-31");
+    const days = first==="9999-12-31" ? 0 : Math.max(1, Math.ceil((Date.now()-new Date(first))/864e5));
+    const bio = (AI.cfg && AI.cfg.bio) || "";
+    return `
+      <div class="pcard"><h3>⚡ 等级</h3><div class="pdesc">添加、推进、复盘都涨积分——这是你的作战记录</div>
+        <div class="bignum">Lv.${l.lv}</div>
+        <div style="font-size:13px;color:var(--ink-mid)">${l.name} · ⚡ ${l.p} 积分</div>
+        <div style="margin-top:10px;height:8px;background:var(--paper-3);border-radius:99px;overflow:hidden"><div style="height:100%;width:${l.pct}%;background:var(--brand)"></div></div>
+        <div style="font-size:11px;color:var(--ink-light);margin-top:4px">${l.next?`再 ${l.next.at-l.p} 分升 ${l.next.name}`:"已满级"}</div>
+      </div>
+      <div class="pcard"><h3>📈 战况</h3><div class="pdesc">${days?`开战 ${days} 天以来`:"添加岗位后开始统计"}</div>
+        <div class="mestats">
+          <div><b>${js.length}</b>岗位</div><div><b>${applied}</b>已投</div><div><b>${iv}</b>面试中</div><div><b>${of}</b>Offer</div><div><b>${rvN}</b>复盘题</div>
+        </div>
+      </div>
+      <div class="pcard full"><h3>🎯 我的定位</h3><div class="pdesc">AI 生成打招呼语和答题方向时拿它当背景，写得越具体越准</div>
+        ${bio?`<div style="font-size:13.5px;line-height:1.9">${esc(bio)}</div>`:`<div style="font-size:13px;color:var(--ink-light)">还没填写</div>`}
+        <button class="btn small" style="margin-top:10px" onclick="UI.openAISettings()">编辑我的亮点</button>
+      </div>`;
+  },
 
   visibleJobs(){
     const f = this.filter;
@@ -859,9 +1053,24 @@ function renderMain(){
       <div style="margin:16px auto 8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="btn primary" onclick="UI.openForm()">＋ 添加岗位</button>
         <button class="btn" onclick="DEMO.load()">载入演示数据</button>
+        <button class="btn" onclick="VIEWS.module='prep';renderMain()">先去面试备战逛逛</button>
       </div>
       <div style="font-size:12px;color:var(--ink-light);margin-top:8px">有备份 JSON？右上角 ⋯ › 导入</div>
     </div>`;
+    return;
+  }
+  // v9 顶层模块导航（学航海志：投递管理 / 面试备战 / 画像）
+  const nav = `<div class="mainnav">
+    <button class="${VIEWS.module==="jobs"?"on":""}" onclick="VIEWS.module='jobs';renderMain()">📮 投递管理</button>
+    <button class="${VIEWS.module==="prep"?"on":""}" onclick="VIEWS.module='prep';renderMain()">🎯 面试备战</button>
+    <button class="${VIEWS.module==="me"?"on":""}" onclick="VIEWS.module='me';renderMain()">👤 我的画像</button>
+  </div>`;
+  if(VIEWS.module==="prep"){
+    $("#main").innerHTML = nav + `<div class="prepwrap">${VIEWS.prepModule()}</div>`;
+    return;
+  }
+  if(VIEWS.module==="me"){
+    $("#main").innerHTML = nav + `<div class="mewrap">${VIEWS.mePage()}</div>`;
     return;
   }
   const chips = [`<button class="chip ${f.stage==='all'?'on':''}" onclick="VIEWS.filter.stage='all';renderMain()">🎯 全部</button>`]
@@ -869,6 +1078,7 @@ function renderMain(){
       `<button class="chip ${f.stage===s.id?'on':''}" onclick="VIEWS.filter.stage='${s.id}';renderMain()">${s.icon} ${s.name}</button>`))
     .join("");
   $("#main").innerHTML =
+    nav +
     VIEWS.stats() +
     VIEWS.todayCard() +
     `<div class="toolbar">
@@ -1209,12 +1419,12 @@ const AI = {
   },
 
   // BOSS 打招呼语生成
-  async greet(jobId){
+  async greet(jobId, outId="greetOut", stId="greet-st"){
     if(!this._check()) return;
     const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
-    const st = document.getElementById("greet-st");
-    const out = document.getElementById("greetOut");
-    st.textContent = "AI 生成中…"; st.className = "ai-status";
+    const st = document.getElementById(stId);
+    const out = document.getElementById(outId);
+    if(st){ st.textContent = "AI 生成中…"; st.className = "ai-status"; }
     try{
       const text = await this.chat([
         { role:"system", content:"你是求职助手。只输出打招呼语本身，不要引号、不要解释。" },
@@ -1222,11 +1432,31 @@ const AI = {
           `为 BOSS 直聘写一条给招聘者的打招呼语。\n岗位：${j.role} @ ${j.company}${j.city?"（"+j.city+"）":""}\n我的亮点：${this._bio()}\n简历版本：${j.resume||"默认"}\n`+
           `要求：80-140 字，口语自然、不吹嘘，突出 1-2 个与岗位的匹配点，结尾表达进一步沟通的意愿。` }
       ], 300);
-      out.value = text;
-      st.textContent = "";
-      document.getElementById("greetSave").style.display = "";
+      if(out) out.value = text;
+      if(st) st.textContent = "";
+      if(outId==="greetOut"){ const gs=document.getElementById("greetSave"); if(gs) gs.style.display = ""; }
     }catch(e){
-      st.textContent = "生成失败："+e.message; st.className = "ai-status err";
+      if(st){ st.textContent = "生成失败："+e.message; st.className = "ai-status err"; }
+    }
+  },
+  greet2(jobId){ this.greet(jobId, "greet2-out", "greet2-st"); },
+
+  /* 闪卡 AI 定制：按我的亮点（+选中岗位）给这道题的答题方向 */
+  async flashAdvice(i){
+    if(!this._check()) return;
+    const q = QBANK_SEED[i]; if(!q) return;
+    const j = STORE.data.jobs.find(x=>x.id===VIEWS.prepJobId) || null;
+    VIEWS._flashAI = `<div class="ai-box" style="margin-top:8px">AI 正在按你的亮点定制答题方向…</div>`; renderMain();
+    try{
+      const out = await this.chat([
+        { role:"system", content:"你是资深面试教练。只输出干货要点，不要客套开场白和总结。" },
+        { role:"user", content:
+          `面试题：${q.q}\n我的亮点：${this._bio()}\n`+(j?`目标岗位：${j.role} @ ${j.company}，JD 要点：${(j.jd||"未填写").slice(0,300)}\n`:"")+
+          `请给这道题的定制化答题方向：3-5 条要点，每条一行、每行不超过 30 字，紧密结合我的亮点${j?"和目标岗位":""}。` }
+      ], 450);
+      VIEWS._flashAI = `<div class="ai-box" style="margin-top:8px"><b style="font-size:11px;color:var(--brand)">AI 定制 · ${esc(q.q)}</b>\n${esc(out)}</div>`; renderMain();
+    }catch(e){
+      VIEWS._flashAI = `<div class="ai-box" style="margin-top:8px;color:var(--bad)">生成失败：${esc(e.message)}</div>`; renderMain();
     }
   },
 
@@ -1244,9 +1474,10 @@ const AI = {
   _anaCtx(j){
     return `岗位：${j.role} @ ${j.company}${j.city?"（"+j.city+"）":""}\nJD 原文：\n${j.jd}\n我的亮点：${this._bio()}\n简历版本：${j.resume||"默认"}${j.notes?"\n备注："+j.notes:""}`;
   },
-  async prep(jobId){
+  async prep(jobId, silent){
     if(!this._check()) return;
-    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.jd) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
+    if(!j.jd){ this._anaSt("这个岗位还没贴 JD 原文 —— 打开岗位详情 → 编辑 → 把岗位描述粘进「JD 原文」字段", true); return; }
     this._anaBusy(true); this._anaSt("AI 生成中…约 10-30 秒，生成完自动保存到岗位");
     try{
       const out = await this.chat([
@@ -1260,14 +1491,15 @@ const AI = {
           `【面试前必查】3 条：面试前该查的公司信息/数据/该准备的反问` }
       ], 1000);
       STORE.setAnalysis(jobId, "prep", out);
-      UI.openDetail(jobId);
+      if(silent) renderMain(); else UI.openDetail(jobId);
     }catch(e){
       this._anaSt("生成失败："+e.message, true); this._anaBusy(false);
     }
   },
-  async match(jobId){
+  async match(jobId, silent){
     if(!this._check()) return;
-    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.jd) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
+    if(!j.jd){ this._anaSt("这个岗位还没贴 JD 原文 —— 打开岗位详情 → 编辑 → 把岗位描述粘进「JD 原文」字段", true); return; }
     this._anaBusy(true); this._anaSt("AI 生成中…约 10-30 秒，生成完自动保存到岗位");
     try{
       const out = await this.chat([
@@ -1278,7 +1510,7 @@ const AI = {
           `要求：4-6 行；「我的简历证据」基于我的亮点写他可能认可的点，没证据就写「简历中未体现」；「隐患与建议」写面试官可能追问什么、我该怎么补，要具体可执行，不写空话。` }
       ], 1000);
       STORE.setAnalysis(jobId, "match", out);
-      UI.openDetail(jobId);
+      if(silent) renderMain(); else UI.openDetail(jobId);
     }catch(e){
       this._anaSt("生成失败："+e.message, true); this._anaBusy(false);
     }
@@ -1325,18 +1557,26 @@ const IO = {
   },
   copyText(jobId){
     const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.greeting) return;
+    this._copy(j.greeting);
+  },
+  copyGreet2(){
+    const t = document.getElementById("greet2-out");
+    if(t && t.value.trim()) this._copy(t.value.trim());
+  },
+  _copy(text){
     const done = ()=> alert("已复制，去 BOSS 直接粘贴即可");
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(j.greeting).then(done).catch(()=>{
-        const ta = document.createElement("textarea"); ta.value = j.greeting;
-        document.body.appendChild(ta); ta.select(); document.execCommand("copy");
-        document.body.removeChild(ta); done();
+      navigator.clipboard.writeText(text).then(done).catch(()=>{
+        this._fallbackCopy(text); done();
       });
     }else{
-      const ta = document.createElement("textarea"); ta.value = j.greeting;
-      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
-      document.body.removeChild(ta); done();
+      this._fallbackCopy(text); done();
     }
+  },
+  _fallbackCopy(text){
+    const ta = document.createElement("textarea"); ta.value = text;
+    document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+    document.body.removeChild(ta);
   },
   clearAll(){
     if(!confirm("确定清空全部岗位数据？此操作不可恢复（建议先导出备份）")) return;
