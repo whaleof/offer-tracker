@@ -393,6 +393,7 @@ function renderMain(){
       <button class="btn small" id="newsBtn" style="display:none" onclick="VIEWS.filter.view='news';renderMain()">情报</button>
     </div>
     <div id="resultsArea"></div>`;
+  NEWS.applyBtn();
   renderResults();
 }
 // 搜索时只重绘结果区，不动工具条 → 输入框光标/焦点不丢（踩坑库：全量重绘导致焦点/滚动丢失）
@@ -621,8 +622,13 @@ const NEWS = {
   load(){
     // 安静挂法：news.json 不存在/为空 → 情报按钮永远不出现，不占界面
     fetch("news.json").then(r=>r.ok ? r.json() : Promise.reject())
-      .then(d=>{ this.items = Array.isArray(d) ? d : (d.items||[]); if(this.items.length) $("#newsBtn").style.display=""; })
+      .then(d=>{ this.items = Array.isArray(d) ? d : (d.items||[]); this.applyBtn(); })
       .catch(()=>{ this.items = []; });
+  },
+  applyBtn(){
+    // renderMain 每次重建工具栏会把按钮重置为隐藏，所以每次渲染后都要重放显隐状态
+    const b = document.getElementById("newsBtn");
+    if(b && this.items && this.items.length) b.style.display = "";
   },
 };
 THEME.set(THEME.get());
