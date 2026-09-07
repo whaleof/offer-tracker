@@ -119,23 +119,24 @@
   .empty b{color:var(--pink-deep)}
   .note{font-size:12px;color:var(--ink-light);padding:0 20px}
   /* ── 月历小卡（有事件才标记，点日期内联展开） ── */
-  .calwrap{max-width:620px;margin:14px auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
-  .cal-head{display:flex;align-items:center;gap:6px;margin-bottom:10px}
-  .cal-head b{font-size:14px;color:var(--pink-deep);margin:0 4px}
-  .cal-nav{border:1px solid var(--line);background:var(--card);border-radius:6px;width:26px;height:26px;color:var(--ink-mid);line-height:1}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-  .cal-wd{font-size:11px;color:var(--ink-light);text-align:center;padding:2px 0}
-  .cal-cell{min-height:46px;border-radius:8px;padding:3px 5px;font-size:12px;border:1px solid transparent;cursor:pointer;text-align:left;background:none;color:var(--ink)}
-  .cal-cell:hover{background:var(--pink-bg)}
-  .cal-cell.blank{cursor:default;min-height:46px}
+  .calwrap{max-width:920px;margin:14px auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:18px}
+  .cal-head{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+  .cal-head b{font-size:16px;color:var(--brand-deep);margin:0 6px}
+  .cal-nav{border:1px solid var(--line);background:var(--card);border-radius:var(--radius-btn);width:30px;height:30px;color:var(--ink-mid);line-height:1}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .cal-wd{font-size:12px;color:var(--ink-light);text-align:center;padding:4px 0}
+  .cal-cell{min-height:74px;border-radius:var(--radius-btn);padding:5px 7px;font-size:13px;border:1px solid transparent;cursor:pointer;text-align:left;background:none;color:var(--ink)}
+  .cal-cell:hover{background:var(--paper-2)}
+  .cal-cell.blank{cursor:default;min-height:74px}
   .cal-cell.blank:hover{background:none}
-  .cal-cell.today{border-color:var(--pink)}
-  .cal-cell.sel{background:var(--pink-card)}
+  .cal-cell.today{border-color:var(--brand)}
+  .cal-cell.sel{background:var(--brand-soft)}
+  .cal-cell .cal-ev-mini{font-size:11px;border-radius:4px;padding:1px 5px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;border:none;text-align:left;width:100%;cursor:pointer}
   .cal-cell .dots{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
   .cal-cell .dots i{width:5px;height:5px;border-radius:50%;display:inline-block}
-  .cal-panel{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
-  .cal-ev{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
-  .cal-ev:hover{background:var(--pink-bg)}
+  .cal-panel{margin-top:10px;border-top:1px dashed var(--line-strong);padding-top:8px}
+  .cal-ev{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--radius-btn);font-size:13px;cursor:pointer}
+  .cal-ev:hover{background:var(--paper-2)}
   .cal-ev .cdot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
   .cal-ev .ct{margin-left:auto;font-size:11px;color:var(--ink-light)}
   /* ── AI 区块 ── */
@@ -193,8 +194,27 @@
   .card .role{font-size:12.5px;color:var(--ink-mid);margin:1px 0 7px}
   .card .next{border-top:1px dashed var(--line-strong)}
 
-  /* 0.5 小元素：需跟进 = 右上角陶土色折角（功能性标记，非装饰） */
-  .card.has-follow::after{content:"";position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 16px 16px 0;border-color:transparent var(--accent) transparent transparent;border-top-right-radius:var(--radius-card)}
+  /* 0.5 小元素：需跟进 = 右上角「催」字陶土药丸（功能性标记，一眼可见） */
+  .card.has-follow::after{content:"催";position:absolute;top:-6px;right:-4px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--radius-pill);box-shadow:0 1px 0 var(--accent-deep);letter-spacing:.05em}
+
+  /* 拖拽换状态 */
+  .col.drag-over{border-color:var(--brand);border-style:dashed;background:var(--brand-soft)}
+  .card[draggable=true]:active{cursor:grabbing;opacity:.85}
+  .board.drop-hint .col::before{content:"拖到目标列";display:block;text-align:center;font-size:11px;color:var(--ink-light);margin-bottom:6px}
+
+  /* 头部等级条（游戏化，静默常驻） */
+  .lvbar{display:flex;align-items:center;gap:10px;padding:8px 20px;background:var(--paper-2);border-bottom:1px solid var(--line);font-size:12px;flex-wrap:wrap}
+  .lvbar .lv{background:var(--brand);color:#fff;border-radius:var(--radius-pill);padding:2px 10px;font-weight:600;font-size:12px;white-space:nowrap}
+  .lvbar .lvname{color:var(--brand-deep);font-weight:600;white-space:nowrap}
+  .lvbar .track{flex:1;min-width:120px;height:8px;background:var(--paper-3);border-radius:var(--radius-pill);overflow:hidden}
+  .lvbar .fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:var(--radius-pill);transition:width .4s}
+  .lvbar .en{color:var(--accent-deep);font-weight:600;white-space:nowrap}
+
+  /* 状态下拉（列表视图直改） */
+  .st-select{font-size:12px;padding:3px 6px;border:1px solid var(--line);border-radius:var(--radius-btn);background:var(--card);color:var(--ink);width:auto;cursor:pointer}
+
+  /* 日程徽章 */
+  .tag.ev{background:var(--brand-soft);color:var(--brand-deep)}
 
   .col .add{border-radius:var(--radius-btn)}
   .col .add:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-soft)}
@@ -242,6 +262,7 @@
   </div>
 </header>
 
+<div class="lvbar" id="levelBar"></div>
 <div id="main"></div>
 
 <!-- 添加/编辑 岗位 -->
@@ -259,6 +280,22 @@
 <!-- 岗位详情 -->
 <div class="mask" id="detailMask">
   <div class="modal" id="detailBody"></div>
+</div>
+
+<!-- 状态变更 · 日程时间窗（学航海志：改状态时可顺手记时间，自动进月历） -->
+<div class="mask" id="evMask" onclick="if(event.target===this)UI.close('evMask')">
+  <div class="modal" style="max-width:340px">
+    <h2 id="ev-title" style="margin-bottom:14px">记录日程</h2>
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin-bottom:4px">日期</label>
+    <input id="ev-date" type="date">
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin:10px 0 4px">时间（可选）</label>
+    <input id="ev-time" type="time">
+    <div class="ai-status" id="ev-st"></div>
+    <div class="mbtns">
+      <button class="btn" onclick="UI.close('evMask')">跳过</button>
+      <button class="btn primary" onclick="UI.saveEvent()">确认</button>
+    </div>
+  </div>
 </div>
 
 <!-- 演示菜单 -->
@@ -301,21 +338,29 @@
 "use strict";
 /* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
 const CONFIG = {
-  DATA_VERSION: 3,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
+  DATA_VERSION: 4,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
   LS_KEY: "job-tracker-v1",
   STALE_DAYS: 7,            // 已投后超过 N 天无状态变化 → 标「无进展」
+  // 游戏化激励（学航海志，静默版：不弹窗不撒花，只在头部等级条上显示）
+  GAME: {
+    POINTS: { add:5, advance:10, review:10, offer:50 },   // 动作→积分
+    LEVELS: [                                            // 累计积分→等级
+      { at:0,   name:"新兵" }, { at:50,  name:"侦察兵" }, { at:150, name:"突击手" },
+      { at:300, name:"主攻手" }, { at:500, name:"常胜将军" }, { at:800, name:"Offer收割机" },
+    ],
+  },
   // AI 提供方（OpenAI 兼容）。Key 只存访客自己浏览器（localStorage），绝不硬编码进仓库
   AI_PROVIDERS: {
     deepseek: { name:"DeepSeek（便宜，几分钱/次）", base:"https://api.deepseek.com", model:"deepseek-chat" },
     glm:      { name:"智谱 glm-4-flash（有免费额度）", base:"https://open.bigmodel.cn/api/paas/v4", model:"glm-4-flash" },
   },
   STAGES: [
-    { id:"pool",      name:"待投递",   color:"#8A8578" },
-    { id:"applied",   name:"已投递",   color:"#4A6D8C" },
-    { id:"test",      name:"测评/笔试", color:"#C97B4A" },
-    { id:"interview", name:"面试中",   color:"#3E7B5A" },
-    { id:"offer",     name:"Offer",   color:"#C9A227" },
-    { id:"rejected",  name:"挂了",     color:"#A65D4E" },
+    { id:"pool",      name:"待投递",   color:"#8A8578", icon:"📋" },
+    { id:"applied",   name:"已投递",   color:"#4A6D8C", icon:"📮" },
+    { id:"test",      name:"测评/笔试", color:"#C97B4A", icon:"✍️" },
+    { id:"interview", name:"面试中",   color:"#3E7B5A", icon:"🎤" },
+    { id:"offer",     name:"Offer",   color:"#C9A227", icon:"🏅" },
+    { id:"rejected",  name:"挂了",     color:"#A65D4E", icon:"🕊️" },
   ],
   // 表单字段：type 支持 text/select/date/textarea；span=2 占满一行
   FIELDS: [
@@ -348,18 +393,34 @@ const STORE = {
     if(!Array.isArray(d.jobs)) d.jobs = [];
     if(d.version < 2) d.version = 2;            // v2：岗位新增 reviews（面试复盘），旧数据补空数组即可
     if(d.version < 3) d.version = 3;            // v3：复盘新增 advice（AI 思路）、岗位新增 greeting（AI 打招呼语）
+    if(d.version < 4) d.version = 4;            // v4：游戏化积分 + 岗位日程
+    if(!d.meta || typeof d.meta!=="object") d.meta = {};   // 无条件保证存在（演示数据/导入数据都可能带 v4 版本号但缺 meta）
+    if(typeof d.meta.points !== "number") d.meta.points = 0;
     d.jobs.forEach(j=>{
       if(!Array.isArray(j.reviews)) j.reviews = [];
       j.reviews.forEach(r=>{ if(!r.advice || typeof r.advice!=="object") r.advice = {}; });
       if(typeof j.greeting !== "string") j.greeting = "";
+      if(!Array.isArray(j.events)) j.events = [];   // 面试/测评日程节点：{date,time,label}
     });
     return d;
+  },
+  /* ── 游戏化积分（静默）：只在头部等级条显示，不弹窗打扰 ── */
+  points(n){ if(!this.data.meta) this.data.meta = { points:0 }; this.data.meta.points = Math.max(0,(this.data.meta.points||0)+n); this.save(); },
+  level(){
+    const p = (this.data.meta && this.data.meta.points) || 0;
+    const L = CONFIG.GAME.LEVELS;
+    let cur = L[0], next = null;
+    L.forEach((l,i)=>{ if(p >= l.at){ cur = l; next = L[i+1] || null; } });
+    const base = cur.at, ceil = next ? next.at : cur.at;
+    return { lv: L.indexOf(cur)+1, name: cur.name, p, next, pct: next ? Math.min(100, Math.round((p-base)/(ceil-base)*100)) : 100 };
   },
   add(job){
     job.id = Date.now() + "" + Math.floor(Math.random()*1e4);
     job.history = [{ status: job.status || "pool", at: new Date().toISOString() }];
     job.createdAt = job.updatedAt = new Date().toISOString();
+    if(!Array.isArray(job.events)) job.events = [];
     this.data.jobs.unshift(job); this.save();
+    this.points(CONFIG.GAME.POINTS.add);
   },
   update(id, patch, moveStatus){
     const j = this.data.jobs.find(x=>x.id===id); if(!j) return;
@@ -368,6 +429,10 @@ const STORE = {
     if(changed){
       j.status = moveStatus;
       j.history.push({ status: moveStatus, at: new Date().toISOString() });
+      // 状态推进给积分：前进 +10，到 Offer +50（回退不给不扣）
+      const order = CONFIG.STAGES.findIndex(s=>s.id===j.status);
+      const oldOrder = CONFIG.STAGES.findIndex(s=>s.id===(j.history.length>=2 ? j.history[j.history.length-2].status : j.status));
+      if(order > oldOrder) this.points(order >= CONFIG.STAGES.findIndex(s=>s.id==="offer") ? CONFIG.GAME.POINTS.offer : CONFIG.GAME.POINTS.advance);
     }
     j.updatedAt = new Date().toISOString();
     this.save();
@@ -378,6 +443,13 @@ const STORE = {
     if(!Array.isArray(j.reviews)) j.reviews = [];
     r.at = new Date().toISOString();
     j.reviews.unshift(r); this.save();
+    this.points(CONFIG.GAME.POINTS.review);
+  },
+  /* ── 日程节点（学航海志：状态变更 → 可选填时间 → 自动进月历） ── */
+  addEvent(id, ev){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j) return;
+    if(!Array.isArray(j.events)) j.events = [];
+    j.events.push(ev); this.save();
   },
   removeReview(id, idx){
     const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.reviews) return;
@@ -418,16 +490,17 @@ function staleTag(j){
 function isoDay(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 // 月历事件聚合（纯函数）：DDL 红 / 投递 蓝 / 面试复盘 粉
 const CAL = {
-  TYPES: { ddl:{label:"DDL", color:"#A32D2D"}, applied:{label:"投递", color:"#378ADD"}, review:{label:"面试", color:"#D4537E"} },
+  TYPES: { ddl:{label:"DDL", color:"#A65D4E"}, applied:{label:"投递", color:"#4A6D8C"}, review:{label:"复盘", color:"#C97B4A"}, event:{label:"日程", color:"#3E7B5A"} },
   eventsByDate(jobs){
     const map = {};
-    const put = (date,type,jobId,extra)=>{ if(!date) return;
-      (map[date] = map[date]||[]).push({ type, jobId, ...extra }); };
+    const put = (date,type,jobId,extra,time)=>{ if(!date) return;
+      (map[date] = map[date]||[]).push({ type, jobId, time, ...extra }); };
     jobs.forEach(j=>{
       if(j.deadline && daysUntil(j.deadline) >= 0) put(j.deadline, "ddl", j.id, { text:j.company+" DDL" });
       if(j.appliedAt) put(String(j.appliedAt).slice(0,10), "applied", j.id, { text:"投递 "+j.company });
       (j.reviews||[]).forEach(r=> put(r.date || (r.at?String(r.at).slice(0,10):""), "review", j.id,
         { text:(j.company)+" "+(r.round||"复盘") }));
+      (j.events||[]).forEach(e=> put(e.date, "event", j.id, { text:(e.label||"日程")+" "+j.company }, e.time||""));
     });
     return map;
   },
@@ -473,12 +546,23 @@ const VIEWS = {
     </div>`;
   },
 
+  levelBar(){
+    const l = STORE.level();
+    const nextTxt = l.next ? `再 ${l.next.at - l.p} 分升 ${l.next.name}` : "已满级";
+    return `<div class="lvbar">
+      <span class="lv">Lv.${l.lv}</span><span class="lvname">${l.name}</span>
+      <div class="track"><div class="fill" style="width:${l.pct}%"></div></div>
+      <span style="color:var(--ink-light)">${nextTxt}</span>
+      <span class="en">⚡ ${l.p}</span>
+    </div>`;
+  },
+
   board(){
     const vis = this.visibleJobs();
     const cols = CONFIG.STAGES.map(s=>{
       const cards = vis.filter(j=>j.status===s.id).map(j=>this.card(j)).join("");
-      return `<div class="col">
-        <h3><span class="dot" style="background:${s.color}"></span>${s.name}
+      return `<div class="col" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');UI.dropCard(event,'${s.id}')">
+        <h3><span class="dot" style="background:${s.color}"></span>${s.icon||""} ${s.name}
           <span class="cnt">${vis.filter(j=>j.status===s.id).length}</span></h3>
         ${cards || ""}
         <button class="add" onclick="UI.openForm(null,'${s.id}')">＋ 加到「${s.name}」</button>
@@ -491,13 +575,14 @@ const VIEWS = {
     const st = stageOf(j.status);
     const stale = staleTag(j);
     const follow = stale !== "";
-    const tt = follow ? ` title="超 ${CONFIG.STALE_DAYS} 天无进展，需跟进"` : "";
-    return `<div class="card${follow?" has-follow":""}" style="--st:${st.color}"${tt} onclick="UI.openDetail('${j.id}')">
+    const tt = follow ? ` title="超 ${CONFIG.STALE_DAYS} 天无进展，点开可推进状态"` : "";
+    const ev = (j.events&&j.events[j.events.length-1]) || null;
+    return `<div class="card${follow?" has-follow":""}" style="--st:${st.color}"${tt} draggable="true" ondragstart="UI.dragCard(event,'${j.id}')" onclick="UI.openDetail('${j.id}')">
       <div class="co">${esc(j.company)}</div>
-      <div class="role">${esc(j.role)}${j.city? " · "+esc(j.city):""}</div>
+      <div class="role">${esc(j.role)}${j.city? " · 📍"+esc(j.city):""}</div>
       <div class="meta">
         <span class="tag"><span class="st-dot" style="background:${st.color}"></span>${st.name}</span>
-        ${ddlTag(j.deadline)}${stale}${j.resume?`<span class="tag">简历·${esc(j.resume)}</span>`:""}
+        ${ddlTag(j.deadline)}${stale}${ev?`<span class="tag ev">📅 ${esc(ev.label)} ${esc(ev.date.slice(5))}${ev.time?" "+esc(ev.time):""}</span>`:""}${j.resume?`<span class="tag">简历·${esc(j.resume)}</span>`:""}
       </div>
       ${j.next? `<div class="next">→ ${esc(j.next)}</div>`:""}
     </div>`;
@@ -512,7 +597,9 @@ const VIEWS = {
         <td><b>${esc(j.company)}</b></td><td>${esc(j.role)}</td><td>${esc(j.city||"—")}</td>
         <td>${esc(j.channel||"—")}</td><td>${j.deadline? esc(j.deadline):"—"}</td>
         <td>${j.appliedAt? esc(fmtDate(j.appliedAt)):"—"}</td>
-        <td><span class="st-badge"><span class="st-dot" style="background:${st.color}"></span>${st.name}</span></td>
+        <td><select class="st-select" onclick="event.stopPropagation()" onchange="UI.moveStatus('${j.id}',this.value);renderMain()">
+          ${CONFIG.STAGES.map(s=>`<option value="${s.id}" ${j.status===s.id?"selected":""}>${s.icon||""} ${s.name}</option>`).join("")}
+        </select></td>
         <td>${esc(j.next||"—")}</td>
       </tr>`;
     }).join("");
@@ -560,9 +647,10 @@ const VIEWS = {
     for(let d=1;d<=dim;d++){
       const ds = `${ym}-${String(d).padStart(2,"0")}`;
       const es = ev[ds]||[];
-      const dots = es.slice(0,4).map(e=>`<i style="background:${CAL.TYPES[e.type].color}"></i>`).join("");
+      const minis = es.slice(0,2).map(e=>`<span class="cal-ev-mini" style="background:${CAL.TYPES[e.type].color}18;color:${CAL.TYPES[e.type].color}" onclick="event.stopPropagation();UI.openDetail('${e.jobId}')">${e.time? esc(e.time)+" ":""}${esc(e.text)}</span>`).join("");
+      const more = es.length>2 ? `<span class="cal-ev-mini" style="color:var(--ink-light)">+${es.length-2}</span>` : "";
       cells += `<button class="cal-cell ${ds===todayStr?"today":""} ${ds===sel?"sel":""}"
-        onclick="VIEWS.calSel=VIEWS.calSel==='${ds}'?null:'${ds}';renderResults()">${d}<div class="dots">${dots}</div></button>`;
+        onclick="VIEWS.calSel=VIEWS.calSel==='${ds}'?null:'${ds}';renderResults()">${d}${minis}${more}</button>`;
     }
     let panel = "";
     if(sel){
@@ -599,6 +687,7 @@ const VIEWS = {
 
 function renderMain(){
   const f = VIEWS.filter;
+  $("#levelBar").innerHTML = VIEWS.levelBar();   // 等级条常驻（含空态）
   // 空态引导：首次打开不显示空白看板，给三条开始路径（零摩擦）
   if(!STORE.data.jobs.length){
     $("#main").innerHTML = `<div class="empty" style="margin-top:60px">
@@ -612,12 +701,12 @@ function renderMain(){
     </div>`;
     return;
   }
-  const chips = [`<button class="chip ${f.stage==='all'?'on':''}" onclick="VIEWS.filter.stage='all';renderMain()">全部</button>`]
+  const chips = [`<button class="chip ${f.stage==='all'?'on':''}" onclick="VIEWS.filter.stage='all';renderMain()">🎯 全部</button>`]
     .concat(CONFIG.STAGES.map(s=>
-      `<button class="chip ${f.stage===s.id?'on':''}" onclick="VIEWS.filter.stage='${s.id}';renderMain()">${s.name}</button>`))
+      `<button class="chip ${f.stage===s.id?'on':''}" onclick="VIEWS.filter.stage='${s.id}';renderMain()">${s.icon} ${s.name}</button>`))
     .join("");
   const staleCount = STORE.data.jobs.filter(j=>staleTag(j)!=="").length;
-  const staleChip = staleCount ? `<button class="chip warn-dot ${f.stage==='__stale'?'on':''}" onclick="VIEWS.filter.stage=VIEWS.filter.stage==='__stale'?'all':'__stale';renderMain()">需跟进 ${staleCount}</button>` : "";
+  const staleChip = staleCount ? `<button class="chip warn-dot ${f.stage==='__stale'?'on':''}" onclick="VIEWS.filter.stage=VIEWS.filter.stage==='__stale'?'all':'__stale';renderMain()">📣 需跟进 ${staleCount}</button>` : "";
   $("#main").innerHTML =
     VIEWS.stats() +
     VIEWS.funnel() +
@@ -706,7 +795,7 @@ const UI = {
     const st = stageOf(j.status);
     const flow = CONFIG.STAGES.map(s=>
       `<button class="${s.id===j.status?'cur':''}" style="border-color:${s.color};color:${s.id===j.status?'#fff':s.color};background:${s.id===j.status?s.color:'var(--pink-bg)'}"
-        onclick="STORE.update('${j.id}',{},'${s.id}');UI.openDetail('${j.id}');renderMain()">${s.name}</button>`).join("");
+        onclick="UI.moveStatus('${j.id}','${s.id}');UI.openDetail('${j.id}')">${s.icon||""} ${s.name}</button>`).join("");
     const hist = (j.history||[]).slice().reverse().map(h=>{
       const s = stageOf(h.status);
       return `<li><span><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${s.color};margin-right:6px"></span>${s.name}</span><span>${h.at.slice(0,16).replace("T"," ")}</span></li>`;
@@ -791,6 +880,32 @@ const UI = {
   },
 
   toggleDemoMenu(btn){ this.closeMenu(); this.open("demoMask"); },
+
+  /* ── 拖拽换状态 / 状态直改（学航海志：变更零摩擦 + 可顺手记日程） ── */
+  dragCard(e, id){ e.dataTransfer.setData("text/plain", id); e.dataTransfer.effectAllowed = "move"; },
+  dropCard(e, stage){
+    const id = e.dataTransfer.getData("text/plain");
+    if(id) this.moveStatus(id, stage);
+  },
+  moveStatus(id, stage){
+    const j = STORE.data.jobs.find(x=>x.id===id); if(!j || j.status===stage) return;
+    STORE.update(id, {}, stage);
+    // 进入测评/面试 → 顺手弹时间窗（可跳过），确认后自动进月历日程
+    if(stage==="test" || stage==="interview"){
+      this._evJob = id;
+      $("#ev-title").textContent = stageOf(stage).name + "时间 · " + (j.company||"");
+      $("#ev-date").value = isoDay(today());
+      $("#ev-time").value = "";
+      this.open("evMask");
+    }
+    renderMain();
+  },
+  saveEvent(){
+    const d = $("#ev-date").value;
+    if(!d){ $("#ev-st").textContent = "选个日期，或点「跳过」"; return; }
+    STORE.addEvent(this._evJob, { date:d, time:$("#ev-time").value||"", label: stageOf(STORE.data.jobs.find(x=>x.id===this._evJob).status).name });
+    this.close("evMask"); renderMain();
+  },
 
   /* ── 顶栏「更多」菜单 ── */
   toggleMenu(){

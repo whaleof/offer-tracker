@@ -56,7 +56,7 @@ t("删除生效", S.data.jobs.length === 0);
 // 6 演示数据 + 导出回读
 ctx.__X.DEMO.load();
 const snapshot = JSON.parse(JSON.stringify(S.data));
-t("演示数据可导出回读", snapshot.jobs.length === 8 && snapshot.version === 3);
+t("演示数据可导出回读", snapshot.jobs.length === 8 && snapshot.version === 4);
 
 // 6b 演示数据自带复盘题 → 题库视图有内容；自带 AI 思路与打招呼语
 t("演示数据自带复盘题", S.data.jobs.some(j => j.reviews && j.reviews.length > 0));
@@ -86,11 +86,11 @@ const demoE = S.data.jobs.find(j => j.company === "某厂 E");
 S.update(demoE.id, { greeting: "您好，看到贵司产品岗位，我有 AI 工作台 13 周迭代经验，期待沟通" });
 t("打招呼语保存到岗位", S.data.jobs.find(j => j.id === demoE.id).greeting.includes("13 周"));
 
-// 7 v1 旧数据迁移：自动补 reviews、advice、greeting，版本升 3
+// 7 v1 旧数据迁移：自动补 reviews、advice、greeting、events、meta.points，版本升 4
 S.replaceAll({ jobs: [{ company: "旧数据", status: "pool" }] });
 const oldJ = S.data.jobs[0];
-t("v1迁移补reviews且版本升3", S.data.version === 3 && Array.isArray(oldJ.reviews));
-t("v1迁移补advice和greeting", Array.isArray(oldJ.reviews) && typeof oldJ.greeting === "string");
+t("v1迁移补reviews且版本升4", S.data.version === 4 && Array.isArray(oldJ.reviews));
+t("v1迁移补advice/greeting/events", Array.isArray(oldJ.reviews) && typeof oldJ.greeting === "string" && Array.isArray(oldJ.events));
 
 // 8 添加/删除复盘
 const jid = oldJ.id;
@@ -106,9 +106,30 @@ t("AI思路重新生成覆盖旧版", oldJ.reviews[0].advice["题A"] === "换个
 S.removeReview(jid, 0);
 t("删除复盘生效", oldJ.reviews.length === 0);
 
+// 8a 游戏化积分：add/推进/复盘/offer 都加分，level 计算正确
+S.replaceAll({ jobs: [] });
+S.add({ company: "积分A", role: "PM", status: "pool" });
+t("添加岗位得积分", S.data.meta.points === 5);
+const pid = S.data.jobs[0].id;
+S.update(pid, {}, "applied");
+t("状态推进得积分", S.data.meta.points === 15);
+S.addReview(pid, { round: "一面", questions: ["题Q"], notes: "" });
+t("写复盘得积分", S.data.meta.points === 25);
+S.update(pid, {}, "offer");
+t("拿Offer得大额积分", S.data.meta.points === 75);
+const lv = S.level();
+t("等级按累计积分计算", lv.lv >= 2 && lv.p === 75 && !!lv.name);
+t("等级条HTML渲染", ctx.__X.VIEWS.levelBar().includes("Lv."));
+
+// 8a-2 日程节点：addEvent 存储并进月历
+S.addEvent(pid, { date: "2026-09-10", time: "14:00", label: "面试中" });
+t("日程节点持久化", S.data.jobs[0].events.length === 1 && S.data.jobs[0].events[0].time === "14:00");
+const evMap = ctx.__X.CAL.eventsByDate(S.data.jobs);
+t("日程节点进月历", (evMap["2026-09-10"]||[]).some(e => e.type === "event"));
+
 // 9 空数据兜底
 S.replaceAll({});
 t("空数据兜底", Array.isArray(S.data.jobs));
 
 if (fails) { console.error("=== " + fails + " 项 FAIL ==="); process.exit(1); }
-console.log("=== 数据层 21/21 全过 ===");
+console.log("=== 数据层全部通过（v4 含积分/日程/迁移） ===");
