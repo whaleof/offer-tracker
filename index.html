@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Offer Tracker · 秋招作战板</title>
+<title>樱帖 · 秋招作战板</title>
 <!--
   ════════════════════════════════════════════════════════
   Offer Tracker（秋招作战板）· 单文件应用（无后端 / localStorage 存储）
@@ -21,7 +21,7 @@
 <style>
   :root{
     /* ── UI v2 规范（2026-09-07 定稿）· 暖白底 + 樱花粉唯一强调 ── */
-    --paper:#F5F4F0; --paper-2:#EFEEE9; --paper-3:#EAE8E2; --card:#FFFFFF; --header-bg:rgba(245,244,240,.94);
+    --paper:#FBF7EC; --paper-2:#F4EFE2; --paper-3:#EAE3D2; --card:#FFFFFF; --header-bg:rgba(251,247,236,.94);
     --ink:#3a2a30; --ink-mid:#7a6a72; --ink-light:#9a7a85;
     --brand:#c2416b; --brand-deep:#a83358; --brand-soft:#fdeef3;
     --accent:#D4537E; --accent-deep:#b83f66; --accent-soft:#fbe4ec;
@@ -352,10 +352,20 @@
 </style>
 </head>
 <body>
+<svg style="display:none" aria-hidden="true">
+  <symbol id="yt-logo" viewBox="0 0 52 52"><rect x="2" y="2" width="48" height="48" rx="9" fill="#C2416B"/><g fill="#fff"><circle cx="26" cy="15" r="6.2"/><circle cx="37" cy="22" r="6.2"/><circle cx="33" cy="35" r="6.2"/><circle cx="19" cy="35" r="6.2"/><circle cx="15" cy="22" r="6.2"/></g><circle cx="26" cy="25" r="3.4" fill="#C9A227"/></symbol>
+  <symbol id="yt-sakura" viewBox="0 0 40 40"><g fill="#C2416B"><circle cx="20" cy="8" r="7"/><circle cx="31" cy="16" r="7"/><circle cx="27" cy="29" r="7"/><circle cx="13" cy="29" r="7"/><circle cx="9" cy="16" r="7"/></g><circle cx="20" cy="19" r="4" fill="#C9A227"/></symbol>
+  <symbol id="yt-xiang" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11C5 5.5,7.5 5.5,10 11C12.5 5.5,15 5.5,18 11"/><path d="M4 14.5C6.5 11,8.5 11,10 14.5C11.5 11,13.5 11,16 14.5"/></g></symbol>
+  <symbol id="yt-jian" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 L10 12.5"/><path d="M5.5 12.5 L14.5 12.5"/><path d="M10 12.5 L10 16.5"/><path d="M7.5 17.5 L12.5 17.5"/></g></symbol>
+  <symbol id="yt-jing" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="8" rx="6" ry="6.8"/><path d="M10 14.8 L10 18"/></g></symbol>
+  <symbol id="yt-cheng" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 L10 6.5"/><path d="M3.5 6.5 L16.5 6.5"/><path d="M3.5 6.5 L1.8 11.5"/><path d="M16.5 6.5 L18.2 11.5"/><path d="M1.8 11.5 L5.2 11.5"/><path d="M14.8 11.5 L18.2 11.5"/></g></symbol>
+  <symbol id="yt-shi" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 5.5 L10 10 L13 12"/></g></symbol>
+  <symbol id="yt-lun" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 3 L10 17"/><path d="M3 10 L17 10"/></g></symbol>
+</svg>
 <header>
   <div>
-    <h1>Offer Tracker <span style="font-size:13px;font-weight:400;color:var(--ink-light)">秋招作战板</span></h1>
-    <div class="sub">岗位池 · 投递追踪 · 漏斗复盘 —— 数据只存本机浏览器，换设备用「更多 › 导入」搬家</div>
+    <h1 style="display:flex;align-items:center;gap:9px"><svg width="26" height="26" style="flex:0 0 26px"><use href="#yt-logo"/></svg>樱帖 <span style="font-size:12px;font-weight:400;color:var(--ink-light);letter-spacing:.1em">HANAFUDA</span></h1>
+    <div class="sub">数据只存本机浏览器，换设备用「更多 › 导入」搬家</div>
   </div>
   <div class="hbtns">
     <button class="btn primary" onclick="UI.openForm()">＋ 添加岗位</button>
@@ -366,11 +376,13 @@
         <button onclick="UI.closeMenu();IO.exportJSON()">导出备份 (JSON)</button>
         <button onclick="UI.closeMenu();IO.exportCSV()">导出 CSV</button>
         <button onclick="UI.closeMenu();document.getElementById('importFile').click()">导入数据</button>
+        <button onclick="UI.closeMenu();document.getElementById('mergeFile').click()">合并雷达岗位</button>
         <button onclick="UI.toggleDemoMenu(this)">演示数据</button>
         <button onclick="UI.closeMenu();UI.openAISettings()">AI 设置</button>
       </div>
     </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="IO.importJSON(this)">
+    <input type="file" id="mergeFile" accept=".json" style="display:none" onchange="IO.mergeJSON(this)">
   </div>
 </header>
 
@@ -1411,6 +1423,7 @@ const UI = {
           <button class="btn" onclick="IO.exportJSON()">📦 导出备份 (JSON)</button>
           <button class="btn" onclick="IO.exportCSV()">📄 导出 CSV</button>
           <button class="btn" onclick="document.getElementById('importFile').click()">📥 导入数据</button>
+          <button class="btn" onclick="document.getElementById('mergeFile').click()">🛰️ 合并雷达岗位</button>
           <button class="btn" onclick="UI.close('toolMask');UI.open('demoMask')">🎮 演示数据 / 清空</button>
           <button class="btn" id="themeBtn2" onclick="THEME.toggle(document.getElementById('themeBtn'));this.textContent=(document.body.classList.contains('dark')?'☀️ 切回浅色':'🌙 切换深色')">${document.body.classList.contains("dark")?"☀️ 切回浅色":"🌙 切换深色"}</button>
         </div>
@@ -1686,6 +1699,31 @@ const IO = {
         if(!confirm(`导入「${file.name}」会覆盖当前 ${STORE.data.jobs.length} 条岗位数据，继续？`)) return;
         STORE.replaceAll(d); renderMain(); alert("导入成功，共 "+d.jobs.length+" 条");
       }catch(e){ alert("文件格式不对，导入失败"); }
+    };
+    r.readAsText(file); input.value="";
+  },
+  /* 合并雷达岗位（sakura-radar 产出）：按 公司+岗位+城市 指纹去重，只加新卡、绝不动已有卡 */
+  mergeJSON(input){
+    const file = input.files[0]; if(!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const d = JSON.parse(r.result);
+        const incoming = Array.isArray(d.newJobs) ? d.newJobs : (Array.isArray(d.jobs) ? d.jobs : null);
+        if(!incoming){ alert("这不是雷达增量文件（需要 newJobs 字段）"); return; }
+        const fp = j => [j.company,j.role,j.city].map(s=>String(s||"").replace(/\s+/g,"").toLowerCase()).join("|");
+        const known = new Set(STORE.data.jobs.map(fp));
+        const fresh = incoming.filter(j=>!known.has(fp(j)));
+        if(!fresh.length){ alert("没有新岗位：雷达报的 "+incoming.length+" 条都已在看板里"); return; }
+        if(!confirm(`发现 ${fresh.length} 条新岗位（雷达共报 ${incoming.length} 条，重复的自动跳过）。\n新岗位将以「待投递」状态进看板，已有的卡一律不动。合并？`)) return;
+        fresh.forEach(j=>{
+          const job = Object.assign({}, j);
+          delete job.radarUrl; delete job.radarScore;
+          if(job.notes) job.notes = String(job.notes);
+          STORE.add(job);
+        });
+        renderMain(); alert("已合并 "+fresh.length+" 条新岗位");
+      }catch(e){ alert("文件格式不对，合并失败"); }
     };
     r.readAsText(file); input.value="";
   },
