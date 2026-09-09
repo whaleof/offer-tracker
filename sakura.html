@@ -255,6 +255,7 @@ body:not(:has(.page:target)) #p-today{display:block}
   <div class="board-hd">
     <h2 id="bt">每张牌走到哪一步了</h2>
     <div style="display:flex;gap:10px;align-items:center">
+      <button class="btn btn-s" onclick="openMerge()">🛰️ 合并雷达</button>
       <button class="btn btn-p" onclick="openAdd()">＋ 添牌</button>
       <div class="viewtoggle" id="vt"><span class="on" data-v="flow">横看流程</span><span data-v="co">纵看公司</span></div>
     </div>
@@ -324,6 +325,15 @@ body:not(:has(.page:target)) #p-today{display:block}
       <input id="nf-po" placeholder="岗位，如 AI 产品经理" style="border:1.5px solid var(--sumi);border-radius:9px;padding:10px 12px;font-size:14px;background:#fff">
       <input id="nf-city" placeholder="城市（可空）" style="border:1.5px solid var(--sumi);border-radius:9px;padding:10px 12px;font-size:14px;background:#fff">
       <input id="nf-ch" placeholder="渠道：官网 / BOSS / 内推…（可空）" style="border:1.5px solid var(--sumi);border-radius:9px;padding:10px 12px;font-size:14px;background:#fff">
+      <div style="display:flex;gap:8px">
+        <select id="nf-vf" style="flex:1;border:1.5px solid var(--sumi);border-radius:9px;padding:10px 8px;font-size:13px;background:#fff;color:var(--sumi)">
+          <option value="">届别核验 · 未核</option><option value="届内">届内可投</option><option value="届外">届外不投</option><option value="存疑">存疑待查</option>
+        </select>
+        <select id="nf-fit" style="flex:1;border:1.5px solid var(--sumi);border-radius:9px;padding:10px 8px;font-size:13px;background:#fff;color:var(--sumi)">
+          <option value="">适配度 · 未评</option><option value="S">S 必投</option><option value="A">A 合适</option><option value="B">B 可以</option><option value="C">C 勉强</option>
+        </select>
+      </div>
+      <input id="nf-resume" placeholder="用哪份简历，如「腾讯版-带背景色」（可空）" style="border:1.5px solid var(--sumi);border-radius:9px;padding:10px 12px;font-size:14px;background:#fff">
     </div>
     <div class="foot">
       <span style="font-size:11px;color:var(--sumi-light)">新牌会落在牌阵的「想投」列</span>
@@ -331,6 +341,7 @@ body:not(:has(.page:target)) #p-today{display:block}
     </div>
   </div>
 </div>
+<input type="file" id="merge-file" accept=".json,application/json" style="display:none" onchange="mergeRadar(this)">
 <div class="toast" id="toast"></div>
 
 <script>
@@ -479,7 +490,7 @@ function renderToday(){
   $('hero-n').textContent=cnt('offer')+' / '+JOBS.length;
   $('hero-fill').style.width=(JOBS.length?Math.round(cnt('offer')/JOBS.length*100):0)+'%';
   const fresh=JOBS.filter(j=>since(j.raw.createdAt)<=7);
-  $('radar-box').innerHTML=fresh.length?`<b>近 7 天新牌</b> · ${fresh.length} 条<br>`+fresh.slice(0,4).map(j=>esc(j.co)+' · '+esc(j.po)).join('<br>'):(JOBS.length?'<b>近 7 天</b> · 没有新牌，该补补雷达了':'<b>近 7 天新牌</b><br>添加岗位后，新抓到的牌会摆在这里');
+  $('radar-box').innerHTML=fresh.length?`<b>近 7 天新牌</b> · ${fresh.length} 条<br>`+fresh.slice(0,4).map(j=>esc(j.co)+' · '+esc(j.po)).join('<br>'):(JOBS.length?'<b>近 7 天</b> · 没有新牌，该补补雷达了':'<b>近 7 天新牌</b><br>雷达抓到新岗后，在牌阵点「🛰️ 合并雷达」导入');
 }
 function doSent(id){mut(id,j=>{j.status='applied';j.appliedAt=new Date().toISOString().slice(0,10);(j.history=j.history||[]).push({status:'applied',at:isoNow()})},true);toast('已记为「已投」✓ 7 天没音它会来提醒你催')}
 function doUrge(id){mut(id,j=>{j.lastUrgeAt=isoNow()});toast('已记：今天催过了 ✓')}
@@ -537,27 +548,45 @@ function faceSVG(j){
   <text x="150" y="404" text-anchor="middle" font-family="Songti SC,SimSun,serif" font-size="13" fill="#FBF7EC" letter-spacing="1">${esc(trim(j.co+' · '+j.po,15))}</text>
 </svg>`;
 }
+/* 岗位三格印：届别核验 / 适配度 / 用哪份简历——把对话里散落的核验结论固化进牌 */
+const VF={'':'未核','届内':'届内可投','届外':'届外不投','存疑':'存疑待查'};
+const FIT={'':'未评','S':'S 必投','A':'A 合适','B':'B 可以','C':'C 勉强'};
+const opts=(m,cur)=>Object.keys(m).map(k=>`<option value="${k}"${k===cur?' selected':''}>${m[k]}</option>`).join('');
 function openSheet(id){
   const j=JOBS.find(x=>x.id===id);if(!j)return;
   const nx=NEXT[j.st];
+  const tri=j.raw.verify||j.raw.fit||j.raw.resume;
   $('sheet').innerHTML=`<span class="x" onclick="closeSheet()">✕</span>
    <div class="kind">牌 · 档案</div>
    ${faceSVG(j)}
    <h3>${esc(j.co)} · ${esc(j.po)}</h3>
-   <div class="sub2">${stN(j.st)}${j.days?' · '+j.days+' 天':''} · 渠道/城市在词条里</div>
+   <div class="sub2">${stN(j.st)}${j.days?' · '+j.days+' 天':''}${j.raw.verify?' · '+esc(VF[j.raw.verify]||j.raw.verify):''}${j.raw.fit?' · 适配 '+esc(j.raw.fit):''} · 渠道/城市在词条里</div>
    <div class="kw">${j.kw.map(k=>`<span>${esc(k)}</span>`).join('')||'<span>待补</span>'}</div>
    <div class="sec-t">这张牌走过的路</div>
    <ul class="tl">${j.tl.map(t=>`<li><b>${esc(t[0])}</b>${esc(t[1])}</li>`).join('')||'<li><b>—</b>还没动过</li>'}</ul>
    ${j.next?`<div class="sec-t">下一步</div><div class="next">${esc(j.next)}</div>`:''}
    ${j.fullNote?`<div class="sec-t">备注</div><div class="next" style="background:var(--kami);color:var(--sumi-mid)">${esc(j.fullNote)}</div>`:''}
+   <div class="sec-t">岗位三格 · 核验 / 适配 / 简历</div>
+   <div style="display:flex;gap:8px">
+     <select id="sv-vf" style="flex:1;border:1.5px solid var(--sumi);border-radius:9px;padding:9px 8px;font-size:13px;background:#fff;color:var(--sumi)">${opts(VF,j.raw.verify||'')}</select>
+     <select id="sv-fit" style="flex:1;border:1.5px solid var(--sumi);border-radius:9px;padding:9px 8px;font-size:13px;background:#fff;color:var(--sumi)">${opts(FIT,j.raw.fit||'')}</select>
+   </div>
+   <input id="sv-resume" placeholder="这岗用哪份简历，如「腾讯版-带背景色」" value="${esc(j.raw.resume||'')}" style="width:100%;margin-top:8px;border:1.5px solid var(--sumi);border-radius:9px;padding:9px 12px;font-size:13px;background:#fff">
+   <div style="text-align:right;margin-top:6px"><button class="btn btn-s" onclick="saveTri('${j.id}')">存三格</button></div>
    <div class="foot">
-     <span style="font-size:11px;color:var(--sumi-light)">状态变了就推进，别让牌停在旧阶段</span>
+     <span style="font-size:11px;color:var(--sumi-light)">${tri?'三格已记，投递前扫一眼就对':'三格还是空的——核验完记一笔，投前不用翻对话'}</span>
      <span style="display:flex;gap:8px;align-items:center">
      ${nx?`<button class="btn btn-p" onclick="advance('${j.id}')">推进到「${stN(nx)}」</button>`:j.st==='offer'?'<span style="font-size:12px;color:var(--kin-deep)">🌕 已到终点，等着答复就好</span>':'<span style="font-size:12px;color:var(--sumi-light)">🥀 这张已落樱，留作记录</span>'}
      <button class="btn btn-ghost" onclick="delCard('${j.id}')">撕牌删除</button>
      </span>
    </div>`;
   $('mask').classList.add('on');
+}
+function saveTri(id){
+  const j=JOBS.find(x=>x.id===id);if(!j)return;
+  mut(id,o=>{o.verify=$('sv-vf').value;o.fit=$('sv-fit').value;o.resume=$('sv-resume').value.trim()});
+  toast('三格已存进牌里 ✓');
+  openSheet(id);
 }
 function closeSheet(){$('mask').classList.remove('on')}
 function advance(id){
@@ -589,16 +618,60 @@ function addCard(){
   if(!co){toast('公司名总要有一个呀');return}
   const now=new Date().toISOString();
   const raw={id:'real-'+Date.now(),company:co,role:$('nf-po').value.trim()||'待定岗位',
-    city:$('nf-city').value.trim(),channel:$('nf-ch').value.trim(),resume:'',
+    city:$('nf-city').value.trim(),channel:$('nf-ch').value.trim(),resume:$('nf-resume').value.trim(),
+    verify:$('nf-vf').value,fit:$('nf-fit').value,
     status:'pool',createdAt:now,appliedAt:'',salary:'',next:'',notes:'',events:[],
     history:[{status:'pool',at:now}]};
   let fresh=REAL;
   try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||"null"); if(d&&Array.isArray(d.jobs))fresh=d; }catch(e){}
   fresh.jobs.push(raw); REAL=fresh; save();
-  ['nf-co','nf-po','nf-city','nf-ch'].forEach(i=>$(i).value='');
+  ['nf-co','nf-po','nf-city','nf-ch','nf-resume'].forEach(i=>$(i).value='');
+  $('nf-vf').value='';$('nf-fit').value='';
   $('mask-add').classList.remove('on');
   renderAll(); go('board');
   toast('「'+trim(co+' · '+raw.role,18)+'」已落牌 ✓');
+}
+/* 合并雷达岗位（sakura-radar 产出）：按 公司+岗位+城市 指纹去重，只加新牌、绝不动已有牌。
+   从旧作战板原样迁回——旧板退役后这是雷达 JSON 的唯一入口。 */
+function openMerge(){
+  if(DEMO){toast("示例模式 · 不写入真数据");return}
+  $('merge-file').click();
+}
+function mergeRadar(input){
+  const file=input.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    input.value="";
+    try{
+      const d=JSON.parse(r.result);
+      const incoming=Array.isArray(d.newJobs)?d.newJobs:(Array.isArray(d.jobs)?d.jobs:null);
+      if(!incoming){toast("这不是雷达增量文件（缺 newJobs 字段）");return}
+      const fp=j=>[j.company,j.role,j.city].map(s=>String(s||"").replace(/\s+/g,"").toLowerCase()).join("|");
+      let fresh=REAL;
+      try{ const dd=JSON.parse(localStorage.getItem(LS_KEY)||"null"); if(dd&&Array.isArray(dd.jobs))fresh=dd; }catch(e){}
+      const known=new Set(fresh.jobs.map(fp));
+      const add=incoming.filter(j=>j&&j.company&&!known.has(fp(j)));
+      if(!add.length){toast("没有新牌：雷达报的 "+incoming.length+" 条都已在阵上");return}
+      if(!confirm("发现 "+add.length+" 张新牌（雷达共报 "+incoming.length+" 条，重复的自动跳过）。\n新牌将以「想投」落阵，已有的牌一律不动。合并？"))return;
+      const now=new Date().toISOString();
+      add.forEach(j=>{
+        const job=Object.assign({},j);
+        delete job.radarUrl; delete job.radarScore;
+        job.id='real-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);
+        if(!job.role)job.role='待定岗位';
+        job.status='pool';
+        job.createdAt=now; job.appliedAt='';
+        job.notes=job.notes?String(job.notes):'';
+        job.events=Array.isArray(job.events)?job.events:[];
+        job.history=[{status:'pool',at:now}];
+        if(!job.resume)job.resume='';
+        fresh.jobs.push(job);
+      });
+      REAL=fresh; save(); renderAll(); go('board');
+      toast("已合并 "+add.length+" 张新牌 ✓");
+    }catch(e){ toast("文件格式不对，合并失败"); }
+  };
+  r.readAsText(file);
 }
 /* 撕牌删除：档案弹层里可删，写前重读本地存储防覆盖，删除前需确认 */
 function delCard(id){
