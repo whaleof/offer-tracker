@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>樱帖 · 第 7 步高保真原型 v1.4</title>
+<title>樱帖 · 第 7 步高保真原型 v1.6</title>
 <style>
 /* ============ 设计系统 · 樱帖定款（9.8 冻结） ============
    色板五笔：樱粉#C2416B / 金#C9A227 / 纸#FBF7EC / 墨#2C282B / 深红#A83358
@@ -94,7 +94,8 @@ body:not(:has(.page:target)) #p-today{display:block}
 .board{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;align-items:stretch}
 .col{flex:0 0 196px;display:flex;flex-direction:column}
 .col-body{display:flex;flex-direction:column;flex:1}
-.col .backcard.filler{margin-top:auto;opacity:.6}
+.col .backcard.filler{margin-top:auto;opacity:.55;height:87px;flex:none;margin-bottom:10px}
+.col .backcard.filler img{height:100%;object-fit:cover;object-position:center 46%}
 .col-hd{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sumi-mid);padding:4px 6px 10px}
 .col-hd .cnt{margin-left:auto;font-size:11px;color:var(--sumi-light)}
 .mini{background:#fff;border:2px solid var(--line,var(--sumi));border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16)}
@@ -119,7 +120,8 @@ body:not(:has(.page:target)) #p-today{display:block}
 .seal{width:20px;height:20px}
 .empty{border:1.5px dashed rgba(201,162,39,.6);border-radius:12px;padding:14px 10px;text-align:center;font-size:11px;color:var(--sumi-light);background:rgba(237,224,192,.25)}
 .empty .dai{font-family:var(--serif);font-size:24px;color:var(--kin);line-height:1.5;display:block}
-/* v1.4(9/9)：空位牌升级=真牌背缩微卡（牌桌上扣着的牌）；纸底=默认，深红=转生态 */
+/* v1.4(9/9)：空位牌升级=真牌背缩微卡（牌桌上扣着的牌）；纸底=默认，深红=转生态
+   v1.6(9/9)：横看流程五列等高（align-items:stretch+col-body），短列底部自动补「待填」真牌背（opacity .6 弱化，margin-top:auto 沉底） */
 .backcard{border-radius:10px;overflow:hidden;box-shadow:3px 3px 0 rgba(44,40,43,.16);border:1.5px solid rgba(44,40,43,.35);background:#FBF7EC;text-align:center;padding-bottom:8px}
 .backcard img{display:block;width:100%;height:auto}
 .backcard em{font-style:normal;font-size:10.5px;color:var(--sumi-mid);letter-spacing:1px}
@@ -317,7 +319,7 @@ body:not(:has(.page:target)) #p-today{display:block}
   </div>
 </section>
 
-<div class="footnote">樱帖 · 第 7 步高保真原型 v1.4 · 牌阵列等高+短列补牌背占位 · 2026-09-09</div>
+<div class="footnote">樱帖 · 第 7 步高保真原型 v1.6 · 横看流程列等高+短列补真牌背占位 · 2026-09-09</div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
@@ -395,7 +397,7 @@ function renderBoard(){
     b.innerHTML=STAGES.map(s=>{
       const cs=JOBS.filter(j=>j.st===s.k);
       const cards=cs.length?cs.map(miniHTML).join(''):'';
-      const fillers=maxCol>1?Array(Math.max(0,maxCol-cs.length)).fill('<div class="backcard filler"><img src="cards/樱帖-牌背-当前采用版.png" alt="" /><em>待填</em></div>').join(''):'';
+      const fillers=maxCol>1?Array(Math.max(0,maxCol-cs.length)).fill('<div class="backcard filler"><img src="樱帖-牌背-当前采用版.svg" alt="待填" /></div>').join(''):'';
       return `<div class="col"><div class="col-hd">${s.n}<span class="cnt">${cs.length} 张</span></div><div class="col-body">${cards}${fillers}</div></div>`;
     }).join('');
   }else{
