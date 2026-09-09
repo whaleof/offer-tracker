@@ -20,19 +20,24 @@
   --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html{font-size:14px}
+@media(min-width:1440px){html{font-size:15px}}
+@media(min-width:1680px){html{font-size:16px}}
+@media(max-width:720px){html{font-size:13px}}
 body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;min-height:100vh}
 h1,h2,h3,.serif{font-family:var(--serif);font-weight:500}
 
-.topbar{display:flex;align-items:baseline;gap:26px;padding:18px 40px 0;max-width:1080px;margin:0 auto}
-.logo{font-size:20px;letter-spacing:2px}
-.logo svg{vertical-align:-3px;margin-right:6px}
-nav{display:flex;gap:30px;flex:1;justify-content:center}
-nav a{font-size:14px;color:var(--sumi-mid);text-decoration:none;cursor:pointer;padding-bottom:8px}
+.topbar{display:flex;align-items:baseline;gap:clamp(16px,2vw,26px);padding:clamp(14px,2vw,18px) clamp(20px,3.2vw,40px) 0;max-width:min(1080px,96vw);margin:0 auto;position:sticky;top:0;z-index:40;background:var(--kinari)}
+.logo{font-size:clamp(18px,2vw,26px);letter-spacing:2px}
+.logo svg{vertical-align:-3px;margin-right:6px;width:clamp(14px,1.2vw,16px);height:clamp(14px,1.2vw,16px)}
+nav{display:flex;gap:clamp(18px,2.4vw,30px);flex:1;justify-content:center}
+nav a{font-size:clamp(13px,1.3vw,17px);color:var(--sumi-mid);text-decoration:none;cursor:pointer;padding-bottom:8px}
 nav a.on{color:var(--shu);border-bottom:2px solid var(--shu)}
 .settings{font-size:12.5px;color:var(--sumi-light);cursor:pointer}
-.goldline{height:1px;background:var(--kin);opacity:.5;max-width:1080px;margin:0 auto}
+.goldline{height:1px;background:var(--kin);opacity:.5;max-width:min(1080px,96vw);margin:0 auto}
 
-.page{display:none;max-width:1080px;margin:22px auto 60px;padding:0 40px}
+.page{display:none;max-width:min(1200px,96vw);margin:22px auto 60px;padding:0 clamp(16px,3vw,40px)}
+@media(min-width:1600px){.page{max-width:min(1400px,96vw)}}
 .page:target{display:block}
 body:not(:has(.page:target)) #p-today{display:block}
 
@@ -83,12 +88,37 @@ body:not(:has(.page:target)) #p-today{display:block}
 .radar b{color:var(--kin-deep);font-weight:500}
 
 /* ---- 牌阵 ---- */
-.board-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
-.board-hd h2{font-size:17px}
-.board-sub{font-size:12px;color:var(--sumi-light);margin-bottom:16px}
-.viewtoggle{display:flex;border:1.5px solid var(--sumi);border-radius:999px;overflow:hidden;background:#fff}
-.viewtoggle span{font-size:12px;padding:6px 16px;cursor:pointer;color:var(--sumi-mid)}
-.viewtoggle span.on{background:var(--sumi);color:var(--kinari)}
+.board-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:4px;flex-wrap:wrap}
+.board-hd h2{font-size:clamp(16px,1.7vw,22px);margin-bottom:2px}
+.board-title{flex:1;min-width:220px}
+.board-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.board-sub{font-size:clamp(11.5px,1vw,13px);color:var(--sumi-light);margin-bottom:16px}
+
+/* ---- 牌阵操作区按钮主题化 · 统一筹码 ---- */
+.board-actions{align-items:stretch}
+.board-actions-primary{margin-left:auto}
+.btn-chip,.viewtoggle span{height:32px;padding:0 12px;border-radius:10px;border:1.5px solid rgba(44,40,43,.12);background:#fff;color:var(--sumi-mid);font-size:12px;line-height:1;font-family:var(--sans);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.btn-chip:hover,.viewtoggle span:hover{border-color:var(--kin);color:var(--sumi)}
+.btn-chip::before,.viewtoggle span::before{font-family:serif;font-size:13px;line-height:1}
+
+/* 合并雷达：白底金印 */
+.btn-merge{color:var(--sumi-mid);background:#fff}
+.btn-merge:hover{border-color:var(--kin);color:var(--kin-deep)}
+.btn-merge::before{content:"⊕";color:var(--kin)}
+
+/* 落牌：樱印主操作 */
+.btn-add{border-color:var(--shu-deep);color:var(--shu-deep);background:var(--shu-soft)}
+.btn-add:hover{background:#EAD0D8}
+.btn-add::before{content:"＋";font-family:var(--sans);font-size:13px}
+
+/* 视图切换 */
+.board-sub-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.viewtoggle{display:flex;border:none;border-radius:0;overflow:visible;background:transparent;gap:6px}
+.viewtoggle span.on{background:var(--kin-soft);border-color:var(--kin);color:var(--kin-deep);font-weight:500}
+.viewtoggle span[data-v="flow"]::before{content:"≡"}
+.viewtoggle span[data-v="co"]::before{content:"▦"}
+.viewtoggle span[data-v="cal"]::before{content:"☾"}
+@media(max-width:720px){.board-sub-bar{flex-direction:column;align-items:flex-start;gap:8px}.board-sub{margin-bottom:0}}
 .board{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px}
 .board-drop{display:none;margin-top:14px;text-align:center;font-size:11.5px;color:var(--sumi-light);border:1.5px dashed rgba(44,40,43,.25);border-radius:12px;padding:10px}
 .pboard-drag .board-drop{display:block}
@@ -100,11 +130,15 @@ body:not(:has(.page:target)) #p-today{display:block}
 .cal-lgd i{font-style:normal;display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin:0 3px 0 8px}
 .cal-wk,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-wk span{text-align:center;font-size:11px;color:var(--sumi-light);padding-bottom:6px}
-.cal-c{min-height:64px;border:1px solid rgba(44,40,43,.08);border-radius:8px;padding:4px 5px;background:var(--kinari)}
+.cal-c{min-height:64px;border:1px solid rgba(44,40,43,.08);border-radius:8px;padding:4px 5px;background:var(--kinari);position:relative}
 .cal-c.off{background:transparent;border-color:transparent}
 .cal-c.today{border:1.5px solid var(--shu)}
 .cal-d{font-size:11px;color:var(--sumi-light);text-align:right}
 .cal-c.today .cal-d{color:var(--shu-deep);font-weight:500}
+.cal-tag{position:absolute;top:4px;left:5px;font-size:10px;padding:2px 4px;border-radius:5px;line-height:1;white-space:nowrap}
+.cal-tag.holiday{background:var(--shu-soft);color:var(--shu-deep)}
+.cal-tag.rest{background:var(--kin-soft);color:var(--kin-deep)}
+.cal-tag.workday{background:rgba(44,40,43,.08);color:var(--sumi-light)}
 .cal-it{font-size:10.5px;border-radius:6px;padding:1px 6px;margin-top:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-it.ddl{background:var(--shu-soft);color:var(--shu-deep)}
 .cal-it.ev{background:var(--kin-soft);color:var(--kin-deep)}
@@ -273,14 +307,18 @@ body:not(:has(.page:target)) #p-today{display:block}
 <!-- ============ 牌阵 ============ -->
 <section class="page" id="p-board" ondragover="boardDragOver(event)" ondragleave="boardDragLeave(event)" ondrop="boardDrop(event)">
   <div class="board-hd">
-    <h2 id="bt">每张牌走到哪一步了</h2>
-    <div style="display:flex;gap:10px;align-items:center">
-      <button class="btn btn-s" onclick="openMerge()">合并雷达</button>
-      <button class="btn btn-p" onclick="openAdd()">＋ 添牌</button>
-      <div class="viewtoggle" id="vt"><span class="on" data-v="flow">横看流程</span><span data-v="co">纵看公司</span><span data-v="cal">看月历</span></div>
+    <div class="board-title">
+      <h2 id="bt">每张牌走到哪一步了</h2>
+    </div>
+    <div class="board-actions board-actions-primary">
+      <button class="btn-chip btn-merge" onclick="openMerge()">合并雷达</button>
+      <button class="btn-chip btn-add" onclick="openAdd()">落牌</button>
     </div>
   </div>
-  <div class="board-sub" id="bsub">从左到右推进，点牌翻档案、可以直接推进阶段。</div>
+  <div class="board-sub-bar">
+    <div class="viewtoggle" id="vt"><span class="on btn-chip" data-v="flow" title="横看流程">流程</span><span class="btn-chip" data-v="co" title="纵看公司">公司</span><span class="btn-chip" data-v="cal" title="看月历">月历</span></div>
+    <div class="board-sub" id="bsub">从左到右推进，点牌翻档案、可以直接推进阶段。</div>
+  </div>
   <div class="board" id="board"></div>
   <div class="board-drop" id="board-drop">把雷达 merge 文件拖到这里也能合并（同指纹去重，只加不动）</div>
 </section>
@@ -459,6 +497,66 @@ function cnDate(){const d=new Date();const M=["一","二","三","四","五","六
 function trim(s,n){s=String(s||"").replace(/\s+/g," ").trim();return s.length>n?s.slice(0,n)+"…":s}
 
 let JOBS=[];
+/* 2025-2026 国家法定节假日（来源：国务院办公厅）
+   用于月历提示：节假日 HR 处理简历慢，避开投递更高效 */
+const HOLIDAYS={
+  '2025-09-28':{type:'workday',label:'班'},
+  '2025-10-01':{type:'holiday',label:'国庆'},
+  '2025-10-02':{type:'rest',label:'休'},
+  '2025-10-03':{type:'rest',label:'休'},
+  '2025-10-04':{type:'rest',label:'休'},
+  '2025-10-05':{type:'rest',label:'休'},
+  '2025-10-06':{type:'holiday',label:'中秋'},
+  '2025-10-07':{type:'rest',label:'休'},
+  '2025-10-08':{type:'rest',label:'休'},
+  '2025-10-11':{type:'workday',label:'班'},
+
+  '2026-01-01':{type:'holiday',label:'元旦'},
+  '2026-01-02':{type:'rest',label:'休'},
+  '2026-01-03':{type:'rest',label:'休'},
+  '2026-01-04':{type:'workday',label:'班'},
+
+  '2026-02-15':{type:'holiday',label:'春节'},
+  '2026-02-16':{type:'rest',label:'休'},
+  '2026-02-17':{type:'rest',label:'休'},
+  '2026-02-18':{type:'rest',label:'休'},
+  '2026-02-19':{type:'rest',label:'休'},
+  '2026-02-20':{type:'rest',label:'休'},
+  '2026-02-21':{type:'rest',label:'休'},
+  '2026-02-22':{type:'rest',label:'休'},
+  '2026-02-23':{type:'rest',label:'休'},
+  '2026-02-14':{type:'workday',label:'班'},
+  '2026-02-28':{type:'workday',label:'班'},
+
+  '2026-04-04':{type:'holiday',label:'清明'},
+  '2026-04-05':{type:'rest',label:'休'},
+  '2026-04-06':{type:'rest',label:'休'},
+
+  '2026-05-01':{type:'holiday',label:'劳动'},
+  '2026-05-02':{type:'rest',label:'休'},
+  '2026-05-03':{type:'rest',label:'休'},
+  '2026-05-04':{type:'rest',label:'休'},
+  '2026-05-05':{type:'rest',label:'休'},
+  '2026-05-09':{type:'workday',label:'班'},
+
+  '2026-06-19':{type:'holiday',label:'端午'},
+  '2026-06-20':{type:'rest',label:'休'},
+  '2026-06-21':{type:'rest',label:'休'},
+
+  '2026-09-25':{type:'holiday',label:'中秋'},
+  '2026-09-26':{type:'rest',label:'休'},
+  '2026-09-27':{type:'rest',label:'休'},
+
+  '2026-10-01':{type:'holiday',label:'国庆'},
+  '2026-10-02':{type:'rest',label:'休'},
+  '2026-10-03':{type:'rest',label:'休'},
+  '2026-10-04':{type:'rest',label:'休'},
+  '2026-10-05':{type:'rest',label:'休'},
+  '2026-10-06':{type:'rest',label:'休'},
+  '2026-10-07':{type:'rest',label:'休'},
+  '2026-09-20':{type:'workday',label:'班'},
+  '2026-10-10':{type:'workday',label:'班'}
+};
 function vm(j){
   const st=SAKURA_STAGE[j.status]||'want';
   const appliedIso=j.appliedAt||((j.history||[]).filter(h=>h.status==='applied').pop()||{}).at;
@@ -553,10 +651,14 @@ function renderCal(b){
     put(j.raw.appliedAt,{id:j.id,co:j.co,label:'投出',cls:'ap'});
   });
   let cells='';
+  const fmt=n=>String(n).padStart(2,'0');
   for(let i=0;i<startDow;i++)cells+='<div class="cal-c off"></div>';
   for(let d=1;d<=days;d++){
     const its=items[d]||[];
-    cells+=`<div class="cal-c${isThis&&d===t.getDate()?' today':''}"><div class="cal-d">${d}</div>${its.map(it=>`<div class="cal-it ${it.cls}" title="${esc(it.co)} ${esc(it.label)}" onclick="openSheet('${it.id}')"><b>${esc(it.co)}</b> ${esc(it.label)}</div>`).join('')}</div>`;
+    const key=`${calY}-${fmt(calM+1)}-${fmt(d)}`;
+    const h=HOLIDAYS[key];
+    const hTag=h?`<span class="cal-tag ${h.type}" title="${h.type==='workday'?'调休上班':'法定节假日'}">${h.label}</span>`:'';
+    cells+=`<div class="cal-c${isThis&&d===t.getDate()?' today':''}">${hTag}<div class="cal-d">${d}</div>${its.map(it=>`<div class="cal-it ${it.cls}" title="${esc(it.co)} ${esc(it.label)}" onclick="openSheet('${it.id}')"><b>${esc(it.co)}</b> ${esc(it.label)}</div>`).join('')}</div>`;
   }
   const n=calY===undefined?'':calY+'年'+(calM+1)+'月';
   b.innerHTML=`<div class="cal" style="flex:1">
