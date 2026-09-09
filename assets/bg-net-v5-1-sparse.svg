@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 460" preserveAspectRatio="xMidYMid slice">
+  <rect width="300" height="460" fill="#FBF7EC"/>
+  <polyline points="23.20,309.31 125.74,209.46 199.17,206.52" fill="none" stroke="#C9A227" stroke-width="0.45" opacity="0.2"/>
+  <polyline points="118.67,422.45 88.33,104.59 230.01,77.11" fill="none" stroke="#C9A227" stroke-width="0.45" opacity="0.2"/>
+  <polyline points="259.00,441.76 39.16,14.06 25.63,166.47" fill="none" stroke="#C9A227" stroke-width="0.45" opacity="0.2"/>
+  <circle cx="23.20" cy="309.31" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="125.74" cy="209.46" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="199.17" cy="206.52" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="118.67" cy="422.45" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="88.33" cy="104.59" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="230.01" cy="77.11" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="259.00" cy="441.76" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="39.16" cy="14.06" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="25.63" cy="166.47" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <circle cx="256.42" cy="189.29" r="0.9" fill="#C9A227" opacity="0.2"/>
+  <path d="M23.20,303.76 L24.53,307.98 L28.76,309.31 L24.53,310.65 L23.20,314.87 L21.87,310.65 L17.64,309.31 L21.87,307.98 Z" fill="#C9A227" opacity="0.31"/>
+  <path d="M118.67,417.91 L119.76,421.36 L123.21,422.45 L119.76,423.54 L118.67,426.99 L117.58,423.54 L114.13,422.45 L117.58,421.36 Z" fill="#C9A227" opacity="0.31"/>
+  <path d="M259.00,436.10 L260.36,440.40 L264.66,441.76 L260.36,443.12 L259.00,447.43 L257.64,443.12 L253.33,441.76 L257.64,440.40 Z" fill="#C9A227" opacity="0.39"/>
+  <!-- v8-A · 10节点/3折线/3小星 · seed=20260913, 节点=10, 折线=3条, 星点=3颗 · v4 原版连线逻辑（独立折线，不串成一片） -->
+</svg>
