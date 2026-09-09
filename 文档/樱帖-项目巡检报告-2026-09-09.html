@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 项目巡检报告 2026-09-09</title>
+<style>
+:root{--pink:#F58BA8;--pink-d:#E8557F;--ink:#2C282B;--paper:#FBF7EC;--muted:#8A8078;--ok:#3B6D11;--warn:#854F0B;--bad:#A32D2D}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.7}
+main{max-width:860px;margin:0 auto;padding:32px 20px 60px}
+h1{font-size:22px;margin:0 0 4px}
+h1 .sub{font-size:13px;color:var(--muted);font-weight:400;margin-left:10px}
+h2{font-size:16px;margin:34px 0 10px;padding-left:10px;border-left:4px solid var(--pink)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #F0E6DC;vertical-align:top}
+th{background:#F9EDE6;font-weight:500}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.ok{background:var(--ok)}.warn{background:#EF9F27}.bad{background:var(--bad)}.na{background:#B4B2A9}
+code{background:#F3E9E0;border-radius:4px;padding:1px 6px;font-size:12.5px}
+.card{background:#fff;border:1px solid #F0E6DC;border-radius:12px;padding:14px 18px;margin:10px 0}
+ol.steps{padding-left:20px}
+.tag{display:inline-block;font-size:11px;border-radius:4px;padding:0 6px;margin-right:6px;color:#fff}
+.t-bad{background:var(--bad)}.t-warn{background:#BA7517}.t-ok{background:var(--ok)}
+footer{margin-top:40px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>樱帖 · 项目巡检报告<span class="sub">2026-09-09 · 自动巡检 + 目录整理 + 三端同步核对</span></h1>
+<p style="color:var(--muted)">覆盖四个问题：①为什么页面上没数据 ②文件归类整理 ③本地 / GitHub / 云端是否统一 ④PM 流程与风险缺口。</p>
+
+<h2>一、「没数据」根因（人话版）</h2>
+<div class="card">
+<p><b>现象：</b>打开 <code>101.43.110.207:9090/sakura.html</code>，「备战资料」显示「还没有牌」。</p>
+<p><b>人话解释：</b>樱帖的牌存在<b>浏览器本地</b>（localStorage），浏览器按「协议+域名+端口」把存储分成一格一格的抽屉。你之前在旧入口（8080 端口）录入的数据，躺的是 8080 那个抽屉；现在换到 9090 打开，浏览器给你的是 9090 的新抽屉——是空的。数据没丢，只是留在了旧抽屉里。</p>
+<p><b>证据：</b>① 用页面同款 token 查云端备份接口，返回 <code>exists:false</code>（云端备份柜从没存过东西，自动恢复自然救不了）；② 本地 <code>数据/my-data.json</code>（9/9 00:33 导出）里有真实的腾讯等岗位数据，证明数据确实存在过。</p>
+<p><b>结论修正：</b>之前会话里「改端口不破坏 origin」的说法是<b>错的</b>——端口本身就在 origin 里，改端口必然换抽屉。</p>
+<p><b>修复（3 步，做完以后固定用 9090）：</b></p>
+<ol class="steps">
+<li>浏览器打开旧入口 <code>http://101.43.110.207:8080/off-tracker/</code>，确认牌还在</li>
+<li>「作战室 · 导出」存成 JSON 文件</li>
+<li>打开 <code>http://101.43.110.207:9090/sakura.html</code>，「作战室 · 导入」→ 牌全部回来；之后樱帖会自动往云端备份柜存一份，跨浏览器也能一键恢复</li>
+</ol>
+</div>
+
+<h2>二、文件归类整理（已完成并推送）</h2>
+<table>
+<tr><th>位置</th><th>内容</th><th>说明</th></tr>
+<tr><td><code>/</code> 根目录</td><td>index.html、sakura.html、news.json、README.md</td><td>news.json 被 index.html 相对路径引用，<b>不能挪</b></td></tr>
+<tr><td><code>设计稿/</code></td><td>需求一页纸、线框、流程图、视觉定稿、牌背 v1-v9、对标卡等 40+ 个设计 HTML</td><td>PM 流程产物全在这</td></tr>
+<tr><td><code>素材图/</code></td><td>小红书封面/预览图、樱帖装饰、樱帖资产</td><td>发布物料</td></tr>
+<tr><td><code>文档/</code></td><td>小红书文案 ×2、本巡检报告</td><td>可追溯产物</td></tr>
+<tr><td><code>tools/</code></td><td>生成/截图/补丁脚本 + smoke_test.js（新挪入）</td><td></td></tr>
+<tr><td><code>数据/</code>（新建）</td><td>my-data.json、大华技术-待导入.json</td><td><b>真实数据，已 gitignore，永不进仓库</b></td></tr>
+<tr><td><code>归档备份/</code>（新建）</td><td>全部 13 个 .bak 快照 + my-data.backup</td><td>已 gitignore，仅本地保留</td></tr>
+</table>
+<p>README 已补「目录结构」一节，下次打开仓库先看 README 就知道去哪找。</p>
+
+<h2>三、三端同步状态</h2>
+<table>
+<tr><th>端</th><th>状态</th><th>核对方式</th></tr>
+<tr><td><span class="dot ok"></span>本地 → 云端服务器(9090)</td><td><b>sakura.html 完全一致</b>（md5 相同）；9090 根路径 index.html 是「跳转到樱帖」的引导页，属设计如此</td><td>双端 md5 比对</td></tr>
+<tr><td><span class="dot ok"></span>本地 → GitHub</td><td><b>已拉平</b>：今天补推了 8 个 commit（51d8cab..6f8f067），含目录整理</td><td>git push 成功回执</td></tr>
+<tr><td><span class="dot warn"></span>GitHub → GitHub Pages</td><td>Pages 需几分钟重新构建，稍后 <code>whaleof.github.io/offer-tracker/</code> 会自动变成最新版</td><td>构建延迟，非故障</td></tr>
+<tr><td><span class="dot bad"></span>云端备份柜</td><td>空的（exists:false）——这就是自动恢复失败的原因，按第一节三步走完即生效</td><td>带 token 实测接口</td></tr>
+</table>
+
+<h2>四、风险与缺口清单</h2>
+<table>
+<tr><th>级别</th><th>问题</th><th>说明 / 建议</th></tr>
+<tr><td><span class="tag t-bad">隐私</span></td><td>真实数据备份曾进过公开仓库</td><td><code>my-data.backup-20260909-0045.json</code>（含真实投递记录）之前被 commit 且推送到了公开仓库，本次已从仓库移除并 gitignore；但<b>历史 commit 里仍能看到</b>。如介意，需改写 git 历史（一次确认即可做）</td></tr>
+<tr><td><span class="tag t-bad">数据</span></td><td>云端备份从未生效</td><td>同第一节；没做三步之前，数据只在你当前浏览器的抽屉里，清缓存/换浏览器会「看起来丢」</td></tr>
+<tr><td><span class="tag t-warn">安全</span></td><td>备份 token 弱混淆</td><td>sakura.html 里 token 用 base64+反转藏代码，能防爬虫扫不到，防不了有心人；配合 /api/backup 已要求 token，风险可接受，知道即可</td></tr>
+<tr><td><span class="tag t-warn">体验</span></td><td>手机端没验证过</td><td>小红书读者全是手机打开，发布前务必手机实测 sakura.html（卡牌布局在窄屏的表现）</td></tr>
+<tr><td><span class="tag t-warn">流程</span></td><td>上线后迭代缺记录</td><td>建议：①手机实测截图留档 ②加一个 5 行的 changelog ③每次别人反馈记进一张「反馈牌」</td></tr>
+<tr><td><span class="tag t-ok">正常</span></td><td>git remote 里带 token</td><td>只在本地 .git/config，不进代码；若哪天要共享整台电脑配置再换 credential manager</td></tr>
+</table>
+
+<h2>五、PM 流程结论</h2>
+<div class="card">
+<p><b>前 4 步（调研 → 需求 → 设计 → 开发测试）产物齐全，走得比多数校招项目规范。</b>第 5 步「上线」已上线但<b>未分发</b>（小红书文案和封面都备好了，就差发）。第 6 步「上线后迭代」是目前唯一真正的空白——而这步恰恰是面试里最能讲故事的（「上线后我发现端口迁移导致用户数据『消失』，排查出 origin 隔离问题并设计了备份恢复机制」——今天这个 bug 本身就是绝佳的面试素材）。</p>
+</div>
+
+<footer>WorkBuddy 巡检产物 · 2026-09-09 · 数据核对均在只读状态完成，文件整理与推送已获用户要求执行</footer>
+</main>
+</body>
+</html>
