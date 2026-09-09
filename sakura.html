@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>樱帖 · 求职作战板（真数据版）</title>
+<title>樱帖 · 求职作战板</title>
 <style>
 /* ============ 设计系统 · 樱帖定款（9.8 冻结） ============
    色板五笔：樱粉#C2416B / 金#C9A227 / 纸#FBF7EC / 墨#2C282B / 深红#A83358
@@ -172,7 +172,8 @@ body:not(:has(.page:target)) #p-today{display:block}
 .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:var(--sumi);color:var(--kinari);font-size:12.5px;border-radius:999px;padding:9px 22px;opacity:0;transition:.3s;z-index:99;pointer-events:none}
 .toast.on{opacity:1}
 .footnote{max-width:1080px;margin:0 auto 40px;padding:0 40px;font-size:11px;color:var(--sumi-light)}
-body.empty .hero,body.empty .grid-home{display:none!important}
+.empty-tip{max-width:1080px;margin:0 auto 16px;padding:10px 18px;border:1px dashed var(--kin);border-radius:12px;background:#fffdf5;font-size:12.5px;color:var(--sumi-mid);text-align:center}
+.empty-tip a{color:var(--shu);cursor:pointer}
 </style>
 </head>
 <body>
@@ -184,20 +185,13 @@ body.empty .hero,body.empty .grid-home{display:none!important}
     <a href="#p-board" data-p="board">牌阵</a>
     <a href="#p-trial" data-p="trial">试炼</a>
   </nav>
-  <a class="settings" href="index.html" style="text-decoration:none">旧作战板 ›</a>
+  <a class="settings" href="index.html" style="text-decoration:none">作战板 ›</a>
 </div>
 <div class="goldline"></div>
 
 <!-- ============ 今日帖 ============ -->
 <section class="page" id="p-today">
-  <div class="panel" id="empty-state" style="display:none;margin-bottom:18px">
-    <div class="emptywrap">
-      <div class="serif" style="font-size:20px;margin-bottom:8px">牌桌还是空的</div>
-      <p style="font-size:12.5px;color:var(--sumi-mid);margin-bottom:16px">樱帖读的是「旧作战板」那份真数据（存在你自己浏览器里）。<br>先去添岗位，添完回来牌就摆上了。</p>
-      <a class="btn btn-p" href="index.html">去旧作战板添岗位</a>
-      <button class="btn btn-s" onclick="location='?demo=1'">先用示例牌看看样子</button>
-    </div>
-  </div>
+  <div class="empty-tip" id="empty-state" style="display:none">牌桌还是空的——去 <a href="index.html">作战板</a> 添加岗位，或 <a onclick="location='?demo=1'">先用示例牌看看样子</a></div>
 
   <div class="hero">
     <svg class="hero-bg" width="230" height="230" viewBox="0 0 240 240">
@@ -275,9 +269,9 @@ body.empty .hero,body.empty .grid-home{display:none!important}
     <h3 id="wb-t">备战资料</h3>
     <div class="chips" id="co-chips"></div>
     <div id="wb-prep">
-      <div class="sec-t">备考清单 · 和旧作战板同步</div>
+      <div class="sec-t">备考清单</div>
       <div id="ck-list"></div>
-      <div class="sec-t">备战资料包 · 手记（AI 生成 v2 接云服务器后开）</div>
+      <div class="sec-t">备战资料包 · 手记</div>
       <textarea class="prep-ta" id="prep-ta" placeholder="这家公司的备战手记：重点业务、JD 关键词、要讲的项目、要避的坑…"></textarea>
       <div style="margin-top:8px;text-align:right"><button class="btn btn-p" onclick="savePrep()">存进牌里</button></div>
     </div>
@@ -317,7 +311,7 @@ body.empty .hero,body.empty .grid-home{display:none!important}
   </div>
 </section>
 
-<div class="footnote">樱帖 v2.1 · 真数据版 · 与旧作战板同一份本地数据，投出去/推进/复盘实时互通 · 2026-09-09
+<div class="footnote">樱帖 · 求职作战板 · 数据存在你自己的浏览器，换电脑用「作战板 › 导出 / 导入」搬家
 <span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button></span></div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
@@ -328,22 +322,44 @@ body.empty .hero,body.empty .grid-home{display:none!important}
 /* ═══════════ ① 存取层：同源直读旧作战板真数据 ═══════════ */
 const LS_KEY="job-tracker-v1", WRONG_KEY="sakura-wrong-v1";
 const DEMO=new URLSearchParams(location.search).has("demo");
+const PREVIEW=new URLSearchParams(location.search).has("preview");
 let REAL={jobs:[]};
 function boot(){
-  $("hero-date").textContent=cnDate()+(DEMO?" · 示例模式":"");
+  $("hero-date").textContent=cnDate()+(DEMO&&!PREVIEW?" · 示例模式":"");
   if(DEMO){ loadDemo(); return; }
   try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||"null"); if(d&&Array.isArray(d.jobs)) REAL=d; }catch(e){}
   init();
 }
 function loadDemo(){
-  fetch("my-data.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{REAL=d;init();toast("示例模式 · 用的是导出数据，不会写入")}).catch(()=>{
-    REAL={jobs:[
-     {id:"demo-1",company:"示例科技",role:"AI 产品经理",status:"pool",channel:"官网",city:"杭州",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),history:[{status:"pool",at:new Date().toISOString()}],next:"这是示例牌，去旧作战板添真岗位",notes:"示例牌不会写入，看看样子"},
-     {id:"demo-2",company:"示例网络",role:"产品经理",status:"applied",appliedAt:"2026-09-02",createdAt:"2026-09-01",updatedAt:"2026-09-02T10:00:00.000Z",history:[{status:"pool",at:"2026-09-01"},{status:"applied",at:"2026-09-02"}],next:"等回音",notes:""},
-     {id:"demo-3",company:"示例智能",role:"AI 产品（笔试）",status:"test",createdAt:"2026-08-20",updatedAt:"2026-09-06T10:00:00.000Z",history:[{status:"pool",at:"2026-08-20"},{status:"applied",at:"2026-08-25"},{status:"test",at:"2026-09-06"}],next:"9/11 笔试",notes:""}
-    ]};
-    init();toast("示例模式 · 假数据，不会写入");
-  });
+  /* 内置示例牌：假公司+大路岗位，相对日期（越放越新）；纯内存，绝不写入 */
+  const D=n=>{const d=new Date();d.setDate(d.getDate()-n);return d.toISOString()};
+  const DS=n=>{const d=new Date();d.setDate(d.getDate()-n);return d.toISOString().slice(0,10)};
+  REAL={jobs:[
+    {id:"d1",company:"拾光科技",role:"前端开发工程师",status:"pool",channel:"官网",city:"杭州",resume:"通用版",
+     createdAt:D(3),updatedAt:D(3),history:[{status:"pool",at:D(3)}],
+     next:"读完 JD，明晚投官网",notes:"JD 加分项写着「有自己的小工具/作品」，作品集用得上"},
+    {id:"d2",company:"南屿网络",role:"产品经理（校招）",status:"applied",channel:"BOSS",city:"上海",
+     appliedAt:DS(8),createdAt:D(9),updatedAt:D(8),history:[{status:"pool",at:D(9)},{status:"applied",at:D(8)}],
+     next:"等回音，准备跟进话术",notes:""},
+    {id:"d3",company:"远帆银行",role:"管培生（科技方向）",status:"applied",channel:"官网",city:"北京",
+     appliedAt:DS(2),createdAt:D(3),updatedAt:D(2),history:[{status:"pool",at:D(3)},{status:"applied",at:D(2)}],
+     next:"等笔试通知，留意邮箱",notes:""},
+    {id:"d4",company:"鹿鸣智能",role:"数据分析师",status:"test",channel:"内推",city:"北京",
+     createdAt:D(12),updatedAt:D(2),history:[{status:"pool",at:D(12)},{status:"applied",at:D(10)},{status:"test",at:D(2)}],
+     next:"周四晚刷一遍 case 框架",notes:"内推人提醒：笔试考 SQL + 业务 case"},
+    {id:"d5",company:"海晏科技",role:"Java 后端开发",status:"interview",channel:"官网",city:"深圳",
+     createdAt:D(15),updatedAt:D(1),history:[{status:"pool",at:D(15)},{status:"applied",at:D(12)},{status:"test",at:D(5)},{status:"interview",at:D(1)}],
+     events:[{date:DS(-1),time:"14:00",label:"一面"}],
+     next:"准备自我介绍 2 分钟版",notes:"",
+     reviews:[{at:D(0),date:fd(D(0)),round:"电话初筛",questions:["说说你对这个岗位的理解"]}]},
+    {id:"d6",company:"北辰集团",role:"测试开发工程师",status:"offer",channel:"官网",city:"杭州",
+     createdAt:D(30),updatedAt:D(4),history:[{status:"pool",at:D(30)},{status:"applied",at:D(25)},{status:"test",at:D(18)},{status:"interview",at:D(10)},{status:"offer",at:D(4)}],
+     next:"两周内答复",notes:""},
+    {id:"d7",company:"白鹭文化",role:"新媒体运营",status:"rejected",channel:"BOSS",city:"杭州",
+     createdAt:D(20),updatedAt:D(6),history:[{status:"pool",at:D(20)},{status:"applied",at:D(18)},{status:"rejected",at:D(6)}],
+     next:"",notes:"方向不合，留个记录"}
+  ]};
+  init();toast("示例模式 · 假数据，不会写入");
 }
 function save(){
   if(DEMO){toast("示例模式 · 不写入真数据");return}
@@ -408,12 +424,9 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clear
 
 /* ═══════════ ④ 今日帖 ═══════════ */
 function renderToday(){
-  const empty=!JOBS.length&&!DEMO;
-  document.body.classList.toggle('empty',empty);
-  $('empty-state').style.display=empty?'':'none';
-  if(empty)return;
+  $('empty-state').style.display=(!JOBS.length&&!DEMO)?'':'none';
   const wants=JOBS.filter(j=>j.st==='want');
-  $('list-want').innerHTML=wants.map(j=>`<div class="act"><span class="dot" style="background:var(--shu-deep)"></span><span class="what"><b>${esc(j.co)} · ${esc(j.po)}</b><span>${j.days?'已存 '+j.days+' 天':'刚存的'}</span>${j.next?`<span class="note">${esc(j.next)}</span>`:''}</span><button class="btn btn-p" onclick="doSent('${j.id}')">投了 ›</button></div>`).join('')||'<div class="act"><span class="what" style="color:var(--sumi-light);font-size:12px">都投完了，今天轻快 ✓</span></div>';
+  $('list-want').innerHTML=wants.map(j=>`<div class="act"><span class="dot" style="background:var(--shu-deep)"></span><span class="what"><b>${esc(j.co)} · ${esc(j.po)}</b><span>${j.days?'已存 '+j.days+' 天':'刚存的'}</span>${j.next?`<span class="note">${esc(j.next)}</span>`:''}</span><button class="btn btn-p" onclick="doSent('${j.id}')">投了 ›</button></div>`).join('')||`<div class="act"><span class="what" style="color:var(--sumi-light);font-size:12px">${JOBS.length?'都投完了，今天轻快 ✓':'还没有牌——存第一张牌吧'}</span></div>`;
   const urges=JOBS.filter(j=>j.st==='sent'&&j.days>=7);
   $('list-urge').innerHTML=urges.map(j=>`<div class="act"><span class="dot" style="background:var(--kin)"></span><span class="what"><b>${esc(j.co)} · ${esc(j.po)}</b><span>已投 ${j.days} 天</span></span>${j.followed?'<button class="btn btn-s" disabled>今天催过了 ✓</button>':'<button class="btn btn-s" onclick="doUrge(\''+j.id+'\')">催一下</button>'}</div>`).join('')||'<div class="act"><span class="what" style="color:var(--sumi-light);font-size:12px">暂时不用催谁</span></div>';
   const ints=JOBS.filter(j=>j.st==='int');
@@ -434,7 +447,7 @@ function renderToday(){
   $('hero-n').textContent=cnt('offer')+' / '+JOBS.length;
   $('hero-fill').style.width=(JOBS.length?Math.round(cnt('offer')/JOBS.length*100):0)+'%';
   const fresh=JOBS.filter(j=>since(j.raw.createdAt)<=7);
-  $('radar-box').innerHTML=fresh.length?`<b>近 7 天新牌</b> · ${fresh.length} 条<br>`+fresh.slice(0,4).map(j=>esc(j.co)+' · '+esc(j.po)).join('<br>'):'<b>近 7 天</b> · 没有新牌，该补补雷达了';
+  $('radar-box').innerHTML=fresh.length?`<b>近 7 天新牌</b> · ${fresh.length} 条<br>`+fresh.slice(0,4).map(j=>esc(j.co)+' · '+esc(j.po)).join('<br>'):(JOBS.length?'<b>近 7 天</b> · 没有新牌，该补补雷达了':'<b>近 7 天新牌</b><br>添加岗位后，新抓到的牌会摆在这里');
 }
 function doSent(id){mut(id,j=>{j.status='applied';j.appliedAt=new Date().toISOString().slice(0,10);(j.history=j.history||[]).push({status:'applied',at:isoNow()})},true);toast('已记为「已投」✓ 7 天没音它会来提醒你催')}
 function doUrge(id){mut(id,j=>{j.lastUrgeAt=isoNow()});toast('已记：今天催过了 ✓')}
@@ -537,12 +550,12 @@ function renderPrep(){
   $('prep-ta').disabled=false;
   $('prep-ta').value=j.raw.prep||"";
   const cks=j.raw.checks||[];
-  $('ck-list').innerHTML=cks.length?cks.map((c,i)=>`<label class="ck${c.done?' done':''}"><input type="checkbox" ${c.done?'checked':''} onchange="toggleCk(${i})"><span>${esc(c.t)}</span></label>`).join(''):'<div style="font-size:12px;color:var(--sumi-light);padding:4px 2px">还没有清单——旧作战板跑「AI 深度分析」会生成，跑完这里就有了</div>';
+  $('ck-list').innerHTML=cks.length?cks.map((c,i)=>`<label class="ck${c.done?' done':''}"><input type="checkbox" ${c.done?'checked':''} onchange="toggleCk(${i})"><span>${esc(c.t)}</span></label>`).join(''):'<div style="font-size:12px;color:var(--sumi-light);padding:4px 2px">还没有清单——在作战板里生成备考清单后，这里会同步显示</div>';
 }
 function toggleCk(i){mut(curId,j=>{const ck=(j.checks=j.checks||[]);ck[i].done=!ck[i].done});renderPrep()}
 function savePrep(){const v=$('prep-ta').value;if(!DEMO&&!curId)return;mut(curId,j=>{j.prep=$('prep-ta').value});toast('资料包已存进牌里 ✓')}
 
-/* ---- 面试复盘（写进岗位的 reviews，和旧作战板互通） ---- */
+/* ---- 面试复盘（写进岗位的 reviews） ---- */
 function allRevs(){
   const out=[];
   REAL.jobs.forEach(j=>(j.reviews||[]).forEach(r=>out.push({co:j.company,date:r.date||fd(r.at),text:(r.questions||[]).join('；'),at:r.at||r.date||""})));
@@ -559,7 +572,7 @@ function saveRev(){
   const id=$('rev-co').value;if(!id){toast('先在上方选一家公司');return}
   mut(id,j=>{(j.reviews=j.reviews||[]).unshift({at:isoNow(),date:fd(new Date()),round:"",questions:[t]})});
   $('rev-text').value='';document.getElementById('revform').classList.remove('on');
-  renderRev();toast('复盘已记进帖里 ✓（旧作战板也看得到）');
+  renderRev();toast('复盘已记进帖里 ✓');
 }
 
 /* ---- 刷题库（22 道种子题 + 被问倒的本地收集） ---- */
@@ -624,7 +637,7 @@ function pick(which){
   if(which==='flash')loadDeck();
   if(which==='prep')renderPrep();
   $('wb-t').textContent={prep:'备战资料',rev:'面试复盘',flash:'刷题库'}[which]+(curId?' · '+curCoName():'');
-  window.scrollTo({top:$('wb-t').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
+  if(!PREVIEW)window.scrollTo({top:$('wb-t').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
 }
 
 /* ═══════════ ⑦ 导航 & 启动 ═══════════ */
@@ -646,6 +659,16 @@ function renderAll(){JOBS=REAL.jobs.map(vm);renderToday();renderBoard();renderCh
 function init(){
   curId='';
   renderAll();renderPrep();renderRev();sync();
+  const vp=new URLSearchParams(location.search);
+  const v=vp.get('view');
+  if(v==='board')go('board');
+  else if(v==='prep'||v==='rev'||v==='flash'){go('trial');pick(v)}
+  if(vp.get('layout')==='co'&&JOBS.length){
+    view='co';
+    document.querySelectorAll('#vt span').forEach(s=>s.classList.toggle('on',s.dataset.v==='co'));
+    $('bt').textContent='按公司看 · 共 '+JOBS.length+' 张牌';
+    renderBoard();
+  }
 }
 
 /* ═══════════ ⑧ 云端自动备份（只在 101.43 服务器版生效，GitHub 版静默跳过） ═══════════ */
@@ -684,6 +707,7 @@ if(CLOUD_ON){
       if(j.ok&&d&&Array.isArray(d.jobs)&&d.jobs.length){REAL=d;save();renderAll();toast('已从云端恢复 '+REAL.jobs.length+' 张牌 ✓')} }).catch(()=>{});
   }
 }
+if(PREVIEW){const st=document.createElement('style');st.textContent='.page{max-width:1500px}';document.head.appendChild(st)}
 </script>
 </body>
 </html>
