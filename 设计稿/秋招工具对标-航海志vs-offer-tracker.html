@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>秋招工具对标：秋招航海志 vs offer-tracker</title>
+<style>
+  body{font-family:"Microsoft YaHei",sans-serif;margin:0;background:#fff5f8;color:#3a2a30;line-height:1.7;}
+  .wrap{max-width:860px;margin:0 auto;padding:28px 22px 60px;}
+  h1{font-size:22px;color:#c2416b;margin:0 0 4px;}
+  .sub{font-size:13px;color:#9a7a85;margin-bottom:22px;}
+  h2{font-size:16px;color:#c2416b;border-left:4px solid #c2416b;padding-left:10px;margin:30px 0 12px;}
+  .card{background:#fff;border:1px solid #ffe0ea;border-radius:12px;padding:16px 18px;margin-bottom:12px;}
+  .fn{display:flex;gap:10px;margin:8px 0;}
+  .fn b{color:#c2416b;white-space:nowrap;}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;}
+  th,td{border:1px solid #f3d4de;padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:#ffe0ea;color:#8f2c4b;font-weight:600;}
+  .win{color:#1d7a4f;font-weight:600;}
+  .lose{color:#b3541e;font-weight:600;}
+  .even{color:#8a6d00;font-weight:600;}
+  .tag{display:inline-block;background:#ffe0ea;color:#c2416b;border-radius:10px;padding:1px 10px;font-size:12px;margin-right:6px;}
+  .warn{background:#fff8e8;border:1px solid #f0d9a0;border-radius:12px;padding:14px 18px;font-size:13px;margin:12px 0;}
+  .todo{background:#fff;border:1.5px dashed #c2416b;border-radius:12px;padding:14px 18px;margin-top:14px;}
+  li{margin:4px 0;}
+  .small{font-size:12px;color:#9a7a85;}
+</style>
+</head>
+<body><div class="wrap">
+<h1>秋招工具对标：秋招航海志 vs 我的 offer-tracker</h1>
+<div class="sub">提取自抖音视频逐帧截图（作者「叫我小矩」，2026-09-01）· 2026-09-07 整理</div>
+
+<h2>一、「秋招航海志」功能全清单（视频实测提取）</h2>
+<div class="card">
+  <div class="fn"><b>① 投递列表</b><span>公司卡片流（拼多多/百度/网易…），岗位+日期+状态标签；「+ 新建投递」填公司信息后自动生成后续所有界面</span></div>
+  <div class="fn"><b>② 月历视图</b><span>2026年9月日历，笔试/面试 DDL 标记在日期格上</span></div>
+  <div class="fn"><b>③ 投递详情页</b><span>岗位链接、JD 全文、投递来源（boss直聘）、投递→笔试→面试各节点时间轴</span></div>
+  <div class="fn"><b>④ 状态变更引导</b><span>状态变化弹时间选择器（如面试时间），自动记录节点；首次有猫吉祥物新手引导（下一步/跳过）</span></div>
+  <div class="fn"><b>⑤ AI 深度分析（DeepSeek）</b><span>每张投递卡可跑：JD 匹配度分析 + 面试介绍优化 + 行业与公司调研报告（约两分钟自动生成）</span></div>
+  <div class="fn"><b>⑥ 五大功能卡</b><span>面试闪卡 · 深度分析 · 面试复盘 · 漏斗分析 · BOSS 打招呼（AI 生成打招呼语）</span></div>
+  <div class="fn"><b>⑦ 交付形态</b><span>本地项目+教程包，要自己启动、自己填 DeepSeek Key，AI 费用自担</span></div>
+</div>
+
+<h2>二、正面对比</h2>
+<table>
+<tr><th style="width:16%">维度</th><th style="width:28%">秋招航海志（抖音）</th><th style="width:28%">我的 offer-tracker</th><th style="width:28%">判定</th></tr>
+<tr><td>上手门槛</td><td>要装环境+看教程启动</td><td>打开链接即用，零安装</td><td class="win">我赢（碾压项）</td></tr>
+<tr><td>投递状态机</td><td>有，状态弹窗+时间轴</td><td>六态状态机+变化历史+超时自动标「需跟进」</td><td class="even">打平（我多超时预警）</td></tr>
+<tr><td>DDL 倒计时</td><td>月历上标记</td><td>卡片红/橙倒计时+月历无</td><td class="lose">他有月历视图，我没有</td></tr>
+<tr><td>AI 能力</td><td>深度分析/闪卡/复盘/打招呼语</td><td>无</td><td class="lose">他赢（最大差距）</td></tr>
+<tr><td>漏斗统计</td><td>有（漏斗分析卡）</td><td>有（顶部转化率）</td><td class="even">打平</td></tr>
+<tr><td>面试复盘</td><td>有+AI 加持</td><td>有复盘+题库聚合，无 AI</td><td class="even">各有千秋</td></tr>
+<tr><td>BOSS 打招呼</td><td>AI 生成</td><td>无</td><td class="lose">他没有我没有（可抄）</td></tr>
+<tr><td>中国校招本土化</td><td>有（BOSS/笔试/月历）</td><td>有（测评/内推/届别窗口进状态机）</td><td class="even">打平</td></tr>
+<tr><td>颜值</td><td>插画风格统一、猫吉祥物、和谐</td><td>朴素、功能藏在卡片里</td><td class="lose">他赢（观感差距真实存在）</td></tr>
+<tr><td>开源公开</td><td>未开源，群分享</td><td>GitHub 公开+在线链接</td><td class="win">我赢（作品集可见）</td></tr>
+<tr><td>费用</td><td>AI 调用自己付费</td><td>全免费（AI 上线后同为 BYO key）</td><td class="even">打平</td></tr>
+</table>
+
+<h2>三、超越方案（按优先级，动工顺序）</h2>
+<div class="card">
+  <li><span class="tag">P0</span><b>AI 复盘助手：</b>面试复盘写完 → AI 自动整理成题卡进题库 + 给出改进建议（补最大差距，且和已有题库视图天然衔接）</li>
+  <li><span class="tag">P1</span><b>月历 DDL 视图：</b>复用工作台已验证的设计——「有任务才标记+点日期内联展开」的底部小卡，不照搬他的整月大日历</li>
+  <li><span class="tag">P1</span><b>BOSS 打招呼生成：</b>岗位卡一键生成打招呼语（高频动作，BOSS 是主投渠道）</li>
+  <li><span class="tag">P2</span><b>JD 匹配度分析：</b>粘贴 JD → 对照简历给匹配度+短板建议（他有我有精）</li>
+  <li><span class="tag">P2</span><b>情报雷达：</b>GitHub Actions 每日抓目标公司官方校招页 → 情报区推送（他都没有的差异化王牌）</li>
+  <li><span class="tag">P3</span><b>视觉升级：</b>首屏信息密度+卡片层次，向「和谐」靠拢，但不加吉祥物不加装饰性高亮</li>
+</div>
+<div class="warn">🔑 <b>AI Key 安全铁律：</b>公开网页前端<b>绝不能硬编码 API Key</b>（任何人看源码就能扒走盗刷）。正确做法＝BYO Key：AI 功能默认收起，想用的人在设置里自己填 Key，Key 只存本人浏览器 localStorage、不进代码仓库。DeepSeek 有纯前端直连先例；若浏览器拦截跨域，退一步用工作台云端做转发代理。智谱 glm-4-flash 有免费额度，可做免费档。</div>
+
+<div class="todo"><b>⏳ 待拍板</b><br>
+① P0 复盘AI / P1 月历+BOSS 打招呼 / P2 雷达——先做哪批？<br>
+② AI Key 给哪家：DeepSeek（便宜）还是智谱 flash（免费档）？<br>
+③ 仓库搬独立文件夹 + 补远程地址，随下次更新一起办。</div>
+<p class="small">数据来源：抖音视频 7680550880198615475 逐帧截图；对比基线 offer-tracker v2.1。</p>
+</div></body>
+</html>

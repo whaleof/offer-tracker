@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖重启 · 项目流程梳理卡</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0; --ai:#3A5A7A; --take:#6E8B5E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.75;padding:24px;max-width:960px;margin:0 auto}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+h1{font-size:21px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:18px}
+h2{font-size:16px;font-weight:500;margin:26px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+h3{font-size:13.5px;font-weight:500;margin:14px 0 6px}
+p{margin:6px 0;color:var(--sumi-mid)}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:8px 0 18px}
+.card{background:#fff;border:1px solid rgba(44,40,43,.4);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.card.feat{border:1.5px solid var(--sumi)}
+.card.warn{border-color:var(--shu);background:#fffafb}
+.card.ok{border-color:#639922;background:#fbfdf7}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+th{background:var(--kami);text-align:left;padding:8px 10px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18)}
+td{padding:8px 10px;border-bottom:1px solid rgba(44,40,43,.18);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500}
+code{background:var(--kami);padding:1px 5px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+ul,ol{margin:6px 0 6px 22px}
+li{margin:5px 0;color:var(--sumi-mid);font-size:13.5px}
+li b{color:var(--sumi);font-weight:500}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:12px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.callout.ok{background:#eaf3de;border-color:#639922;color:#3B6D11}
+.no{color:var(--shu-deep);font-weight:500}
+.yes{color:#3B6D11;font-weight:500}
+.half{color:#854F0B;font-weight:500}
+.copy-btn{background:var(--shu);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;margin:8px 0}
+.copy-btn:hover{background:var(--shu-deep)}
+pre{background:#2C282B;color:#EFE7EA;border-radius:12px;padding:14px 16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-word;margin:10px 0}
+.toc{background:var(--kami);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px}
+.toc a{color:var(--shu);text-decoration:none;display:block;padding:2px 0}
+.steps{counter-reset:s}
+.step{display:flex;gap:10px;align-items:flex-start;margin:7px 0}
+.step .n{counter-increment:s;flex:0 0 24px;height:24px;border-radius:50%;background:var(--kami);border:1px solid rgba(44,40,43,.3);color:var(--sumi);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center}
+.step .n::before{content:counter(s)}
+.step.done .n{background:#eaf3de;border-color:#639922;color:#3B6D11}
+.step.half .n{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.step.miss .n{background:#fdecea;border-color:var(--shu);color:var(--shu-deep)}
+.step .t{flex:1;font-size:13.5px;color:var(--sumi-mid)}
+.step .t b{color:var(--sumi)}
+</style>
+</head>
+<body>
+
+<h1 class="serif">樱帖重启 · 项目流程梳理卡</h1>
+<div class="sub">2026-09-08 · 回答你的问题：为什么慢、卡在哪、接下来怎么走 · 这张卡就是新对话的启动文件</div>
+<div class="gold-rule"></div>
+
+<div class="toc">
+  <b class="serif">目录</b>
+  <a href="#0">〇、一句话结论</a>
+  <a href="#1">一、根因反思（诚实版，4 条）</a>
+  <a href="#2">二、标准流程 10 步 · 我们卡在哪</a>
+  <a href="#3">三、回答你的三连问</a>
+  <a href="#4">四、已锁定 · 不再推翻的（冻结资产）</a>
+  <a href="#5">五、新对话怎么开（复制即用）</a>
+  <a href="#6">六、新对话第一轮 · 我会反问你的问题</a>
+</div>
+
+<h2 id="0">〇、一句话结论</h2>
+<div class="card feat">
+<p style="font-size:15px"><b class="serif">不是模型不行，也不是推理不行——是我们从第一天起就没走过前三步。</b></p>
+<p>这个项目是 v1→v9.2 一路"看到什么改什么"叠出来的，从来没有过一次完整的<b>需求定义 → 信息架构 → 页面布局</b>。所以功能"能跑但不满意"、UI"有进步但不惊艳"、素材"单看行、放进去不知道放哪"——这三个感受是<b>同一个根因</b>的三张面孔。</p>
+</div>
+
+<h2 id="1">一、根因反思（诚实版，4 条）</h2>
+<div class="card warn">
+<ol>
+<li><b>没有需求文档。</b>功能是迭代堆出来的，不是规划出来的。从没定义过"满意长什么样"，所以永远到不了满意。</li>
+<li><b>视觉方向推翻了 4 轮</b>（航海志→花札→樱帖→月亮向）。每轮都靠"感觉描述"对齐——而你自己说过"有审美但表达不出来"。感觉描述对齐感觉，必然来回拉扯。<b>正确做法是第一轮就互发参考图锁定。</b></li>
+<li><b>执行顺序颠倒。</b>我们先做了图标/logo/插画（第 7-8 步的活），页面布局（第 5 步）至今是空的。你说"单看不知道放哪里"——<b>不是图不好，是没有页面在等着它</b>。这句是今天最值钱的反馈。</li>
+<li><b>我的失职：</b>视觉方向第 3 次被推翻时，我就该停下来说"我们先定流程"，而不是继续跟着打补丁。这个提醒应该由我先给，晚了三轮。</li>
+</ol>
+</div>
+
+<h2 id="2">二、标准流程 10 步 · 我们卡在哪</h2>
+<div class="card">
+<p>一个网页/项目从零到满意，标准顺序是这样（这是产品+设计的通用流程，不是玄学）：</p>
+<div class="steps">
+<div class="step miss"><div class="n"></div><div class="t"><b>需求定义</b> —— 给谁用、解决什么、成功长什么样（一页纸）<b>· 未做</b></div></div>
+<div class="step miss"><div class="n"></div><div class="t"><b>功能清单 + 优先级</b> —— 必须/应该/可以三档，砍掉不用的 <b>· 未做</b></div></div>
+<div class="step miss"><div class="n"></div><div class="t"><b>信息架构</b> —— 有哪些页、每页放什么、层级关系（页面地图）<b>· 未做</b></div></div>
+<div class="step miss"><div class="n"></div><div class="t"><b>核心流程图</b> —— "添加岗位→跟踪→复盘"这条路的每一步 <b>· 未做</b></div></div>
+<div class="step miss"><div class="n"></div><div class="t"><b>线框图</b> —— 每页的布局灰盒子，<b>只管东西放哪，不谈任何颜色</b> · 未做 ← <b>我们卡在这之前</b></div></div>
+<div class="step half"><div class="n"></div><div class="t"><b>视觉方向</b> —— 参考图 moodboard + 色板 + 字体 <b>· 半成品</b>：方向已收敛到"月亮+樱+粉金"，但没用参考图正式锁定</div></div>
+<div class="step half"><div class="n"></div><div class="t"><b>设计系统</b> —— 按钮/卡片/图标/插画规范 <b>· 半成品</b>：sprite 和图标有了，规范散在 3 张卡里</div></div>
+<div class="step half"><div class="n"></div><div class="t"><b>高保真稿</b> —— 先做 1-2 个关键页 <b>· 素材有、页面没有</b></div></div>
+<div class="step half"><div class="n"></div><div class="t"><b>开发落地</b> —— 现有 v9.2 代码还是旧方向</div></div>
+<div class="step done"><div class="n"></div><div class="t"><b>验收迭代</b> —— 一直在做（这就是"慢"的观感来源：第 10 步做了无数遍，前 5 步一遍没做）</div></div>
+</div>
+<div class="callout"><b>先定功能还是先定 UI？</b>答案是：<b>先定功能（1-4 步），再定布局（第 5 步），最后才是视觉（6-8 步）</b>。UI 不是"好不好看"，是"信息架构 + 布局 + 视觉"三件事，我们一直在只做第三件。</div>
+</div>
+
+<h2 id="3">三、回答你的三连问</h2>
+<div class="card">
+<table>
+<tr><th>你的问题</th><th>诚实回答</th></tr>
+<tr><td>视觉模型不行？</td><td class="yes">行。守护兽、月牙攀樱都已到可用级——能出真插画，工具没问题。</td></tr>
+<tr><td>推理能力不行？</td><td class="yes">行。考据（库洛牌设定/CLAMP 元素清单）、skill 挑选、bug 定位都做对了。</td></tr>
+<tr><td>那卡在哪？</td><td class="no">卡在流程。素材是"结果"，需求和布局是"原因"。原因没定，结果必然反复返工——这就是"慢"的全部真相。</td></tr>
+</table>
+<p>另外两个小勘误（记下了）：①"诡异"的是<b>樱字不是花瓣</b>——花瓣你说好看的 ②守护兽是我修过头：你说"炸毛稍微改改"，我直接修成"没毛的石狮子"。正确目标＝<b>柔软蓬松但有毛发质感</b>。这两条冻结，等流程走到视觉阶段一起修。</p>
+</div>
+
+<h2 id="4">四、已锁定 · 不再推翻的（冻结资产）</h2>
+<div class="card ok">
+<p>这些是这几轮"慢"换来的真资产，新对话直接继承、不再讨论：</p>
+<ul>
+<li><b>名字与语言</b>：樱帖 · 全程简体中文 · 无日文字 · 英文可点缀</li>
+<li><b>色彩</b>：粉 <code>#C2416B</code> + 金 <code>#C9A227</code> + 纸 <code>#FBF7EC</code> + 墨 <code>#2C282B</code>（深红 <code>#A83358</code> 留给"未转生"状态）</li>
+<li><b>审美方向</b>：<b>月亮向</b>、含蓄、不要直白的太阳和星星、少女感但不幼稚（你亲口定的）</li>
+<li><b>叙事</b>：转生＝红→粉（拿 offer 的牌从库洛牌转生为小樱牌）</li>
+<li><b>守护兽</b>：方向已认可（金新月+樱瓣+魔法阵），仅毛发质感待微调</li>
+<li><b>logo</b>：乙方案「月牙攀樱」（无文字）为候选主打，待你最终点头</li>
+<li><b>工艺路线</b>：具象插画用图像生成，手写 SVG 只做极简几何图标</li>
+<li><b>已装工具</b>：Impeccable（前端设计工具集 v2）、前端设计 skill；photo-distill 在 GitHub（需 Codex/Claude Code 环境）</li>
+</ul>
+</div>
+
+<h2 id="5">五、新对话怎么开（复制即用）</h2>
+<div class="card feat">
+<p>开新对话后，把下面这段整段粘进去（它自包含，新对话不需要本对话的上下文）：</p>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('boot').innerText).then(()=>{this.textContent='✓ 已复制';setTimeout(()=>this.textContent='复制启动词',1600)})">复制启动词</button>
+<pre id="boot">我在重启 offer-tracker（项目代号「樱帖」）的 UI，这次按正规流程走，不再打补丁。
+
+【背景】G:/_06_项目代码/offer-tracker/index.html 是一个单文件 HTML 求职管理工具（localStorage，已部署 GitHub Pages），功能已迭代到 v9.2 但从未做过需求定义和信息架构，导致功能和 UI 都不满意。视觉方向已收敛：主题借魔卡少女樱，月亮向、含蓄、简体中文，色板粉#c2416B/金#C9A227/纸#FBF7EC/墨#2C282B，叙事"转生=红→粉"，已有一只守护兽吉祥物和 logo 候选（generated-images/ 目录）。
+
+【先读】G:/_06_项目代码/工作台/cards/offer-tracker-樱帖重启-项目流程梳理卡.md（这张卡的 MD 版）+ .workbuddy/memory/MEMORY.md。
+
+【本次只做流程的第 1-5 步，禁止跳到视觉】
+第 1 步 需求定义：反问我，帮我梳理出"给谁用/解决什么/成功长什么样"，一页纸。
+第 2 步 功能清单：列出全部现有功能，让我按 必须/应该/可以 打分，砍掉不用的。
+第 3 步 信息架构：页面地图，每页放什么。
+第 4 步 核心流程：添加→跟踪→复盘 的路径图。
+第 5 步 线框图：每页一个灰盒子布局（只管位置不谈颜色），用 HTML 线框给我看。
+每步做完等我确认再进下一步。全程先功能后视觉，视觉素材一律冻结。</pre>
+</div>
+
+<h2 id="6">六、新对话第一轮 · 我会反问你的问题</h2>
+<div class="card">
+<p>按流程第 1 步，新对话里我会问你这些（你可以先想，也可以到时候再答）：</p>
+<ol>
+<li>这个工具你<b>一天打开几次</b>？打开后<b>最常做的 3 个动作</b>是什么？</li>
+<li>现有功能里，<b>哪些你从来没点过</b>？（这些是砍候补：闪卡/深度分析/漏斗/BOSS话术/复盘/月历…）</li>
+<li>你主要在<b>手机还是电脑</b>上用它？（决定布局是一栏还是多栏）</li>
+<li>求职结束后（拿到 offer），这个工具你还会用吗？——决定它是"求职季工具"还是"长期职业档案"</li>
+<li>如果只能保留 <b>3 个功能</b>，你留哪 3 个？</li>
+<li>你希望打开首页的<b>第一眼看到什么</b>？（今日待办？投递数？某张牌？）</li>
+<li>有没有<b>别人做的同类工具</b>你觉得顺手的？截图给我</li>
+<li>视觉上除了"月亮向"，还有<b>哪张图最接近你脑子里的感觉</b>？（一张就够）</li>
+</ol>
+</div>
+
+<div class="gold-rule" style="margin-top:26px"></div>
+<p style="font-size:11px;color:var(--sumi-light);text-align:center">樱帖重启流程卡 · 2026-09-08 · 积分不是问题——方向对了再花，才是真的省</p>
+
+</body>
+</html>

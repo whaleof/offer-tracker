@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offer Tracker · 秋招作战板</title>
+<!--
+  ════════════════════════════════════════════════════════
+  Offer Tracker（秋招作战板）· 单文件应用（无后端 / localStorage 存储）
+  仓库: offer-tracker · 数据安全：全部存在本机浏览器 localStorage，
+  可随时「导出备份」成 JSON；真实数据包 my-data.json 永不进仓库。
+  演示模式：一键填充脱敏假数据，供作品集展示；清空即可恢复真实数据。
+
+  ── 扩展指南（AI/未来维护者读这里）──
+  ① 加/改状态列      → 只改 CONFIG.STAGES
+  ② 加岗位字段       → 只改 CONFIG.FIELDS + renderForm 的表单生成
+  ③ 加新视图/功能块  → 在 VIEWS 区加函数 + 在 renderMain 里挂载
+  ④ 数据结构变更     → CONFIG.DATA_VERSION +1，在 STORE.migrate 里写迁移
+  ════════════════════════════════════════════════════════
+-->
+<style>
+  :root{
+    --pink:#c2416b; --pink-deep:#993556; --pink-bg:#fff5f8; --pink-card:#ffe0ea; --card:#fff; --header-bg:rgba(255,245,248,.92);
+    --ink:#3d2b33; --ink-mid:#7a5f6a; --ink-light:#a98e99;
+    --ok:#3b6d11; --warn:#ba7517; --bad:#a32d2d; --info:#185fa5;
+    --line:rgba(194,65,107,.15); --radius:12px;
+  }
+  body.dark{
+    --pink-bg:#211a20; --pink-card:#3a2c34; --card:#332a31; --header-bg:rgba(28,22,27,.92);
+    --ink:#f2e7ec; --ink-mid:#c9adba; --ink-light:#937a86;
+    --line:rgba(224,138,165,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  body{background:var(--pink-bg);color:var(--ink);min-height:100vh;padding-bottom:60px}
+  button{cursor:pointer;border:none;font-family:inherit}
+  input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--card);outline:none;width:100%}
+  input:focus,select:focus,textarea:focus{border-color:var(--pink)}
+
+  /* ── header ── */
+  header{position:sticky;top:0;z-index:20;background:var(--header-bg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  header h1{font-size:18px;color:var(--pink-deep);font-weight:600}
+  header .sub{font-size:12px;color:var(--ink-light)}
+  .hbtns{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .btn{background:var(--card);border:1px solid var(--line);color:var(--pink-deep);border-radius:8px;padding:7px 14px;font-size:13px;transition:.15s}
+  .btn:hover{border-color:var(--pink);background:var(--pink-card)}
+  .btn.primary{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .btn.primary:hover{background:var(--pink-deep)}
+  .btn.danger{color:var(--bad)}
+  .btn.small{padding:4px 10px;font-size:12px}
+
+  /* ── 漏斗统计 ── */
+  .funnel{display:flex;gap:6px;padding:14px 20px 4px;flex-wrap:wrap;align-items:center}
+  .funnel .fcell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center;min-width:86px}
+  .funnel .fcell b{display:block;font-size:20px;color:var(--pink-deep)}
+  .funnel .fcell span{font-size:11px;color:var(--ink-mid)}
+  .funnel .frate{font-size:11px;color:var(--ink-light);padding:0 2px}
+
+  /* ── 工具条 ── */
+  .toolbar{display:flex;gap:10px;padding:10px 20px;flex-wrap:wrap;align-items:center}
+  .toolbar input[type=search]{width:220px}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--ink-mid)}
+  .chip.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .chip.warn-dot::before{content:"●";color:var(--warn);margin-right:4px;font-size:9px}
+
+  /* ── 看板 ── */
+  .board{display:flex;gap:12px;padding:12px 20px;overflow-x:auto;align-items:flex-start}
+  .col{min-width:240px;flex:0 0 240px;background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+  .col h3{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .col h3 .dot{width:8px;height:8px;border-radius:50%}
+  .col h3 .cnt{margin-left:auto;font-size:11px;color:var(--ink-light);font-weight:400}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:.15s;position:relative}
+  .card:hover{border-color:var(--pink);box-shadow:0 2px 8px rgba(194,65,107,.12)}
+  .card .co{font-size:14px;font-weight:600}
+  .card .role{font-size:12px;color:var(--ink-mid);margin:2px 0 6px}
+  .card .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11px}
+  .tag{border-radius:6px;padding:2px 7px;background:var(--pink-card);color:var(--pink-deep)}
+  .tag.ddl-soon{background:#fdecea;color:var(--bad)}
+  .tag.ddl-week{background:#faf0e0;color:var(--warn)}
+  .tag.stale{background:#faf0e0;color:var(--warn)}
+  .card .next{font-size:11px;color:var(--ink-light);margin-top:6px;border-top:1px dashed var(--line);padding-top:5px}
+  .col .add{width:100%;background:none;border:1px dashed var(--line);border-radius:8px;color:var(--ink-light);padding:6px;font-size:12px}
+  .col .add:hover{color:var(--pink);border-color:var(--pink)}
+
+  /* ── 列表视图 ── */
+  .listtable{width:calc(100% - 40px);margin:12px 20px;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;font-size:13px}
+  .listtable th{background:var(--pink-card);color:var(--pink-deep);text-align:left;padding:9px 12px;font-size:12px;font-weight:600}
+  .listtable td{padding:9px 12px;border-top:1px solid var(--line)}
+  .listtable tr:hover td{background:var(--pink-bg)}
+  .listtable tr{cursor:pointer}
+  .st-badge{border-radius:6px;padding:2px 8px;font-size:11px;color:#fff;display:inline-block}
+
+  /* ── 模态 ── */
+  .mask{position:fixed;inset:0;background:rgba(61,43,51,.35);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+  .mask.show{display:flex}
+  .modal{background:var(--card);border-radius:16px;padding:22px;width:100%;max-width:520px}
+  .modal h2{font-size:16px;color:var(--pink-deep);margin-bottom:14px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form-grid .full{grid-column:1/-1}
+  .form-grid label{display:block;font-size:12px;color:var(--ink-mid);margin-bottom:4px}
+  .mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+  .hist{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
+  .hist li{list-style:none;font-size:12px;color:var(--ink-mid);padding:3px 0;display:flex;justify-content:space-between;gap:10px}
+  .stageflow{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+  .stageflow button{border-radius:8px;padding:5px 10px;font-size:12px;background:var(--pink-bg);border:1px solid var(--line);color:var(--ink-mid)}
+  .stageflow button.cur{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .empty{padding:40px;text-align:center;color:var(--ink-light);font-size:13px}
+  .qitem{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;font-size:13px;line-height:1.6}
+  .qmeta{font-size:12px;color:var(--ink-light);margin-top:4px}
+  .empty b{color:var(--pink-deep)}
+  .note{font-size:12px;color:var(--ink-light);padding:0 20px}
+  /* ── 月历小卡（有事件才标记，点日期内联展开） ── */
+  .calwrap{max-width:620px;margin:14px auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .cal-head{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+  .cal-head b{font-size:14px;color:var(--pink-deep);margin:0 4px}
+  .cal-nav{border:1px solid var(--line);background:var(--card);border-radius:6px;width:26px;height:26px;color:var(--ink-mid);line-height:1}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal-wd{font-size:11px;color:var(--ink-light);text-align:center;padding:2px 0}
+  .cal-cell{min-height:46px;border-radius:8px;padding:3px 5px;font-size:12px;border:1px solid transparent;cursor:pointer;text-align:left;background:none;color:var(--ink)}
+  .cal-cell:hover{background:var(--pink-bg)}
+  .cal-cell.blank{cursor:default;min-height:46px}
+  .cal-cell.blank:hover{background:none}
+  .cal-cell.today{border-color:var(--pink)}
+  .cal-cell.sel{background:var(--pink-card)}
+  .cal-cell .dots{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+  .cal-cell .dots i{width:5px;height:5px;border-radius:50%;display:inline-block}
+  .cal-panel{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+  .cal-ev{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:13px;cursor:pointer}
+  .cal-ev:hover{background:var(--pink-bg)}
+  .cal-ev .cdot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+  .cal-ev .ct{margin-left:auto;font-size:11px;color:var(--ink-light)}
+  /* ── AI 区块 ── */
+  .ai-box{background:var(--pink-bg);border-radius:8px;padding:8px 10px;margin-top:6px;font-size:12px;line-height:1.75;white-space:pre-wrap;color:var(--ink)}
+  body.dark .ai-box{background:rgba(224,138,165,.08)}
+  .ai-status{font-size:12px;color:var(--ink-mid);margin-top:6px;min-height:14px}
+  .ai-status.err{color:var(--bad)}
+  .qrow{display:flex;align-items:flex-start;gap:8px;margin-top:6px}
+  .qrow .qt{flex:1}
+  @media (max-width:640px){.form-grid{grid-template-columns:1fr}.toolbar input[type=search]{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🎯 Offer Tracker <span style="font-size:13px;font-weight:400;color:var(--ink-light)">秋招作战板</span></h1>
+    <div class="sub">岗位池 · 投递追踪 · 漏斗复盘 —— 数据只存本机浏览器，清缓存前先「导出备份」，换设备用「导入」搬家</div>
+  </div>
+  <div class="hbtns">
+    <button class="btn primary" onclick="UI.openForm()">＋ 添加岗位</button>
+    <button class="btn" onclick="IO.exportJSON()">导出备份</button>
+    <button class="btn" onclick="IO.exportCSV()">导出CSV</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">导入</button>
+    <button class="btn" onclick="UI.toggleDemoMenu(this)">演示</button>
+    <button class="btn" id="aiBtn" onclick="UI.openAISettings()">AI 设置</button>
+    <button class="btn" id="themeBtn" onclick="THEME.toggle(this)">🌙</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="IO.importJSON(this)">
+  </div>
+</header>
+
+<div id="main"></div>
+
+<!-- 添加/编辑 岗位 -->
+<div class="mask" id="formMask">
+  <div class="modal">
+    <h2 id="formTitle">添加岗位</h2>
+    <div class="form-grid" id="formBody"></div>
+    <div class="mbtns">
+      <button class="btn" onclick="UI.closeForm()">取消</button>
+      <button class="btn primary" onclick="UI.saveForm()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 岗位详情 -->
+<div class="mask" id="detailMask">
+  <div class="modal" id="detailBody"></div>
+</div>
+
+<!-- 演示菜单 -->
+<div class="mask" id="demoMask" onclick="if(event.target===this)UI.close('demoMask')">
+  <div class="modal" style="max-width:360px">
+    <h2>演示模式</h2>
+    <p style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-bottom:14px">
+      用脱敏假数据填满看板，供作品集展示。<br>
+      ⚠️ 填充会覆盖当前数据，请先「导出备份」。
+    </p>
+    <div class="mbtns" style="justify-content:flex-start">
+      <button class="btn" onclick="DEMO.load();UI.close('demoMask')">填充演示数据</button>
+      <button class="btn danger" onclick="IO.clearAll()">清空全部数据</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI 设置 -->
+<div class="mask" id="aiMask" onclick="if(event.target===this)UI.close('aiMask')">
+  <div class="modal" style="max-width:430px">
+    <h2>AI 设置</h2>
+    <p style="font-size:12px;color:var(--ink-mid);line-height:1.7;margin-bottom:12px">
+      Key 只存在<b>你自己浏览器</b>的 localStorage 里，不进仓库、不经过任何服务器——谁用谁填自己的，费用自己可控。
+      DeepSeek 官网 platform.deepseek.com 注册即有赠送额度；智谱 glm-4-flash 有免费档。</p>
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin-bottom:4px">提供方</label>
+    <select id="ai_provider"></select>
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin:10px 0 4px">API Key</label>
+    <input id="ai_key" type="password" placeholder="sk-… 或 智谱 key" autocomplete="off">
+    <label style="display:block;font-size:12px;color:var(--ink-mid);margin:10px 0 4px">我的亮点（AI 的背景信息，用于打招呼语和答题思路）</label>
+    <textarea id="ai_bio" rows="3" placeholder="如：软件工程本科，自研 AI 工作台迭代 13 周，产品直觉 + AI 协作 + 数据思维"></textarea>
+    <div class="ai-status" id="ai-set-st"></div>
+    <div class="mbtns">
+      <button class="btn" onclick="UI.close('aiMask')">取消</button>
+      <button class="btn primary" onclick="UI.saveAISettings()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ═══════════ ① CONFIG 配置区（加状态/加字段只动这里） ═══════════ */
+const CONFIG = {
+  DATA_VERSION: 3,          // 数据结构版本：变更 +1 并在 STORE.migrate 写迁移
+  LS_KEY: "job-tracker-v1",
+  STALE_DAYS: 7,            // 已投后超过 N 天无状态变化 → 标「无进展」
+  // AI 提供方（OpenAI 兼容）。Key 只存访客自己浏览器（localStorage），绝不硬编码进仓库
+  AI_PROVIDERS: {
+    deepseek: { name:"DeepSeek（便宜，几分钱/次）", base:"https://api.deepseek.com", model:"deepseek-chat" },
+    glm:      { name:"智谱 glm-4-flash（有免费额度）", base:"https://open.bigmodel.cn/api/paas/v4", model:"glm-4-flash" },
+  },
+  STAGES: [
+    { id:"pool",      name:"待投递",   color:"#888780" },
+    { id:"applied",   name:"已投递",   color:"#378ADD" },
+    { id:"test",      name:"测评/笔试", color:"#BA7517" },
+    { id:"interview", name:"面试中",   color:"#D4537E" },
+    { id:"offer",     name:"Offer",   color:"#3B6D11" },
+    { id:"rejected",  name:"挂了",     color:"#A32D2D" },
+  ],
+  // 表单字段：type 支持 text/select/date/textarea；span=2 占满一行
+  FIELDS: [
+    { key:"company",  label:"公司名称 *", type:"text",   required:true },
+    { key:"role",     label:"岗位名称 *", type:"text",   required:true },
+    { key:"city",     label:"城市",       type:"text" },
+    { key:"channel",  label:"投递渠道",   type:"text",   ph:"官网 / BOSS / 内推…" },
+    { key:"deadline", label:"网申截止 DDL", type:"date" },
+    { key:"resume",   label:"简历版本",   type:"text",   ph:"如：A公司AI产品版 v3" },
+    { key:"salary",   label:"薪资范围",   type:"text",   ph:"可不填" },
+    { key:"status",   label:"当前状态",   type:"select", options:"STAGES" },
+    { key:"next",     label:"下一步动作", type:"text",   span:2, ph:"如：等测评邮件 / 周五前催HR" },
+    { key:"notes",    label:"备注（JD要点 / 内推人 / 注意事项）", type:"textarea", span:2, rows:3 },
+  ],
+};
+const stageOf = id => CONFIG.STAGES.find(s=>s.id===id) || CONFIG.STAGES[0];
+
+/* ═══════════ ② STORE 数据层（唯一入口，别绕过它改数据） ═══════════ */
+const STORE = {
+  data: { version: CONFIG.DATA_VERSION, jobs: [] },
+  load(){
+    try{ const raw = localStorage.getItem(CONFIG.LS_KEY);
+      if(raw) this.data = this.migrate(JSON.parse(raw));
+    }catch(e){ console.error("读取失败", e); }
+    return this.data;
+  },
+  save(){ localStorage.setItem(CONFIG.LS_KEY, JSON.stringify(this.data)); },
+  migrate(d){
+    if(!d.version) d.version = 1;
+    if(!Array.isArray(d.jobs)) d.jobs = [];
+    if(d.version < 2) d.version = 2;            // v2：岗位新增 reviews（面试复盘），旧数据补空数组即可
+    if(d.version < 3) d.version = 3;            // v3：复盘新增 advice（AI 思路）、岗位新增 greeting（AI 打招呼语）
+    d.jobs.forEach(j=>{
+      if(!Array.isArray(j.reviews)) j.reviews = [];
+      j.reviews.forEach(r=>{ if(!r.advice || typeof r.advice!=="object") r.advice = {}; });
+      if(typeof j.greeting !== "string") j.greeting = "";
+    });
+    return d;
+  },
+  add(job){
+    job.id = Date.now() + "" + Math.floor(Math.random()*1e4);
+    job.history = [{ status: job.status || "pool", at: new Date().toISOString() }];
+    job.createdAt = job.updatedAt = new Date().toISOString();
+    this.data.jobs.unshift(job); this.save();
+  },
+  update(id, patch, moveStatus){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j) return;
+    const changed = moveStatus && moveStatus !== j.status; // 必须在合并前比较，否则旧状态被覆盖、历史永远不记
+    Object.assign(j, patch);
+    if(changed){
+      j.status = moveStatus;
+      j.history.push({ status: moveStatus, at: new Date().toISOString() });
+    }
+    j.updatedAt = new Date().toISOString();
+    this.save();
+  },
+  remove(id){ this.data.jobs = this.data.jobs.filter(x=>x.id!==id); this.save(); },
+  addReview(id, r){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j) return;
+    if(!Array.isArray(j.reviews)) j.reviews = [];
+    r.at = new Date().toISOString();
+    j.reviews.unshift(r); this.save();
+  },
+  removeReview(id, idx){
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.reviews) return;
+    j.reviews.splice(idx, 1); this.save();
+  },
+  addAdvice(id, rIdx, qText, text){
+    // AI 生成的答题思路，按题目原文挂到对应复盘下（题目是 key，重生成直接覆盖）
+    const j = this.data.jobs.find(x=>x.id===id); if(!j || !j.reviews || !j.reviews[rIdx]) return;
+    if(!j.reviews[rIdx].advice || typeof j.reviews[rIdx].advice!=="object") j.reviews[rIdx].advice = {};
+    j.reviews[rIdx].advice[qText] = text;
+    j.updatedAt = new Date().toISOString();
+    this.save();
+  },
+  replaceAll(d){ this.data = this.migrate(d); this.save(); },
+};
+
+/* ═══════════ ③ 工具函数 ═══════════ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today = () => { const t=new Date(); t.setHours(0,0,0,0); return t; };
+function daysUntil(dateStr){ if(!dateStr) return null; return Math.round((new Date(dateStr+"T00:00:00") - today())/864e5); }
+function daysSince(iso){ return Math.floor((today() - new Date(iso))/864e5); }
+function fmtDate(iso){ return iso ? iso.slice(0,10) : "—"; }
+function ddlTag(d){
+  const n = daysUntil(d);
+  if(n===null) return "";
+  if(n<0)   return `<span class="tag ddl-soon">DDL已过 ${-n}天</span>`;
+  if(n<=3)  return `<span class="tag ddl-soon">⏳还剩${n}天</span>`;
+  if(n<=7)  return `<span class="tag ddl-week">还剩${n}天</span>`;
+  return `<span class="tag">DDL ${d.slice(5)}</span>`;
+}
+function staleTag(j){
+  // 已投/测评/面试中 且 状态更新超过 N 天 → 提示可催
+  if(["pool","offer","rejected"].includes(j.status)) return "";
+  const d = daysSince(j.updatedAt);
+  return d >= CONFIG.STALE_DAYS ? `<span class="tag stale">已${d}天无进展</span>` : "";
+}
+function isoDay(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+// 月历事件聚合（纯函数）：DDL 红 / 投递 蓝 / 面试复盘 粉
+const CAL = {
+  TYPES: { ddl:{label:"DDL", color:"#A32D2D"}, applied:{label:"投递", color:"#378ADD"}, review:{label:"面试", color:"#D4537E"} },
+  eventsByDate(jobs){
+    const map = {};
+    const put = (date,type,jobId,extra)=>{ if(!date) return;
+      (map[date] = map[date]||[]).push({ type, jobId, ...extra }); };
+    jobs.forEach(j=>{
+      if(j.deadline && daysUntil(j.deadline) >= 0) put(j.deadline, "ddl", j.id, { text:j.company+" DDL" });
+      if(j.appliedAt) put(String(j.appliedAt).slice(0,10), "applied", j.id, { text:"投递 "+j.company });
+      (j.reviews||[]).forEach(r=> put(r.date || (r.at?String(r.at).slice(0,10):""), "review", j.id,
+        { text:(j.company)+" "+(r.round||"复盘") }));
+    });
+    return map;
+  },
+};
+
+/* ═══════════ ④ VIEWS 视图层 ═══════════ */
+const VIEWS = {
+  filter: { q:"", stage:"all" },
+  calMonth: null,   // "2026-09"，null=当月
+  calSel: null,     // 选中的日期 "2026-09-10"
+
+  visibleJobs(){
+    const f = this.filter;
+    return STORE.data.jobs.filter(j=>{
+      if(f.stage!=="all" && j.status!==f.stage) return false;
+      if(f.q && !(j.company+j.role+(j.notes||"")).toLowerCase().includes(f.q.toLowerCase())) return false;
+      return true;
+    });
+  },
+
+  funnel(){
+    const jobs = STORE.data.jobs;
+    const cnt = id => jobs.filter(j=>j.status===id).length;
+    const cells = CONFIG.STAGES.map(s=>
+      `<div class="fcell"><b style="color:${s.color}">${cnt(s.id)}</b><span>${s.name}</span></div>`);
+    const applied = cnt("applied")+cnt("test")+cnt("interview")+cnt("offer")+cnt("rejected");
+    const rate = (a,b)=> b? `→ ${Math.round(a/b*100)}%` : "";
+    const rates = `<span class="frate">投出${applied} · 进面${cnt("interview")}<br>投→面 ${rate(cnt("interview"),applied)} · 面→offer ${rate(cnt("offer"),cnt("interview"))}</span>`;
+    return `<div class="funnel">${cells.join('')}${rates}</div>`;
+  },
+
+  board(){
+    const vis = this.visibleJobs();
+    const cols = CONFIG.STAGES.map(s=>{
+      const cards = vis.filter(j=>j.status===s.id).map(j=>this.card(j)).join("");
+      return `<div class="col">
+        <h3><span class="dot" style="background:${s.color}"></span>${s.name}
+          <span class="cnt">${vis.filter(j=>j.status===s.id).length}</span></h3>
+        ${cards || ""}
+        <button class="add" onclick="UI.openForm(null,'${s.id}')">＋ 加到「${s.name}」</button>
+      </div>`;
+    }).join("");
+    return `<div class="board">${cols}</div>`;
+  },
+
+  card(j){
+    const st = stageOf(j.status);
+    return `<div class="card" style="border-left:3px solid ${st.color}" onclick="UI.openDetail('${j.id}')">
+      <div class="co">${esc(j.company)}</div>
+      <div class="role">${esc(j.role)}${j.city? " · "+esc(j.city):""}</div>
+      <div class="meta">
+        <span class="tag" style="background:${st.color}1a;color:${st.color}">${st.name}</span>
+        ${ddlTag(j.deadline)}${staleTag(j)}${j.resume?`<span class="tag">📄${esc(j.resume)}</span>`:""}
+      </div>
+      ${j.next? `<div class="next">→ ${esc(j.next)}</div>`:""}
+    </div>`;
+  },
+
+  table(){
+    const vis = this.visibleJobs();
+    if(!vis.length) return `<div class="empty">没有匹配的岗位</div>`;
+    const rows = vis.map(j=>{
+      const st = stageOf(j.status);
+      return `<tr onclick="UI.openDetail('${j.id}')">
+        <td><b>${esc(j.company)}</b></td><td>${esc(j.role)}</td><td>${esc(j.city||"—")}</td>
+        <td>${esc(j.channel||"—")}</td><td>${j.deadline? esc(j.deadline):"—"}</td>
+        <td>${j.appliedAt? esc(fmtDate(j.appliedAt)):"—"}</td>
+        <td><span class="st-badge" style="background:${st.color}">${st.name}</span></td>
+        <td>${esc(j.next||"—")}</td>
+      </tr>`;
+    }).join("");
+    return `<table class="listtable"><thead><tr>
+      <th>公司</th><th>岗位</th><th>城市</th><th>渠道</th><th>DDL</th><th>投递日</th><th>状态</th><th>下一步</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+  },
+
+  qbank(){
+    // 题库：聚合所有岗位复盘里被问过的题，面试前按公司过一遍
+    const items = [];
+    STORE.data.jobs.forEach(j=>(j.reviews||[]).forEach((r,ri)=>
+      (r.questions||[]).forEach((q,qi)=>items.push({q, co:j.company, round:r.round||"", date:r.date||fmtDate(r.at), jobId:j.id, ri, qi, advice:(r.advice||{})[q]||""}))));
+    this._qitems = items;
+    if(!items.length) return `<div class="empty" style="margin-top:40px">
+      <div style="font-size:34px;margin-bottom:8px">🗂️</div><b>题库还是空的</b>
+      <div style="font-size:12px;color:var(--ink-light);margin-top:6px">面试完打开对应岗位 → 「面试复盘」→ 添加复盘<br>被问倒的题会自动汇到这里，下次面试前过一遍</div></div>`;
+    return `<div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">共 ${items.length} 道被问过的题 · 下次面试前按公司过一遍 · 点「思路」让 AI 给答题要点</div>` +
+      items.map((it,i)=>`<div class="qitem"><div>${esc(it.q)}</div>
+        ${it.advice? `<div class="ai-box" id="qb-adv-${i}">${esc(it.advice)}</div>`:""}
+        <div class="ai-status" id="qb-st-${i}"></div>
+        <div class="qmeta">${esc(it.co)} · ${esc(it.round)} · ${esc(it.date)}
+          <button class="btn small" style="margin-left:8px;padding:2px 8px"
+            onclick="AI.adviceQB(${i})">AI 思路</button>
+        </div></div>`).join("");
+  },
+
+  calendar(){
+    // 本土化月历：有事件才标记，点日期在下方内联展开，不做大日历主视图
+    const now = new Date();
+    const ym = this.calMonth || `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+    const [y,m] = ym.split("-").map(Number);
+    const startDow = (new Date(y, m-1, 1).getDay()+6)%7;   // 周一=0
+    const dim = new Date(y, m, 0).getDate();
+    const ev = CAL.eventsByDate(STORE.data.jobs);
+    const todayStr = isoDay(today());
+    if(this.calSel && !ev[this.calSel] && this.calSel!==todayStr) {} // 选中日无事件也展示空态
+    const sel = this.calSel;
+    const nav = (d)=>{
+      const nd = new Date(y, m-1+d, 1);
+      return `VIEWS.calMonth='${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,"0")}';VIEWS.calSel=null;renderResults()`;
+    };
+    let cells = "";
+    for(let i=0;i<startDow;i++) cells += `<div class="cal-cell blank"></div>`;
+    for(let d=1;d<=dim;d++){
+      const ds = `${ym}-${String(d).padStart(2,"0")}`;
+      const es = ev[ds]||[];
+      const dots = es.slice(0,4).map(e=>`<i style="background:${CAL.TYPES[e.type].color}"></i>`).join("");
+      cells += `<button class="cal-cell ${ds===todayStr?"today":""} ${ds===sel?"sel":""}"
+        onclick="VIEWS.calSel=VIEWS.calSel==='${ds}'?null:'${ds}';renderResults()">${d}<div class="dots">${dots}</div></button>`;
+    }
+    let panel = "";
+    if(sel){
+      const es = ev[sel]||[];
+      panel = `<div class="cal-panel"><b style="font-size:13px">${sel.slice(5)} ${es.length?"· "+es.length+" 件事":"· 没有安排"}</b>
+        ${es.map(e=>`<div class="cal-ev" onclick="UI.openDetail('${e.jobId}')">
+          <span class="cdot" style="background:${CAL.TYPES[e.type].color}"></span>
+          ${CAL.TYPES[e.type].label} · ${esc(e.text)}<span class="ct">点击看详情 →</span></div>`).join("")}</div>`;
+    }
+    return `<div class="calwrap">
+      <div class="cal-head">
+        <button class="cal-nav" onclick="${nav(-1)}">‹</button><b>${y} 年 ${m} 月</b><button class="cal-nav" onclick="${nav(1)}">›</button>
+        <span style="margin-left:auto;font-size:11px;color:var(--ink-light);display:flex;gap:8px">
+          ${Object.values(CAL.TYPES).map(t=>`<span><i style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${t.color};margin-right:3px"></i>${t.label}</span>`).join("")}
+        </span>
+      </div>
+      <div class="cal-grid">${["一","二","三","四","五","六","日"].map(w=>`<div class="cal-wd">${w}</div>`).join("")}${cells}</div>
+      ${panel}</div>`;
+  },
+
+  news(){
+    const items = (NEWS.items||[]).slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+    return `<div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">共 ${items.length} 条情报 · 由 AI 活动雷达定期更新</div>` +
+      items.map(n=>`<div class="qitem">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${n.url? `<a href="${esc(n.url)}" target="_blank" rel="noopener" style="color:var(--pink-deep);text-decoration:none"><b>${esc(n.title)}</b></a>` : `<b>${esc(n.title)}</b>`}
+          <span class="tag" style="margin-left:auto">${esc(n.tag||"情报")}</span>
+        </div>
+        ${n.note? `<div class="qmeta" style="margin-top:6px">${esc(n.note)}</div>`:""}
+        <div class="qmeta">${esc(n.date||"")}${n.deadline? " · 截止 "+esc(n.deadline):""}</div>
+      </div>`).join("");
+  },
+};
+
+function renderMain(){
+  const f = VIEWS.filter;
+  // 空态引导：首次打开不显示空白看板，给三条开始路径（零摩擦）
+  if(!STORE.data.jobs.length){
+    $("#main").innerHTML = `<div class="empty" style="margin-top:60px">
+      <div style="font-size:40px;margin-bottom:10px">🎯</div>
+      <b style="font-size:16px">看板是空的，三种开始方式</b>
+      <div style="margin:18px auto 8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" onclick="UI.openForm()">＋ 添加第一个岗位</button>
+        <button class="btn" onclick="DEMO.load()">载入演示数据看看</button>
+      </div>
+      <div style="margin-top:12px">已有真实数据包（my-data.json）？点右上角「导入」选它，一键载入你的投递记录</div>
+    </div>`;
+    return;
+  }
+  const chips = [`<button class="chip ${f.stage==='all'?'on':''}" onclick="VIEWS.filter.stage='all';renderMain()">全部</button>`]
+    .concat(CONFIG.STAGES.map(s=>
+      `<button class="chip ${f.stage===s.id?'on':''}" onclick="VIEWS.filter.stage='${s.id}';renderMain()">${s.name}</button>`))
+    .join("");
+  const staleCount = STORE.data.jobs.filter(j=>staleTag(j)!=="").length;
+  const staleChip = staleCount ? `<button class="chip warn-dot ${f.stage==='__stale'?'on':''}" onclick="VIEWS.filter.stage=VIEWS.filter.stage==='__stale'?'all':'__stale';renderMain()">需跟进 ${staleCount}</button>` : "";
+  $("#main").innerHTML =
+    VIEWS.funnel() +
+    `<div class="toolbar">
+      <input type="search" placeholder="搜公司 / 岗位 / 备注…" value="${esc(f.q)}"
+        oninput="VIEWS.filter.q=this.value;renderResults()" style="caret-color:var(--pink)">
+      ${chips}${staleChip}
+      <span style="margin-left:auto"></span>
+      <button class="btn small" onclick="VIEWS.filter.view='board';renderMain()">看板</button>
+      <button class="btn small" onclick="VIEWS.filter.view='table';renderMain()">列表</button>
+      <button class="btn small" onclick="VIEWS.filter.view='cal';renderMain()">月历</button>
+      <button class="btn small" onclick="VIEWS.filter.view='qbank';renderMain()">题库</button>
+      <button class="btn small" id="newsBtn" style="display:none" onclick="VIEWS.filter.view='news';renderMain()">情报</button>
+    </div>
+    <div id="resultsArea"></div>`;
+  NEWS.applyBtn();
+  renderResults();
+}
+// 搜索时只重绘结果区，不动工具条 → 输入框光标/焦点不丢（踩坑库：全量重绘导致焦点/滚动丢失）
+function renderResults(){
+  const area = $("#resultsArea"); if(!area) return;
+  area.innerHTML = VIEWS.filter.view==="table" ? VIEWS.table()
+                 : VIEWS.filter.view==="qbank" ? VIEWS.qbank()
+                 : VIEWS.filter.view==="cal" ? VIEWS.calendar()
+                 : VIEWS.filter.view==="news" ? VIEWS.news()
+                 : VIEWS.board();
+}
+// 「需跟进」过滤：在 visibleJobs 里特判
+const _origVisible = VIEWS.visibleJobs;
+VIEWS.visibleJobs = function(){
+  if(VIEWS.filter.stage==="__stale"){
+    const f = VIEWS.filter;
+    return STORE.data.jobs.filter(j=> staleTag(j)!==""
+      && (!f.q || (j.company+j.role+(j.notes||"")).toLowerCase().includes(f.q.toLowerCase())));
+  }
+  return _origVisible.call(VIEWS);
+};
+
+/* ═══════════ ⑤ UI 交互（表单 / 详情） ═══════════ */
+const UI = {
+  editingId: null,
+
+  open(mask){ $("#"+mask).classList.add("show"); },
+  close(mask){ $("#"+mask).classList.remove("show"); },
+
+  openForm(id=null, presetStage="pool"){
+    this.editingId = id;
+    const j = id ? STORE.data.jobs.find(x=>x.id===id) : { status: presetStage };
+    $("#formTitle").textContent = id ? "编辑岗位" : "添加岗位";
+    $("#formBody").innerHTML = CONFIG.FIELDS.map(f=>{
+      const v = j[f.key] ?? "";
+      const span = f.span? " full":"";
+      if(f.type==="select"){
+        const opts = CONFIG.STAGES.map(s=>`<option value="${s.id}" ${v===s.id?"selected":""}>${s.name}</option>`).join("");
+        return `<div class="${span}"><label>${f.label}</label><select id="f_${f.key}">${opts}</select></div>`;
+      }
+      if(f.type==="textarea")
+        return `<div class="${span}"><label>${f.label}</label><textarea id="f_${f.key}" rows="${f.rows||2}" placeholder="${f.ph||""}">${esc(v)}</textarea></div>`;
+      return `<div class="${span}"><label>${f.label}</label><input id="f_${f.key}" type="${f.type}" value="${esc(v)}" placeholder="${f.ph||""}"></div>`;
+    }).join("");
+    this.open("formMask");
+  },
+  closeForm(){ this.close("formMask"); },
+
+  saveForm(){
+    const patch = {};
+    let missing = null;
+    for(const f of CONFIG.FIELDS){
+      const v = $("#f_"+f.key).value.trim();
+      if(f.required && !v){ missing = f.label; break; }
+      patch[f.key] = v;
+    }
+    if(missing){ alert("请填写「"+missing+"」"); return; }
+    if(patch.status==="applied" && !patch.appliedAt) patch.appliedAt = new Date().toISOString().slice(0,10);
+    if(this.editingId){
+      const old = STORE.data.jobs.find(x=>x.id===this.editingId);
+      STORE.update(this.editingId, patch, patch.status!==old.status ? patch.status : null);
+    }else{
+      STORE.add(patch);
+    }
+    this.closeForm(); renderMain();
+  },
+
+  openDetail(id){
+    const j = STORE.data.jobs.find(x=>x.id===id); if(!j) return;
+    const st = stageOf(j.status);
+    const flow = CONFIG.STAGES.map(s=>
+      `<button class="${s.id===j.status?'cur':''}" style="border-color:${s.color};color:${s.id===j.status?'#fff':s.color};background:${s.id===j.status?s.color:'var(--pink-bg)'}"
+        onclick="STORE.update('${j.id}',{},'${s.id}');UI.openDetail('${j.id}');renderMain()">${s.name}</button>`).join("");
+    const hist = (j.history||[]).slice().reverse().map(h=>{
+      const s = stageOf(h.status);
+      return `<li><span><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${s.color};margin-right:6px"></span>${s.name}</span><span>${h.at.slice(0,16).replace("T"," ")}</span></li>`;
+    }).join("");
+    $("#detailBody").innerHTML = `
+      <h2>${esc(j.company)} · ${esc(j.role)}</h2>
+      <div style="font-size:12px;color:var(--ink-mid);line-height:2">
+        城市：${esc(j.city||"—")} ｜ 渠道：${esc(j.channel||"—")} ｜ 薪资：${esc(j.salary||"—")}<br>
+        简历版本：${esc(j.resume||"—")} ｜ DDL：${j.deadline? esc(j.deadline)+"（"+ddlTag(j.deadline)+"）":"—"}<br>
+        投递日期：${j.appliedAt? esc(fmtDate(j.appliedAt)):"未投递"}
+      </div>
+      <div style="font-size:13px;margin-top:8px;color:var(--ink)">下一步：<b>${esc(j.next||"—")}</b></div>
+      ${j.notes? `<div style="font-size:12px;color:var(--ink-mid);background:var(--pink-bg);border-radius:8px;padding:8px 10px;margin-top:8px;white-space:pre-wrap">${esc(j.notes)}</div>`:""}
+      <div class="hist"><div style="font-size:12px;color:var(--ink-light);margin-bottom:4px">推进状态（点击切换，自动记录时间）</div>
+        <div class="stageflow">${flow}</div>
+        <div style="font-size:12px;color:var(--ink-light);margin-top:10px">状态历史</div>
+        <ul>${hist}</ul>
+      </div>
+      <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
+        <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">BOSS 打招呼语 <span style="color:var(--ink-light)">（AI 按岗位+你的亮点生成）</span></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn small" onclick="AI.greet('${j.id}')">生成打招呼语</button>
+          ${j.greeting? `<button class="btn small" onclick="IO.copyText('${j.id}')">复制</button>`:""}
+          <span class="ai-status" id="greet-st" style="margin:0"></span>
+        </div>
+        <textarea id="greetOut" rows="3" style="width:100%;margin-top:6px;font-size:13px;line-height:1.7"
+          placeholder="点「生成打招呼语」→ 满意就复制去 BOSS 粘贴">${esc(j.greeting||"")}</textarea>
+        <button class="btn small" id="greetSave" style="display:none;margin-top:4px" onclick="STORE.update('${j.id}',{greeting:document.getElementById('greetOut').value.trim()});UI.openDetail('${j.id}')">保存到岗位</button>
+      </div>
+      <div style="margin-top:14px">
+        <div style="font-size:12px;color:var(--ink-light);margin-bottom:6px">面试复盘（被问倒的题自动进题库）</div>
+        <div id="reviewList">
+          ${(j.reviews||[]).map((r,i)=>`
+            <div class="qitem">
+              <div style="display:flex;align-items:center;gap:8px"><b>${esc(r.round||"复盘")}</b>
+                <span style="font-size:12px;color:var(--ink-light)">${esc(r.date||fmtDate(r.at))}</span>
+                <button class="btn small" style="margin-left:auto;padding:2px 8px;color:var(--bad);border:1px solid var(--line)"
+                  onclick="if(confirm('删除这条复盘？')){STORE.removeReview('${j.id}',${i});UI.openDetail('${j.id}');}">删除</button></div>
+              ${(r.questions||[]).map((q,qi)=>`
+                <div class="qrow"><span class="qt">· ${esc(q)}</span>
+                  <button class="btn small" style="padding:2px 8px;flex:0 0 auto" onclick="AI.advice('${j.id}',${i},${qi},'dt')">思路</button></div>
+                ${(r.advice||{})[q]? `<div class="ai-box" id="dt-adv-${i}-${qi}">${esc(r.advice[q])}</div>`:""}
+                <div class="ai-status" id="dt-st-${i}-${qi}"></div>`).join("")}
+              ${r.notes? `<div class="qmeta" style="margin-top:6px">${esc(r.notes)}</div>`:""}
+            </div>`).join("") || `<div style="font-size:12px;color:var(--ink-light)">还没有复盘记录</div>`}
+        </div>
+        <div id="reviewFormSlot" style="margin-top:8px"></div>
+        <button class="btn small" onclick="UI.openReviewForm('${j.id}')">＋ 添加复盘</button>
+      </div>
+      <div class="mbtns">
+        <button class="btn danger" onclick="if(confirm('确定删除该岗位？删除后不可恢复（重要数据请先导出备份）')){STORE.remove('${j.id}');UI.close('detailMask');renderMain();}">删除</button>
+        <button class="btn" onclick="UI.close('detailMask');UI.openForm('${j.id}')">编辑</button>
+        <button class="btn primary" onclick="UI.close('detailMask')">关闭</button>
+      </div>`;
+    this.open("detailMask");
+  },
+
+  openReviewForm(id){
+    $("#reviewFormSlot").innerHTML = `
+      <div style="background:var(--pink-bg);border-radius:8px;padding:10px;margin-top:4px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <select id="rv_round" style="flex:0 0 110px">
+            ${["笔试","一面","二面","三面","终面","HR面"].map(r=>`<option>${r}</option>`).join("")}
+          </select>
+          <input id="rv_date" type="date" style="flex:1" value="${new Date().toISOString().slice(0,10)}">
+        </div>
+        <textarea id="rv_questions" rows="3" style="width:100%" placeholder="被问倒的题，一行一题（都会进题库）"></textarea>
+        <textarea id="rv_notes" rows="2" style="width:100%;margin-top:6px" placeholder="表现复盘：哪里卡壳 / 下次怎么答"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end">
+          <button class="btn small" onclick="UI.openDetail('${id}')">取消</button>
+          <button class="btn small primary" onclick="UI.saveReview('${id}')">保存复盘</button>
+        </div>
+      </div>`;
+  },
+  saveReview(id){
+    const round = $("#rv_round").value, date = $("#rv_date").value;
+    const questions = $("#rv_questions").value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    const notes = $("#rv_notes").value.trim();
+    if(!questions.length && !notes){ alert("至少填一道题，或写一句复盘"); return; }
+    STORE.addReview(id, { round, date, questions, notes });
+    UI.openDetail(id); renderMain();
+  },
+
+  toggleDemoMenu(btn){ this.open("demoMask"); },
+
+  /* ── AI 设置 ── */
+  openAISettings(msg){
+    const sel = $("#ai_provider");
+    sel.innerHTML = Object.entries(CONFIG.AI_PROVIDERS)
+      .map(([k,p])=>`<option value="${k}" ${AI.cfg&&AI.cfg.provider===k?"selected":""}>${p.name}</option>`).join("");
+    $("#ai_key").value = (AI.cfg&&AI.cfg.key) || "";
+    $("#ai_bio").value = (AI.cfg&&AI.cfg.bio) || "";
+    const st = $("#ai-set-st");
+    st.textContent = msg || (AI.ready()? "已配置 ✓（Key 存本机浏览器）" : "");
+    st.className = "ai-status";
+    this.open("aiMask");
+  },
+  saveAISettings(){
+    const key = $("#ai_key").value.trim();
+    AI.saveCfg({ provider: $("#ai_provider").value, key, bio: $("#ai_bio").value.trim() });
+    this.close("aiMask");
+  },
+};
+
+/* ═══════════ ⑤.5 AI 能力（DeepSeek / 智谱，OpenAI 兼容直连） ═══════════ */
+const AI = {
+  cfg: null,
+  load(){ try{ this.cfg = JSON.parse(localStorage.getItem("ot-ai")||"null"); }catch(e){ this.cfg = null; } this.indicate(); },
+  ready(){ return !!(this.cfg && this.cfg.key && this.cfg.provider); },
+  indicate(){
+    const b = document.getElementById("aiBtn"); if(!b) return;
+    b.textContent = this.ready() ? "AI ✓" : "AI 设置";
+    b.style.borderColor = this.ready() ? "var(--pink)" : "";
+  },
+  saveCfg(c){ this.cfg = c; try{ localStorage.setItem("ot-ai", JSON.stringify(c)); }catch(e){} this.indicate(); },
+  async chat(messages, maxTokens){
+    const p = CONFIG.AI_PROVIDERS[this.cfg.provider] || CONFIG.AI_PROVIDERS.deepseek;
+    let res;
+    try{
+      res = await fetch(p.base+"/chat/completions", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+this.cfg.key },
+        body: JSON.stringify({ model:p.model, messages, temperature:0.5, max_tokens:maxTokens||600 }),
+      });
+    }catch(e){ throw new Error("网络不通（检查代理/网络后再试）"); }
+    if(res.status===401) throw new Error("Key 不对或已失效（401）");
+    if(res.status===402) throw new Error("账户余额不足（402），去提供方官网充值");
+    if(res.status===429) throw new Error("请求太频繁（429），等几秒再试");
+    if(!res.ok){ const t = await res.text(); throw new Error("接口返回 "+res.status+" "+t.slice(0,80)); }
+    const d = await res.json();
+    const out = d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
+    return (out||"").trim();
+  },
+  _check(){
+    if(this.ready()) return true;
+    UI.openAISettings("先用 AI：粘贴你的 API Key（只存本机浏览器，费用自己可控）");
+    return false;
+  },
+  _bio(){ return (this.cfg && this.cfg.bio) || "未填写"; },
+
+  // 复盘 AI：给被问倒的题生成答题思路，存进题库
+  async advice(jobId, rIdx, qIdx, scope){
+    if(!this._check()) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
+    const r = j.reviews && j.reviews[rIdx]; if(!r) return;
+    const q = r.questions[qIdx];
+    const stId = scope+"-st-"+(scope==="dt" ? rIdx+"-"+qIdx : qIdx);
+    const st = document.getElementById(stId);
+    if(st){ st.textContent = "AI 思考中…"; st.className = "ai-status"; }
+    try{
+      const out = await this.chat([
+        { role:"system", content:"你是资深面试教练。只输出干货，不要客套开场白和总结。" },
+        { role:"user", content:
+          `候选人在【${r.round||"面试"}】被问到：${q}\n岗位：${j.role} @ ${j.company}\n候选人亮点：${this._bio()}\n`+
+          `请给答题思路：3-5 条要点，每条一行、每行不超过 25 字；最后另起一行「面试官为什么问：」+ 一句话。` }
+      ], 500);
+      STORE.addAdvice(jobId, rIdx, q, out);
+      if(scope==="dt") UI.openDetail(jobId); else renderResults();
+    }catch(e){
+      if(st){ st.textContent = "生成失败："+e.message; st.className = "ai-status err"; }
+    }
+  },
+  adviceQB(i){
+    const it = (VIEWS._qitems||[])[i]; if(!it) return;
+    this.advice(it.jobId, it.ri, it.qi, "qb");
+  },
+
+  // BOSS 打招呼语生成
+  async greet(jobId){
+    if(!this._check()) return;
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j) return;
+    const st = document.getElementById("greet-st");
+    const out = document.getElementById("greetOut");
+    st.textContent = "AI 生成中…"; st.className = "ai-status";
+    try{
+      const text = await this.chat([
+        { role:"system", content:"你是求职助手。只输出打招呼语本身，不要引号、不要解释。" },
+        { role:"user", content:
+          `为 BOSS 直聘写一条给招聘者的打招呼语。\n岗位：${j.role} @ ${j.company}${j.city?"（"+j.city+"）":""}\n我的亮点：${this._bio()}\n简历版本：${j.resume||"默认"}\n`+
+          `要求：80-140 字，口语自然、不吹嘘，突出 1-2 个与岗位的匹配点，结尾表达进一步沟通的意愿。` }
+      ], 300);
+      out.value = text;
+      st.textContent = "";
+      document.getElementById("greetSave").style.display = "";
+    }catch(e){
+      st.textContent = "生成失败："+e.message; st.className = "ai-status err";
+    }
+  },
+};
+
+/* ═══════════ ⑥ IO 导入导出 ═══════════ */
+const IO = {
+  exportJSON(){
+    const blob = new Blob([JSON.stringify(STORE.data,null,2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `job-tracker-备份-${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(a.href);
+  },
+  importJSON(input){
+    const file = input.files[0]; if(!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const d = JSON.parse(r.result);
+        if(!confirm(`导入「${file.name}」会覆盖当前 ${STORE.data.jobs.length} 条岗位数据，继续？`)) return;
+        STORE.replaceAll(d); renderMain(); alert("导入成功，共 "+d.jobs.length+" 条");
+      }catch(e){ alert("文件格式不对，导入失败"); }
+    };
+    r.readAsText(file); input.value="";
+  },
+  buildCSV(){
+    // \ufeff BOM 让 Excel 正确识别 UTF-8 中文
+    const head = ["公司","岗位","城市","渠道","DDL","投递日","状态","下一步","薪资","简历版本","备注"];
+    const rows = STORE.data.jobs.map(j=>[
+      j.company, j.role, j.city||"", j.channel||"", j.deadline||"",
+      j.appliedAt? String(j.appliedAt).slice(0,10) : "",
+      stageOf(j.status).name, j.next||"", j.salary||"", j.resume||"", j.notes||""
+    ]);
+    return "\ufeff" + [head, ...rows].map(r=>r.map(c=>`"${String(c??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  },
+  exportCSV(){
+    const blob = new Blob([this.buildCSV()], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `offer-tracker-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(a.href);
+  },
+  copyText(jobId){
+    const j = STORE.data.jobs.find(x=>x.id===jobId); if(!j || !j.greeting) return;
+    const done = ()=> alert("已复制，去 BOSS 直接粘贴即可");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(j.greeting).then(done).catch(()=>{
+        const ta = document.createElement("textarea"); ta.value = j.greeting;
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+        document.body.removeChild(ta); done();
+      });
+    }else{
+      const ta = document.createElement("textarea"); ta.value = j.greeting;
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+      document.body.removeChild(ta); done();
+    }
+  },
+  clearAll(){
+    if(!confirm("确定清空全部岗位数据？此操作不可恢复（建议先导出备份）")) return;
+    STORE.replaceAll({ version:CONFIG.DATA_VERSION, jobs:[] }); renderMain();
+  },
+};
+
+/* ═══════════ ⑦ DEMO 演示数据（脱敏，供作品集展示） ═══════════ */
+const DEMO = {
+  seed: [
+    { company:"某大厂 A", role:"AI 产品经理（校招）", city:"杭州", channel:"官网", status:"interview", deadline:null, appliedAt:"2026-09-01", resume:"AI产品方向 v3", salary:"—", next:"周三一面，准备项目深挖", notes:"内推进度顺利，一面重点问工作台项目", greeting:"您好！我在官网看到 AI 产品经理（校招）岗位。我是软件工程应届生，自研 AI 工作台迭代 13 周、18 个模块，对 AI 产品的落地有真实一手体感，简历已按该岗位定制（AI产品方向 v3），期待进一步沟通！", reviews:[{round:"一面",date:"2026-09-03",questions:["介绍一下你最有代表性的项目，深挖一个关键决策","AI 产品的冷启动你怎么做","产品数据下跌你如何排查"],advice:{"介绍一下你最有代表性的项目，深挖一个关键决策":"用工作台项目，按 STAR 收尾\n关键决策：模块按操作频率排序而非数据相关性\n讲一个推翻自己的案例（提示条被删）体现迭代\n收尾给数字：13 周 17 版 / 2162 条数据\n面试官为什么问：验证你是不是真做过、有没有决策深度"},notes:"项目讲细了但没讲结果指标，下次用数字收尾"}], off:-2 },
+    { company:"某游戏 B", role:"游戏 AI 产品策划", city:"广州", channel:"官网", status:"test", deadline:null, appliedAt:"2026-08-28", resume:"游戏AI版 v2", salary:"—", next:"做行测题库，周四截止", notes:"届别窗口在线外但投了，搏一搏", off:-3 },
+    { company:"某云 C", role:"产品体验设计", city:"上海", channel:"内推", status:"applied", deadline:null, appliedAt:"2026-09-05", resume:"体验设计版 v1", salary:"—", next:"等筛选，超7天发邮件催", notes:"学长内推，简历已确认收到", off:3 },
+    { company:"某厂 D", role:"AI 应用产品（校招）", city:"深圳", channel:"官网", status:"applied", deadline:null, appliedAt:"2026-08-30", resume:"AI产品方向 v3", salary:"—", next:"无回复，准备催HR", notes:"—", off:2 },
+    { company:"某厂 E", role:"产品经理（体验方向）", city:"杭州", channel:"BOSS直聘", status:"pool", deadline:"2026-09-15", appliedAt:null, resume:"待定制", salary:"—", next:"明天定制简历后投递", notes:"JD 强调数据思维，工作台数据可以讲", off:null },
+    { company:"某新消费 F", role:"AI 产品助理", city:"杭州", channel:"官网", status:"pool", deadline:"2026-09-10", appliedAt:null, resume:"待定制", salary:"—", next:"投递（DDL 3 天内！）", notes:"朋友说团队氛围好", off:null },
+    { company:"某外企 G", role:"Product Intern 转 Fulltime", city:"上海", channel:"官网", status:"rejected", deadline:null, appliedAt:"2026-08-20", resume:"英文版 v1", salary:"—", next:"复盘：英文自述准备不足", notes:"挂在一面，问了英文 project 深挖", reviews:[{round:"一面",date:"2026-08-24",questions:["英文自我介绍","用英文讲一个你负责的项目"],notes:"英文自述卡壳、语速太快，考前朗读练三遍"}], off:-6 },
+    { company:"某独角兽 H", role:"AI 产品经理（校招）", city:"北京", channel:"官网", status:"offer", deadline:null, appliedAt:"2026-08-15", resume:"AI产品方向 v2", salary:"15-20k", next:"对比薪资/成长性，9月底前答复", notes:"背调已过，等正式 offer mail", off:-5 },
+  ],
+  load(){
+    const jobs = this.seed.map((s,i)=>{
+      const st = CONFIG.STAGES.find(x=>x.id===s.status);
+      const off = s.off==null? 0 : s.off;
+      const up = new Date(); up.setDate(up.getDate()+off);
+      return {
+        id:"demo"+i, company:s.company, role:s.role, city:s.city, channel:s.channel,
+        status:s.status, deadline:s.deadline||"", appliedAt:s.appliedAt||"",
+        resume:s.resume, salary:s.salary, next:s.next, notes:s.notes, reviews:s.reviews||[],
+        greeting:s.greeting||"",
+        history:[{status:s.status, at:up.toISOString()}],
+        createdAt:up.toISOString(), updatedAt:up.toISOString(),
+      };
+    });
+    STORE.replaceAll({ version:CONFIG.DATA_VERSION, jobs });
+    renderMain();
+  },
+};
+
+/* ═══════════ 启动 ═══════════ */
+const THEME = {
+  get(){ try{ return localStorage.getItem("ot-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }catch(e){ return "light"; } },
+  set(t){ try{ localStorage.setItem("ot-theme", t); }catch(e){} document.body.classList.toggle("dark", t==="dark"); },
+  toggle(btn){ const t = this.get()==="dark" ? "light" : "dark"; this.set(t); btn.textContent = t==="dark" ? "☀️" : "🌙"; },
+};
+const NEWS = {
+  items: null,
+  load(){
+    // 安静挂法：news.json 不存在/为空 → 情报按钮永远不出现，不占界面
+    fetch("news.json").then(r=>r.ok ? r.json() : Promise.reject())
+      .then(d=>{ this.items = Array.isArray(d) ? d : (d.items||[]); this.applyBtn(); })
+      .catch(()=>{ this.items = []; });
+  },
+  applyBtn(){
+    // renderMain 每次重建工具栏会把按钮重置为隐藏，所以每次渲染后都要重放显隐状态
+    const b = document.getElementById("newsBtn");
+    if(b && this.items && this.items.length) b.style.display = "";
+  },
+};
+THEME.set(THEME.get());
+document.getElementById("themeBtn").textContent = THEME.get()==="dark" ? "☀️" : "🌙";
+NEWS.load();
+AI.load();
+STORE.load();
+renderMain();
+</script>
+</body>
+</html>

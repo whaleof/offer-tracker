@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 风格样品 v4 · 雕花角框＋中央月＋全页星网</title>
+<style>
+/* ============ 樱帖风格样品 v4（9/8 深夜二）· 按玉涵反馈 ============
+   ①角件＝可灵级复古雕花（AI 生成金粉卷草角框，整张铺 multiply 融纸底）
+   ②牌背中央＝立体弦月（切面双色，贴月相体系），星都退到背景里
+   ③吉祥物「小可」AI 已生成（守护兽卡）
+   ④星网＝全页面体系：同色同线宽、每页密度布局不同，一张长卷按页裁
+======================================================== */
+:root{
+  --kinari:#FBF7EC; --sumi:#2C282B; --sumi-mid:#6B625C;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-soft:#EDE0C0; --kin-face:#E8CE74;
+  --serif:"Songti SC","Noto Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;padding:30px 20px 70px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:var(--serif);font-size:22px;letter-spacing:2px}
+.note{color:var(--sumi-mid);font-size:12.5px;margin:6px 0 26px}
+h2{font-family:var(--serif);font-size:16px;margin:34px 0 14px;color:var(--shu-deep)}
+.row{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start}
+.cap{font-size:12px;color:var(--sumi-mid);max-width:290px;margin-top:10px}
+.cardwrap{width:300px;position:relative;filter:drop-shadow(4px 5px 0 rgba(44,40,43,.18))}
+.cardwrap svg.inner{display:block;width:300px;height:460px}
+.aiFrame{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none}
+.mascot{width:280px;border-radius:14px;border:2px solid var(--sumi);box-shadow:4px 4px 0 rgba(44,40,43,.18);display:block}
+.pagebg{position:relative;overflow:hidden;border:1.5px solid var(--sumi);border-radius:14px;background:#fff;margin-bottom:16px}
+.pagebg .net{position:absolute;inset:0;pointer-events:none;opacity:.6}
+.pagebg .fake{position:relative;padding:16px 18px}
+.ph{background:rgba(255,255,255,.9);border:1px solid rgba(44,40,43,.15);border-radius:9px;height:26px;margin-bottom:9px}
+.ph.w60{width:60%}.ph.w80{width:80%}
+.pagetab{font-size:11px;color:var(--sumi-mid);letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>樱帖 · 风格样品 v4 · 雕花角框＋中央月＋全页星网</h1>
+<div class="note">这轮换了三样：角框是 AI 画的复古雕花（不是扇贝了）、牌背中央改成月亮（星星退到背景）、吉祥物「小可」出图了。星网保留但更淡——你说的"淡淡的衬得高级"。</div>
+
+<h2>① 牌背 · AI 雕花角框版</h2>
+<div class="row">
+<div>
+<div class="cardwrap">
+  <svg class="inner" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="cc"><rect width="300" height="460" rx="16"/></clipPath>
+      <clipPath id="ic"><circle cx="150" cy="230" r="74"/></clipPath>
+    </defs>
+    <rect width="300" height="460" rx="16" fill="#FBF7EC"/>
+    <g clip-path="url(#cc)"><g id="net1"></g></g>
+    <circle cx="150" cy="230" r="128" fill="none" stroke="#C2416B" stroke-width="3"/>
+    <circle cx="150" cy="230" r="118" fill="none" stroke="#C2416B" stroke-width="7" stroke-dasharray="2 7" opacity=".75"/>
+    <circle cx="150" cy="230" r="97" fill="none" stroke="#C9A227" stroke-width="1.3"/>
+    <circle cx="150" cy="230" r="76" fill="none" stroke="#C2416B" stroke-width="1.8"/>
+    <g clip-path="url(#ic)">
+      <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#C2416B" stroke-width="1.2" opacity=".55"/>
+    </g>
+    <!-- 中央弦月（切面立体） -->
+    <path d="M154,164 a68,68 0 1,0 0,132 a52,52 0 1,1 0,-132 z" transform="translate(-5,-3)" fill="#E8CE74"/>
+    <path d="M154,164 a68,68 0 1,0 0,132 a52,52 0 1,1 0,-132 z" fill="#C9A227" stroke="#854F0B" stroke-width="2.2"/>
+    <path d="M196,206 L197.6,210.8 L202.4,212.4 L197.6,214 L196,218.8 L194.4,214 L189.6,212.4 L194.4,210.8 Z" fill="#C2416B"/>
+    <circle cx="204" cy="240" r="2" fill="#C9A227"/>
+    <circle cx="188" cy="262" r="1.5" fill="#C9A227"/>
+    <!-- 铸币太阳章 / 月章 -->
+    <circle cx="150" cy="102" r="21" fill="#FBF7EC" stroke="#C9A227" stroke-width="2"/>
+    <circle cx="150" cy="102" r="11.5" fill="#C9A227" stroke="#854F0B" stroke-width="1.4"/>
+    <g id="sun1"></g>
+    <circle cx="150" cy="102" r="2.8" fill="#854F0B"/>
+  </svg>
+  <img class="aiFrame" src="../generated-images/樱帖资产/复古塔罗牌边框角花装饰件_L形雕花卷草纹从左上角向中心延伸__2026-09-08T13-47-01.png" alt="">
+</div>
+<div class="cap">纸底版：复古雕花角框（AI 画，multiply 融进纸底）＋淡淡的星网＋中央立体弦月＋铸币太阳章。四角终于有质感了。</div>
+</div>
+
+<div>
+<div class="cardwrap">
+  <svg class="inner" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="460" rx="16" fill="#A83358"/>
+    <g clip-path="url(#cc)"><g id="net2"></g></g>
+    <circle cx="150" cy="230" r="128" fill="none" stroke="#E8CE74" stroke-width="2.6"/>
+    <circle cx="150" cy="230" r="118" fill="none" stroke="#F5DCE3" stroke-width="6" stroke-dasharray="2 7" opacity=".8"/>
+    <circle cx="150" cy="230" r="97" fill="none" stroke="#E8CE74" stroke-width="1.2"/>
+    <circle cx="150" cy="230" r="76" fill="none" stroke="#E8CE74" stroke-width="1.6"/>
+    <g clip-path="url(#ic)">
+      <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#F5DCE3" stroke-width="1.1" opacity=".6"/>
+    </g>
+    <path d="M154,164 a68,68 0 1,0 0,132 a52,52 0 1,1 0,-132 z" transform="translate(-5,-3)" fill="#F5DCE3"/>
+    <path d="M154,164 a68,68 0 1,0 0,132 a52,52 0 1,1 0,-132 z" fill="#E8CE74" stroke="#FBF7EC" stroke-width="1.8"/>
+    <path d="M196,206 L197.6,210.8 L202.4,212.4 L197.6,214 L196,218.8 L194.4,214 L189.6,212.4 L194.4,210.8 Z" fill="#FBF7EC"/>
+    <circle cx="150" cy="102" r="21" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+    <circle cx="150" cy="102" r="11.5" fill="#E8CE74"/>
+    <g id="sun2"></g>
+    <circle cx="150" cy="102" r="2.8" fill="#A83358"/>
+  </svg>
+  <img class="aiFrame" src="../generated-images/樱帖资产/复古塔罗牌边框角花装饰件_L形雕花卷草纹从左上角向中心延伸__2026-09-08T13-47-01.png" alt="">
+</div>
+<div class="cap">深红版：同一张雕花角框用正片叠底压上去——金线会偏暗成一衬色，你看是"复古"还是"发闷"，不行就深红版退回纯 SVG 角件。</div>
+</div>
+
+<div>
+  <img class="mascot" src="../generated-images/樱帖资产/魔法少女风格守护兽吉祥物_一只圆滚滚的奶黄色小神兽_长着一对_2026-09-08T13-47-01.png" alt="小可">
+  <div class="cap">「小可」· 守护兽吉祥物第一版（AI 生成）：奶黄小神兽＋金翅＋樱粉丝带＋胸口月牙，自带塔罗卡面。这张图本身就是一张「守护兽卡」，可以直接当牌阵彩蛋卡/开屏彩蛋用。</div>
+</div>
+</div>
+
+<h2>② 全页星网体系（每页不同，但是一家）</h2>
+<div class="pagebg" style="height:150px">
+  <svg class="net" width="100%" height="100%" viewBox="0 0 800 150" preserveAspectRatio="xMidYMid slice"><g id="net3"></g></svg>
+  <div class="fake"><div class="pagetab">今日帖 · 星网密在上缘，像夜空垂下来</div><div class="ph w60"></div><div class="ph w80"></div></div>
+</div>
+<div class="pagebg" style="height:150px">
+  <svg class="net" width="100%" height="100%" viewBox="0 0 800 150" preserveAspectRatio="xMidYMid slice"><g id="net4"></g></svg>
+  <div class="fake"><div class="pagetab">牌阵 · 星网疏在两侧，中间让给牌</div><div class="ph w80"></div><div class="ph w60"></div></div>
+</div>
+<div class="cap" style="max-width:640px">体系规则：同一支金线（#C9A227）、同一线宽、同一族闪星，只有密度和星座形状每页不同——生产版把全站做成一张"长卷星图"，翻页像在星空里挪位置，不是换背景。</div>
+
+<div class="note" style="margin-top:34px">回我三件事：①雕花角框这个质感过不过关？②中央月亮行不行（不行换回星但加立体切面）？③「小可」这只过不过关？不过我重新抽。过了我就把「雕花角框＋中央月＋全页星网」整套铺进 v1.3。</div>
+</div>
+
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sparkle(x,y,s,c,o){return '<path d="M'+x+','+(y-s)+' L'+(x+s*0.24)+','+(y-s*0.24)+' L'+(x+s)+','+y+' L'+(x+s*0.24)+','+(y+s*0.24)+' L'+x+','+(y+s)+' L'+(x-s*0.24)+','+(y+s*0.24)+' L'+(x-s)+','+y+' L'+(x-s*0.24)+','+(y-s*0.24)+' Z" fill="'+c+'" opacity="'+o+'"/>'}
+function scatter(id,seed,n,w,h,c,op){
+  var R=mulberry32(seed),s='',pts=[],i,x,y;
+  for(i=0;i<n;i++){x=R()*w;y=R()*h;pts.push([x,y])}
+  for(i=0;i<pts.length;i++){s+=sparkle(pts[i][0],pts[i][1],1.2+R()*2.4,c,(op||.3)+R()*.3)}
+  for(i=0;i+2<pts.length&&i<10;i+=3){
+    s+='<polyline points="'+pts[i]+' '+pts[i+1]+' '+pts[i+2]+'" fill="none" stroke="'+c+'" stroke-width=".6" opacity=".25"/>';
+    s+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="1.1" fill="'+c+'" opacity=".4"/>';
+  }
+  document.getElementById(id).innerHTML=s;
+}
+function sunRays(id,cx,cy,c){
+  var s='';for(var i=0;i<8;i++){var a=i*Math.PI/4,ca=Math.cos(a),sa=Math.sin(a);
+    var bx=cx+ca*13,by=cy+sa*13,tx=cx+ca*19,ty=cy+sa*19,px=-sa*3.2,py=ca*3.2;
+    s+='<polygon points="'+(bx+px)+','+(by+py)+' '+tx+','+ty+' '+(bx-px)+','+(by-py)+'" fill="'+c+'"/>'}
+  document.getElementById(id).innerHTML=s;
+}
+scatter('net1',20260911,26,300,460,'#C9A227',.22);
+scatter('net2',20260912,26,300,460,'#F5DCE3',.25);
+scatter('net3',20260913,40,800,150,'#C9A227',.3);
+scatter('net4',20260914,22,800,150,'#C9A227',.28);
+sunRays('sun1',150,102,'#C9A227');
+sunRays('sun2',150,102,'#E8CE74');
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1440px;background:#FBF7EC;font-family:"Microsoft YaHei",sans-serif;color:#2C282B;position:relative;overflow:hidden}
+.frame{position:absolute;inset:48px;border:3px solid #C9A227;outline:1px solid #C9A227;outline-offset:8px}
+.star{position:absolute;color:#C9A227}
+.top{position:absolute;top:112px;left:0;right:0;text-align:center}
+.for{font-size:28px;letter-spacing:8px;color:#8a8175}
+.title{font-size:92px;font-weight:800;line-height:1.32;margin-top:28px;letter-spacing:3px}
+.title .em{color:#C2416B}
+.moonline{position:absolute;top:508px;left:0;right:0;display:flex;justify-content:center;gap:24px;align-items:center}
+.moon{width:58px;height:58px;border-radius:50%;background:#C9A227;position:relative}
+.moon::after{content:"";position:absolute;right:-12px;top:-9px;width:50px;height:50px;border-radius:50%;background:#FBF7EC}
+.chain{font-size:26px;color:#C9A227;letter-spacing:6px}
+.board{position:absolute;top:610px;left:70px;right:70px;background:#fff;border:2px solid #2C282B;border-radius:18px;box-shadow:7px 7px 0 #2C282B;padding:26px 24px}
+.bh{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:2px dashed #e8e2d5;margin-bottom:18px}
+.bh b{font-size:28px}
+.bh span{font-size:22px;color:#8a8175}
+.cols{display:flex;gap:12px}
+.col{flex:1}
+.ct{font-size:20px;color:#8a8175;text-align:center;margin-bottom:10px}
+.card{background:#FBF7EC;border:1.5px solid #e0d9c8;border-radius:12px;padding:12px;margin-bottom:10px}
+.card b{font-size:21px;display:block}
+.card span{font-size:17px;color:#8a8175}
+.c1{border-left:5px solid #888780}.c2{border-left:5px solid #378ADD}.c3{border-left:5px solid #BA7517}.c4{border-left:5px solid #7F77DD}.c5{border-left:5px solid #639922}
+.bottom{position:absolute;bottom:118px;left:0;right:0;text-align:center}
+.free{display:inline-block;background:#2C282B;color:#FBF7EC;font-size:31px;font-weight:700;padding:15px 46px;border-radius:60px;letter-spacing:4px}
+.free .pink{color:#F5B8C9}
+.url{margin-top:18px;font-size:24px;color:#8a8175;letter-spacing:2px}
+</style></head><body>
+<div class="frame"></div>
+<div class="star" style="top:100px;left:110px;font-size:34px">✦</div>
+<div class="star" style="top:165px;right:130px;font-size:24px">✦</div>
+<div class="star" style="bottom:95px;left:140px;font-size:22px">✦</div>
+<div class="top">
+  <div class="for">写 给 秋 招 投 到 手 忙 脚 乱 的 你</div>
+  <div class="title">投了哪几家·卡在哪一步？<br><span class="em">一张表全管住</span></div>
+</div>
+<div class="moonline"><div class="moon"></div><div class="chain">— — — —</div></div>
+<div class="board">
+  <div class="bh"><b>樱帖 · 秋招看板</b><span>示例数据</span></div>
+  <div class="cols">
+    <div class="col"><div class="ct">待投递</div>
+      <div class="card c1"><b>星辰科技</b><span>AI产品 杭州</span></div>
+      <div class="card c1"><b>云图数据</b><span>前端 上海</span></div></div>
+    <div class="col"><div class="ct">已投递</div>
+      <div class="card c2"><b>光年互联</b><span>产品经理</span></div>
+      <div class="card c2"><b>山海网络</b><span>产品运营</span></div></div>
+    <div class="col"><div class="ct">笔试</div>
+      <div class="card c3"><b>启明智能</b><span>AI产品</span></div></div>
+    <div class="col"><div class="ct">面试中</div>
+      <div class="card c4"><b>南风科技</b><span>前端 杭州</span></div>
+      <div class="card c4"><b>青野信息</b><span>AI产品</span></div></div>
+    <div class="col"><div class="ct">Offer</div>
+      <div class="card c5"><b>拾光软件</b><span>产品 广州</span></div></div>
+  </div>
+</div>
+<div class="bottom">
+  <div class="free">免费 · 打开网页就能用 <span class="pink">·</span> 数据存自己电脑</div>
+  <div class="url">GitHub 搜： offer-tracker</div>
+</div>
+</body></html>

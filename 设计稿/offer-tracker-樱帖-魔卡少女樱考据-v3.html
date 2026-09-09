@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 v3 · 魔卡少女樱原始设定考据 + 设计 Skill 清单</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0; --ai:#3A5A7A; --take:#6E8B5E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.7;padding:24px;max-width:1000px;margin:0 auto}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:20px}
+h2{font-size:16px;font-weight:500;margin:26px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+h3{font-size:13.5px;font-weight:500;margin:14px 0 6px}
+p{margin:6px 0;color:var(--sumi-mid)}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:8px 0 18px}
+.card{background:#fff;border:1px solid rgba(44,40,43,.4);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.card.feat{border:1.5px solid var(--sumi)}
+.card.warn{border-color:var(--shu);background:#fffafb}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+th{background:var(--kami);text-align:left;padding:8px 10px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18)}
+td{padding:8px 10px;border-bottom:1px solid rgba(44,40,43,.18);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500}
+code{background:var(--kami);padding:1px 5px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+pre{background:#2C282B;color:#EFE7EA;border-radius:12px;padding:14px 16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.65;overflow-x:auto;white-space:pre;margin:10px 0}
+ul{margin:6px 0 6px 20px}
+li{margin:5px 0;color:var(--sumi-mid);font-size:13.5px}
+li b{color:var(--sumi);font-weight:500}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:12px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.callout.ok{background:#eaf3de;border-color:#639922;color:#3B6D11}
+.no{color:var(--shu-deep);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px}
+.toc{background:var(--kami);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px}
+.toc a{color:var(--shu);text-decoration:none;display:block;padding:2px 0}
+.toc a:hover{text-decoration:underline}
+.src{font-size:11px;color:var(--sumi-light);font-family:ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+
+<h1 class="serif">樱帖 v3 · 原始设定考据</h1>
+<div class="sub">2026-09-08 · 这一版不再是想象，全部来自可查证的原始设定 + 开源设计 Skill 生态</div>
+<div class="gold-rule"></div>
+
+<div class="toc">
+  <b class="serif">目录</b>
+  <a href="#1">一、库洛牌 vs 小樱牌：真实差异（考据）</a>
+  <a href="#2">二、我上一版错在哪（3 处虚构）</a>
+  <a href="#3">三、修正后的核心符号：日 · 月 · 星</a>
+  <a href="#4">四、转生叙事：红 → 粉（这是我们的杀手锏）</a>
+  <a href="#5">五、开源设计 Skill 清单（12 个）</a>
+  <a href="#6">六、从 photo-distill 借来的硬规则</a>
+  <a href="#7">七、等你拍板的三件事</a>
+</div>
+
+<h2 id="1">一、库洛牌 vs 小樱牌：真实差异</h2>
+<div class="card">
+<table>
+<tr><th>维度</th><th>库洛牌 Clow（转生前）</th><th>小樱牌 Sakura（转生后）</th></tr>
+<tr><td><b>主色</b></td><td class="no">红（red）</td><td><b>粉（pink）＋ 耀眼金</b></td></tr>
+<tr><td>牌面顶部</td><td>太阳</td><td>五角星</td></tr>
+<tr><td>牌面底部</td><td>月亮</td><td>五角星</td></tr>
+<tr><td>牌面左右</td><td>六芒星（左右各一）</td><td>左日 · 右月</td></tr>
+<tr><td>名字横幅</td><td>卷轴状（下弯）</td><td>缎带状（上弯）</td></tr>
+<tr><td><b>卡背中央</b></td><td><b>太阳</b>，左侧小月</td><td><b>五角星</b>，左月右日</td></tr>
+<tr><td>卡背四角</td><td><b>六芒星</b></td><td><b>五角星</b></td></tr>
+<tr><td>卡背纹样</td><td>其他符号</td><td>黄道十二宫符号</td></tr>
+<tr><td>张数</td><td>53（漫画原设 19）</td><td>54（多「爱」「希望」）</td></tr>
+</table>
+<p class="src">来源：Little Miss Kinomoto 粉丝考据站（lmk.suppi.net/star-cards.php）、萌娘百科、百度百科·库洛牌/小樱牌</p>
+</div>
+
+<h2 id="2">二、我上一版错在哪</h2>
+<div class="card warn">
+<ul>
+<li class="no">牌背用了「四角星芒 + 樱印 + 翅膀弧线」→ 原作卡背根本没有翅膀，是<b>魔法阵 + 日 + 月 + 四角星</b></li>
+<li class="no">标识用五瓣樱 → 樱是<b>角色名</b>，不是牌的符号。牌的符号是<b>星</b>（转生＝星之力量）。樱在小尺寸下五个圆也容易糊，这大概就是你说「有进步但不够好看」的根因</li>
+<li class="no">只用了月相表状态 → 原作是<b>日 + 月双守护者</b>（太阳属性归可鲁贝洛斯、月属性归月），不是单月</li>
+</ul>
+<div class="callout"><b>教训：</b>不要凭几句模糊描述就开画。这次我先考据再动笔，出来的东西立刻不一样。</div>
+</div>
+
+<h2 id="3">三、修正后的核心符号：日 · 月 · 星</h2>
+<div class="card feat">
+  <div class="grid">
+    <div style="text-align:center">
+      <svg width="52" height="52" viewBox="0 0 52 52" style="margin:0 auto;display:block"><circle cx="26" cy="26" r="23" fill="#C2416B"/><circle cx="26" cy="26" r="19" fill="none" stroke="#fff" stroke-width="0.8" opacity=".45"/><path d="M0,-13 L3.06,-4.21 L12.36,-4.02 L4.94,1.61 L7.64,10.52 L0,5.2 L-7.64,10.52 L-4.94,1.61 L-12.36,-4.02 L-3.06,-4.21 Z" transform="translate(26,25)" fill="#fff"/><circle cx="26" cy="25" r="2.6" fill="#C9A227"/></svg>
+      <div style="font-size:12px;font-weight:500;margin-top:6px">壹 · 星樱印</div><div style="font-size:10.5px;color:#C2416B">推荐</div>
+    </div>
+    <div style="text-align:center">
+      <svg width="52" height="52" viewBox="0 0 52 52" style="margin:0 auto;display:block"><circle cx="26" cy="26" r="23" fill="#C2416B"/><circle cx="26" cy="26" r="19" fill="none" stroke="#fff" stroke-width="0.8" opacity=".45"/><circle cx="26" cy="17" r="4.6" fill="#fff"/><path d="M32 34 A7 7 0 1 1 20 34 A7 7 0 1 1 32 34" fill="#fff"/><circle cx="30.5" cy="32.5" r="5.6" fill="#C2416B"/></svg>
+      <div style="font-size:12px;font-weight:500;margin-top:6px">贰 · 日月印</div><div style="font-size:10.5px;color:#9A9189">库洛牌结构</div>
+    </div>
+    <div style="text-align:center">
+      <svg width="52" height="52" viewBox="0 0 52 52" style="margin:0 auto;display:block"><circle cx="26" cy="26" r="23" fill="#C2416B"/><circle cx="26" cy="26" r="19" fill="none" stroke="#fff" stroke-width="0.8" opacity=".45"/><path d="M0,-9 L2.12,-2.91 L8.56,-2.78 L3.42,1.11 L5.29,7.28 L0,3.6 L-5.29,7.28 L-3.42,1.11 L-8.56,-2.78 L-2.12,-2.91 Z" transform="translate(26,26)" fill="#fff"/><g fill="#fff" opacity=".7"><path d="M0,-3.2 L0.75,-1 L2.9,0 L0.75,1 L0,3.2 L-0.75,1 L-2.9,0 L-0.75,-1 Z" transform="translate(11,11)"/><path d="M0,-3.2 L0.75,-1 L2.9,0 L0.75,1 L0,3.2 L-0.75,1 L-2.9,0 L-0.75,-1 Z" transform="translate(41,11)"/><path d="M0,-3.2 L0.75,-1 L2.9,0 L0.75,1 L0,3.2 L-0.75,1 L-2.9,0 L-0.75,-1 Z" transform="translate(11,41)"/><path d="M0,-3.2 L0.75,-1 L2.9,0 L0.75,1 L0,3.2 L-0.75,1 L-2.9,0 L-0.75,-1 Z" transform="translate(41,41)"/></g></svg>
+      <div style="font-size:12px;font-weight:500;margin-top:6px">叁 · 阵星印</div><div style="font-size:10.5px;color:#9A9189">卡背结构</div>
+    </div>
+  </div>
+  <p style="margin-top:12px"><b>状态图标也跟着改：</b>日（进行中）· 月（等待中）· 星（已拿下）。三者都是通用几何符号，不是 emoji，跨平台一致，<b>且色盲友好</b>——不靠颜色区分。</p>
+</div>
+
+<h2 id="4">四、转生叙事：红 → 粉</h2>
+<div class="card feat">
+  <p><b>原作最动人的设定：</b>库洛牌因失去魔力，小樱用「星之力量」把每一张重新转化——<b>转化的瞬间，牌从红变成粉</b>。</p>
+  <div class="grid" style="margin-top:12px">
+    <div style="background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:10px;padding:12px 14px">
+      <div style="display:flex;gap:6px;margin-bottom:8px"><span style="width:26px;height:26px;border-radius:5px;background:#A83358"></span><span style="width:26px;height:26px;border-radius:5px;background:#C9A227"></span></div>
+      <div class="serif" style="font-size:13.5px;font-weight:500">库洛牌 · 未转生</div>
+      <div style="font-size:11px;color:#6B625C">深红 #A83358 ＋ 金</div>
+      <div style="font-size:11px;color:#9A9189;margin-top:4px">待投递 / 已投未回 / 被拒</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid #C2416B;border-radius:10px;padding:12px 14px">
+      <div style="display:flex;gap:6px;margin-bottom:8px"><span style="width:26px;height:26px;border-radius:5px;background:#C2416B"></span><span style="width:26px;height:26px;border-radius:5px;background:#C9A227"></span></div>
+      <div class="serif" style="font-size:13.5px;font-weight:500">小樱牌 · 已转生</div>
+      <div style="font-size:11px;color:#6B625C">樱粉 #C2416B ＋ 金</div>
+      <div style="font-size:11px;color:#9A9189;margin-top:4px">进面 / 拿 offer / 已签</div>
+    </div>
+  </div>
+  <div class="callout ok" style="margin-top:12px"><b>为什么这套能打：</b>你的品牌色 #c2416b 天然就是「转生后的粉」。所以不是我们去找了个粉，而是<b>这套叙事本来就以你的颜色为终点</b>。求职者看自己的牌一张张从红转粉——这就是产品的情感主线，别人抄不走。</div>
+</div>
+
+<h2 id="5">五、开源设计 Skill 清单（12 个）</h2>
+<div class="card">
+<p>这是一整个「照片 → 设计语言」的开源 Skill 生态，都能装进 WorkBuddy / Codex / Claude Code。按我们要的调性排序：</p>
+<table>
+<tr><th>Skill</th><th>视觉关键词</th><th>适合</th></tr>
+<tr><td><b>photo-distill</b><br><span class="src">yangcodingmaster/photo-distill</span></td><td><b>纯代码 HTML/CSS/SVG，零照片像素</b>；米白纸·高饱和色锚·印刷颗粒</td><td><b>最贴合我们</b>（我们也是纯代码）</td></tr>
+<tr><td>photo-abstract-editorial<br><span class="src">ZzzLc0405/photo-abstract-editorial</span></td><td>摄影区＋抽象面板＋诗意标题，象牙白</td><td>通用，GitHub 冲榜第一</td></tr>
+<tr><td>photo-relic-editorial<br><span class="src">wnby/photo-relic-editorial</span></td><td>上半照片／下半版画，东方留白</td><td>建筑·地标·旅行</td></tr>
+<tr><td>poetic-line-zine-poster<br><span class="src">zhu930824/poetic-line-zine-poster</span></td><td>炭笔扫线＋彩色涂鸦＋诗句</td><td>有手绘温度（作者疑为航海志那位）</td></tr>
+<tr><td>gc-minimal-zine-poster</td><td>纸刊海报，大面积留白，单一焦点</td><td>封面·金句卡</td></tr>
+<tr><td>muted-zine-poster</td><td>极简低饱和，70% 以上留白</td><td>安静·回忆感</td></tr>
+<tr><td>scenes-gathered-zine</td><td>手撕纸纤维边＋高饱和色块</td><td>展览·成果展</td></tr>
+<tr><td>deconstructed-duotone-poster</td><td>解构六/九宫格，只两种颜色</td><td>建筑·设计课</td></tr>
+<tr><td>daily-photo-playground</td><td>照片＋平面拼贴海报</td><td>人物·社媒封面</td></tr>
+<tr><td>pixel-style-poster</td><td>点阵印刷感，米白纤维纸</td><td>静物·植物</td></tr>
+<tr><td>travel-photo-abstraction</td><td>线条＋色块＋几何，压缩复杂场景</td><td>旅行·作品集</td></tr>
+<tr><td>scene-distillation-zine</td><td>主体·颜色·空间重新提炼</td><td>城市·建筑</td></tr>
+</table>
+</div>
+
+<h2 id="6">六、从 photo-distill 借来的硬规则</h2>
+<div class="card feat">
+<p>这个 Skill 最特别：<b>不用任何图像生成模型</b>，成品里没有一个照片像素，全是手写 HTML/CSS/SVG 再无头渲染。它的规则硬到可以直接当我们的设计宪法：</p>
+<ul>
+<li><b>米白平面，整张 70–90% 读作「纸」</b> → 我们的 <code>#FBF7EC</code> 底 + 大量留白</li>
+<li><b>墨只落在配得上的地方</b> → 只在标题/关键数字用墨色，其余降灰</li>
+<li><b>两三个从元素里蒸馏出的印刷符号</b> → 我们的日/月/星正好三个</li>
+<li><b>一个高饱和色锚，占画布 0.8–2.5%</b> → <code>#C2416B</code> 只用在这一小处，其余全纸色</li>
+<li><b>手撕柔边 / 套印错位 / 印刷颗粒</b> → 油墨吃进纸里的质感（用极细边 + 微偏移实现）</li>
+<li><b>作者原话：这不是让你无脑生成的机器，你的参与本身就是方法的一部分</b> → 你点名哪两三个元素、你说哪里不对、你决定什么时候算完成</li>
+</ul>
+<div class="callout gold"><b>这套规则和樱帖几乎是同一套审美</b>——说明我们方向没错，只是之前执行得不够狠：留白不够多、色锚不够少、墨用得太平均。</div>
+</div>
+
+<h2 id="7">七、等你拍板的三件事</h2>
+<div class="card">
+<ul>
+<li><b>① 标识三选一</b>：星樱印（推荐）/ 日月印 / 阵星印 —— 或者你都不满意，我按你指的方向再改</li>
+<li><b>② 要不要装 photo-distill</b>：它和樱帖同源（纯代码、纸感、单一色锚），装了以后做「照片 → 樱帖风格素材」可以直接复用</li>
+<li><b>③ 转生叙事要不要上</b>：红→粉这条线很美，但要改状态色系统（现在的状态色是平的）。要不要做？</li>
+</ul>
+</div>
+
+<div class="gold-rule" style="margin-top:26px"></div>
+<p style="font-size:11px;color:var(--sumi-light);text-align:center">樱帖 v3 考据卡 · 资料来自萌娘百科 / 百度百科 / LMK 粉丝考据站 / GitHub 开源 Skill 生态 · 待你拍板后落地</p>
+
+</body>
+</html>
