@@ -94,6 +94,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 .col-hd{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sumi-mid);padding:4px 6px 10px}
 .col-hd .cnt{margin-left:auto;font-size:11px;color:var(--sumi-light)}
 .col-fallen .col-hd{color:var(--sumi-light)}
+.col.drag-over{outline:2px dashed #C9A227;outline-offset:3px;border-radius:12px;background:rgba(201,162,39,.06)}
 .mini{position:relative;background:#FBF7EC url("assets/bg-mini-v8.svg") no-repeat center / cover;border:2px solid var(--line,var(--sumi));border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16)}
 .mini:hover{transform:translateY(-2px)}
 .mini .co{font-family:var(--serif);font-size:13.5px}
@@ -126,7 +127,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 /* ---- 牌档案弹层 ---- */
 .mask{display:none;position:fixed;inset:0;background:rgba(44,40,43,.45);z-index:50}
 .mask.on{display:flex;align-items:center;justify-content:center}
-.sheet{background:var(--kinari);border:2px solid var(--sumi);border-radius:16px;width:400px;max-width:92vw;max-height:86vh;overflow:auto;padding:22px 24px;box-shadow:6px 6px 0 rgba(44,40,43,.3)}
+.sheet{background:var(--kinari);border:2px solid var(--sumi);border-radius:16px;width:560px;max-width:92vw;max-height:86vh;overflow:auto;padding:22px 26px;box-shadow:6px 6px 0 rgba(44,40,43,.3)}
 .sheet .kind{font-size:11px;letter-spacing:2px;color:var(--sumi-light)}
 .sheet h3{font-size:19px;margin:2px 0 4px}
 .sheet .sub2{font-size:12px;color:var(--sumi-mid);margin-bottom:12px}
@@ -472,12 +473,12 @@ function renderBoard(){
   if(view==='flow'){
     b.innerHTML=STAGES.map(s=>{
       const cs=JOBS.filter(j=>j.st===s.k);
-      return `<div class="col${s.k==='fallen'?' col-fallen':''}"><div class="col-hd">${s.n}<span class="cnt">${cs.length} 张</span></div>${cs.map(miniHTML).join('')||`<div class="backcard">${MINI_BACK}</div>`}</div>`;
+      return `<div class="col${s.k==='fallen'?' col-fallen':''}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event,'${s.k}')"><div class="col-hd">${s.n}<span class="cnt">${cs.length} 张</span></div>${cs.map(miniHTML).join('')||`<div class="backcard">${MINI_BACK}</div>`}</div>`;
     }).join('');
   }else{
     b.innerHTML='<div class="pgrid">'+JOBS.map(coHTML).join('')+'</div>';
   }
-  $('bsub').textContent=view==='flow'?'从左到右推进，点牌翻档案、可以直接推进阶段。':'共 '+JOBS.length+' 张牌，牌面朝上按公司摆开。';
+  $('bsub').textContent=view==='flow'?'从左到右推进：拖着牌到下一列即可推进阶段，点牌翻档案。':'共 '+JOBS.length+' 张牌，牌面朝上按公司摆开。';
 }
 function coHTML(j){
   const ch={want:'存',sent:'投',test:'笔',int:'面',offer:'转',fallen:'落'}[j.st];
@@ -487,7 +488,7 @@ function coHTML(j){
 function miniHTML(j){
   const line=j.st==='offer'?'#C9A227':j.st==='fallen'?'#9A9189':'#A83358';
   const days=j.st==='offer'?'🌕 已转生':j.st==='fallen'?'🥀 落樱':stN(j.st)+(j.days?' · '+j.days+'天':'');
-  return `<div class="mini" style="--line:${line}" onclick="openSheet('${j.id}')"><div class="co">${esc(j.co)} · ${esc(j.po)}</div><div class="po">${esc(j.kw.slice(0,2).join(' · '))}</div><div class="meta"><span class="days">${days}</span>${sealOf(j)}</div></div>`;
+  return `<div class="mini" style="--line:${line}" draggable="true" ondragstart="dragCard(event,'${j.id}')" onclick="openSheet('${j.id}')"><div class="co">${esc(j.co)} · ${esc(j.po)}</div><div class="po">${esc(j.kw.slice(0,2).join(' · '))}</div><div class="meta"><span class="days">${days}</span>${sealOf(j)}</div></div>`;
 }
 function faceSVG(j){
   const ch={want:'存',sent:'投',test:'笔',int:'面',offer:'转',fallen:'落'}[j.st];
@@ -531,7 +532,10 @@ function openSheet(id){
    ${j.fullNote?`<div class="sec-t">备注</div><div class="next" style="background:var(--kami);color:var(--sumi-mid)">${esc(j.fullNote)}</div>`:''}
    <div class="foot">
      <span style="font-size:11px;color:var(--sumi-light)">状态变了就推进，别让牌停在旧阶段</span>
+     <span style="display:flex;gap:8px;align-items:center">
      ${nx?`<button class="btn btn-p" onclick="advance('${j.id}')">推进到「${stN(nx)}」</button>`:j.st==='offer'?'<span style="font-size:12px;color:var(--kin-deep)">🌕 已到终点，等着答复就好</span>':'<span style="font-size:12px;color:var(--sumi-light)">🥀 这张已落樱，留作记录</span>'}
+     <button class="btn btn-ghost" onclick="delCard('${j.id}')">撕牌删除</button>
+     </span>
    </div>`;
   $('mask').classList.add('on');
 }
@@ -541,6 +545,29 @@ function advance(id){
   const real=BACK[nx];
   mut(id,o=>{o.status=real;(o.history=o.history||[]).push({status:real,at:isoNow()})},true);
   openSheet(id);toast(j.co+' 已推进到「'+stN(nx)+'」✓');
+}
+/* 拖拽推进：牌阵里拖牌到任意阶段列即可换阶段（写历史记录，与按钮推进同一条写入纪律） */
+function dragCard(e,id){try{e.dataTransfer.setData('text/plain',id)}catch(_){}}
+function dragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over')}
+function dragLeave(e){e.currentTarget.classList.remove('drag-over')}
+function dropCard(e,k){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const id=(e.dataTransfer&&e.dataTransfer.getData('text/plain'))||'';const j=JOBS.find(x=>x.id===id);if(!j)return;
+  if(j.st===k)return;
+  const real=BACK[k]||'pool';
+  mut(id,o=>{o.status=real;(o.history=o.history||[]).push({status:real,at:isoNow()})},true);
+  toast(j.co+' 已移到「'+stN(k)+'」✓');
+}
+/* 撕牌删除：档案弹层里可删，写前重读本地存储防覆盖，删除前需确认 */
+function delCard(id){
+  const j=JOBS.find(x=>x.id===id);if(!j)return;
+  if(!confirm('撕掉「'+trim(j.co+' · '+j.po,22)+'」这张牌？撕掉就找不回来了。'))return;
+  if(DEMO){toast("示例模式 · 不写入真数据");return}
+  let fresh=REAL;
+  try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||"null"); if(d&&Array.isArray(d.jobs))fresh=d; }catch(e){}
+  fresh.jobs=fresh.jobs.filter(x=>x.id!==id);
+  REAL=fresh;save();closeSheet();renderAll();
+  toast('已撕掉一张牌 ✓');
 }
 
 /* ═══════════ ⑥ 试炼 · 三件套 ═══════════ */
