@@ -1,2 +1,6 @@
 my-data.json
 大华技术-待导入.json
+my-data*.json
+归档备份/
+*.bak-*
+index.backup-*.html
