@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Offer Tracker · UI v2 设计规范（调研 + 诊断）</title>
+<style>
+  body{font-family:"Microsoft YaHei",sans-serif;margin:0;background:#fff5f8;color:#3a2a30;line-height:1.7;}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 22px 60px;}
+  h1{font-size:22px;color:#c2416b;margin:0 0 4px;}
+  .sub{font-size:13px;color:#9a7a85;margin-bottom:22px;}
+  h2{font-size:16px;color:#c2416b;border-left:4px solid #c2416b;padding-left:10px;margin:30px 0 12px;}
+  .card{background:#fff;border:1px solid #ffe0ea;border-radius:12px;padding:16px 18px;margin-bottom:12px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;}
+  th,td{border:1px solid #f3d4de;padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:#ffe0ea;color:#8f2c4b;font-weight:600;}
+  .lose{color:#b3541e;font-weight:600;}
+  .win{color:#1d7a4f;font-weight:600;}
+  .even{color:#8a6d00;font-weight:600;}
+  .tag{display:inline-block;background:#ffe0ea;color:#c2416b;border-radius:10px;padding:1px 10px;font-size:12px;margin-right:6px;}
+  .warn{background:#fff8e8;border:1px solid #f0d9a0;border-radius:12px;padding:14px 18px;font-size:13px;margin:12px 0;}
+  .kill{background:#fdeeee;border:1px solid #e8b4b4;border-radius:12px;padding:14px 18px;font-size:13px;margin:12px 0;}
+  .todo{background:#fff;border:1.5px dashed #c2416b;border-radius:12px;padding:14px 18px;margin-top:14px;}
+  code{background:#fdf0f4;padding:1px 5px;border-radius:4px;font-size:12px;color:#993556;}
+  li{margin:4px 0;}
+  .small{font-size:12px;color:#9a7a85;}
+  .sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid rgba(0,0,0,.08);}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Offer Tracker · UI v2 设计规范</h1>
+<div class="sub">调研 4 个外部参考 + 2 个国内同类 · 专家诊断 · 2026-09-07 定稿</div>
+
+<h2>一、现状诊断：5 个硬伤</h2>
+<table>
+<tr><th style="width:16%">问题</th><th style="width:42%">现象</th><th style="width:42%">病根</th></tr>
+<tr><td>视觉权重反了</td><td>「待投 7」跟其他 6 个数字一样大、一样灰</td><td>最该霸屏的数据被当成脚注，紧迫感为零</td></tr>
+<tr><td>顶部焦点分散</td><td>6 个按钮平铺（添加/导出备份/导出CSV/导入/演示/AI设置）</td><td>低频操作（演示/导入）和主操作抢首屏位置</td></tr>
+<tr><td>看板 7 列挤压</td><td>1280px 屏每列约 180px，公司名 14px、备注 11px</td><td>列数多却不肯横向滚动，把重点信息压到最小</td></tr>
+<tr><td>缺今日焦点</td><td>进来第一眼不知道「今天该干嘛」</td><td>没有「今日 DDL / 待跟进 N」这种一眼命中的正中央元素</td></tr>
+<tr><td>配色散</td><td>每张卡绿/橙/蓝/粉混着，品牌感弱</td><td>颜色铺在卡片背景上，而非用在状态标签</td></tr>
+</table>
+
+<h2>二、调研：4 个外部参考</h2>
+<div class="card">
+  <div><b>① Huntr（最直接同品类）</b><br>
+  主色紫 <code>#6a4feb</code>，背景 <code>#fbfbff</code>；<b>一列一色、卡片一律白底</b>，颜色只出现在列头（浅底 + 2px 同色描边）；左侧固定栏收功能，顶部只留 1 个「+ Add Job」+ 搜索；正文 14px、按钮 13px。<br>
+  <span class="win">抄：</span>一列一色治「配色散」；顶部只留 1 个主 CTA 治「按钮拥挤」。<span class="lose">不抄：</span>紫色、Lato 字体、黄色 CTA。</div>
+
+  <div style="margin-top:12px"><b>② Teal + Notion 求职模板</b>（tealhq.com 403，视觉规范未获取，仅取到列定义与模板强调色 <code>#00786C</code>/<code>#E84E30</code>）<br>
+  7 段列定义证明 7 列可行——<b>但必须横向滚动，不能压缩</b>。「按投递天数自动切换新鲜/即将/该跟进」是唯一值得保留的彩色用法，因为规则驱动不是装饰。<br>
+  <span class="lose">不抄：</span>Teal 的 tab 堆叠 + 教学式提示被评测直接点名「interface can feel busy」——正是她讨厌的「凑数提示文字」。</div>
+
+  <div style="margin-top:12px"><b>③ Linear（看板工艺）</b><br>
+  accent <code>#5e6ad2</code>；<b>整屏只用 1 个强调色，其余全灰阶</b>；全站 text-sm（约 13px）占绝对多数，层次靠间距和字重做，不靠放大字号；hover 只把背景提一级灰，不加阴影不加动画。<br>
+  <span class="win">抄：</span>字号克制、单一强调色。<span class="lose">不抄：</span>暗色底、超高密度（个人求职板会显冷且压抑）。</div>
+
+  <div style="margin-top:12px"><b>④ Lovable / v0（AI 原生视觉）</b><br>
+  Lovable 页内暖白 <code>#F5F4F0</code>；字号分布 text-sm 112 次 / text-base 23 / text-2xl 18 / text-4xl 5 / text-5xl 1——<b>两级跳：一句超大 + 其余全小</b>。v0 几乎全黑白。<br>
+  <span class="win">抄：</span>暖白底 <code>#F5F4F0</code> 替代纯白（和樱花粉同暖色温，更柔更接近插画风）；<b>把最大字号留给统计数字</b>。<span class="lose">不抄：</span>Lovable 四色高饱和撞色同屏；v0 纯黑白没人味。</div>
+</div>
+
+<h2>三、调研：国内同类</h2>
+<div class="card">
+  <div><b>实习僧</b>：白底 + 统一辅助蓝（底部 tab / 导航选中 / 开关 / 标签全用蓝）。职位详情页<b>靠字号反差 + 字重变化分级，不用颜色</b>——值得直接抄。<br>
+  <span class="lose">反面教材：</span>黄色动画按钮 + 彩色金刚区，被多份体验报告批评「观感杂乱 / 颜色冗余」，正是她讨厌的装饰性高亮。</div>
+  <div style="margin-top:12px"><b>牛客求职页</b>：架构 > 视觉。信息密度高，无吉祥物、无空状态插画。</div>
+  <div style="margin-top:12px"><b>空状态趋势（关键）</b>：Canva 设计系统空状态规范明确写 <i>"Don't add illustrations or graphics"</i>，只留标题 + 1–2 句说明 + 一个主按钮。Material 与 HPE 也只用 icon，不用角色插画。</div>
+</div>
+
+<h2>四、吉祥物结论：不抄猫</h2>
+<div class="kill">
+<b>航海志的猫，抖音链接抓取失败</b>（返回「请在抖音内观看」，四组关键词零命中该作者），除既有逐帧截图外无新增确认细节。但结论不依赖它的具体参数——<b>判断依据是暴露量，不是好看程度</b>。
+<div style="margin-top:10px"><b>四问框架（任一答「是」即减分）</b></div>
+<li><b>暴露量</b>：日活产品每天看几十次，新鲜感是一次性库存，高频工具约第 3 天耗尽。</li>
+<li><b>删掉是否损失信息</b>：删了猫功能照样可读 → 它是装饰。</li>
+<li><b>用户能否关</b>：Clippy 教训是无关闭 + 主动打断（1998 研究 69% 用户觉得烦，1999 微软自研 87% 宁要传统帮助菜单）。</li>
+<li><b>是否随机</b>：随机彩蛋把「可预测」变成「每次都要重新处理一次视觉输入」，对高频工具是纯税。</li>
+<div style="margin-top:10px"><b>结论</b>：航海志的猫对它加分，因为它是<b>一次性体验型</b>（刷到→看→走，暴露量 1）。这个看板是<b>每天高频、焦虑驱动的私人工具</b>，暴露量是它的几百倍，且本人已立过「安静的工具」铁律——猫到第 3 天就变成打扰。</div>
+<div style="margin-top:10px"><b>要抄就抄它的插画语言，不是角色</b>：统一线宽 + 圆角 + 降饱和配色；状态色只上标签不铺底；字号/字重分层替代颜色分层。</div>
+<div style="margin-top:10px"><b>如果实在想要温度，只能这样</b>：只出现在首次空状态（0 条投递）+ AI 分析中等待态两处，之后永不再现；首次引导最多一屏、右上角「跳过」、看过一次不再出现；<b>固定一个静态形象</b>（同姿态同位置，无随机彩蛋、无动画、无气泡台词）；尺寸 ≤120px、降饱和到不抢主 CTA；设置里给「隐藏插画」开关；<b>绝不用于常驻提醒条、不用于教学口号</b>。</div>
+</div>
+
+<h2>五、v2 设计规范（可直接写代码）</h2>
+<table>
+<tr><th style="width:22%">项</th><th style="width:38%">值</th><th style="width:40%">说明</th></tr>
+<tr><td>页面底色</td><td><span class="sw" style="background:#F5F4F0"></span><code>#F5F4F0</code></td><td>暖白替代纯白，和樱花粉同暖色温</td></tr>
+<tr><td>主色 / 强调</td><td><span class="sw" style="background:#c2416b"></span><code>#c2416b</code></td><td>唯一高亮，主 CTA 与统计数字专用</td></tr>
+<tr><td>卡片底</td><td><span class="sw" style="background:#FFFFFF"></span><code>#FFFFFF</code></td><td>卡片统一纯白，不随列变色</td></tr>
+<tr><td>正文 / 辅助</td><td><code>#3a2a30</code> / <code>#9a7a85</code></td><td>辅助文字用灰不用彩色</td></tr>
+<tr><td>统计数字</td><td><b>40–48px / 700</b></td><td>只放 3 个（已投递 / 面试中 / Offer），占首屏正中</td></tr>
+<tr><td>正文字号</td><td>13–14px（两级跳）</td><td>其余全部小字，靠字重做层次</td></tr>
+<tr><td>卡片三层</td><td>公司名 14px/600 → 岗位 13px → 日期与提醒 12px 灰</td><td>层次靠字重+灰度，不靠颜色</td></tr>
+<tr><td>看板列</td><td>固定 <code>272px</code>，gap <code>8px</code>，列内 padding <code>10px</code>，卡片 gap <code>10px</code></td><td><b>横向滚动，一列都不压缩</b></td></tr>
+<tr><td>卡片阴影</td><td><code>0 1px 0 rgba(9,30,66,.25)</code></td><td>Trello 基线，克制</td></tr>
+<tr><td>hover</td><td>背景提一级灰</td><td>不加阴影、不加动画、不变色</td></tr>
+</table>
+
+<div class="card" style="margin-top:12px">
+<b>一列一色（只出现在列头条 + 卡片左侧 3px 竖条）</b>
+<div style="margin-top:8px">
+<span class="sw" style="background:#888780"></span>待投递 <code>#888780</code>
+<span class="sw" style="background:#378ADD;margin-left:14px"></span>已投递 <code>#378ADD</code>
+<span class="sw" style="background:#BA7517;margin-left:14px"></span>测评笔试 <code>#BA7517</code>
+</div>
+<div style="margin-top:6px">
+<span class="sw" style="background:#7F77DD"></span>面试中 <code>#7F77DD</code>
+<span class="sw" style="background:#639922;margin-left:14px"></span>Offer <code>#639922</code>
+<span class="sw" style="background:#E24B4A;margin-left:14px"></span>挂了 <code>#E24B4A</code>
+<span class="sw" style="background:#D4537E;margin-left:14px"></span>需跟进 <code>#D4537E</code>
+</div>
+</div>
+
+<div class="warn">🔑 <b>空状态铁律</b>：只写「这一列还没有」+ 1 个按钮，<b>不写任何引导文案、不写教学口号</b>（如「把大任务拆成 2-3 个小步骤」这类）。<br>
+🔑 <b>「数据看不见」的正解是布局</b>：把 DDL 计数 / 今日待办放进卡片和月历里它们本来就该在的位置，靠间距和字重让它被看到。<b>提示条是承认布局失败</b>，不是解决方案。</div>
+
+<h2>六、不抄清单（红线）</h2>
+<div class="card">
+<li>Huntr 紫 <code>#6a4feb</code>、Lato 字体、黄色 CTA</li>
+<li>Teal 的 tab 堆叠与教学式提示</li>
+<li>Lovable 四色高饱和撞色同屏</li>
+<li>Linear 暗色底与超高密度</li>
+<li>蝴蝶结 / 光晕 / 星星等装饰元素</li>
+<li><b>猫吉祥物（除第七节那条极窄的例外路径）</b></li>
+<li>常驻提醒条、装饰性高亮、凑数提示文字</li>
+</div>
+
+<div class="todo"><b>⏳ 待拍板</b><br>
+① 这份 v2 规范你认不认？认了我就照着改代码（改前先备份现有 HTML）。<br>
+② 「今日焦点」要不要做？做了放哪——大数字区下面，还是左栏顶部？<br>
+③ 左栏要不要加（收筛选 + 其余统计 + 导出导入）？加了首屏看板会变窄。<br>
+④ 第 4 节那条「极窄的吉祥物例外路径」——要不要？我的建议是<b>不要</b>。</div>
+
+<p class="small">数据来源：Huntr / Linear / Lovable / v0 站点 CSS 实测；Teal 站点 403（视觉规范未获取）；实习僧多份体验报告；Canva / Material / HPE 空状态规范；Clippy 用户研究（多伦多大学 1998、微软 1999）。航海志抖音链接抓取失败，其视觉细节仅来自既有逐帧截图。</p>
+</div></body>
+</html>

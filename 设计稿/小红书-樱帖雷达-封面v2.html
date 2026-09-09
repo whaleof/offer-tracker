@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1440px;background:#FBF7EC;font-family:"Microsoft YaHei",sans-serif;color:#2C282B;position:relative;overflow:hidden}
+.frame{position:absolute;inset:48px;border:3px solid #C9A227;outline:1px solid #C9A227;outline-offset:8px}
+.star{position:absolute;color:#C9A227}
+.top{position:absolute;top:118px;left:0;right:0;text-align:center}
+.for{font-size:28px;letter-spacing:8px;color:#8a8175}
+.title{font-size:96px;font-weight:800;line-height:1.3;margin-top:30px;letter-spacing:3px}
+.title .em{color:#C2416B}
+.moonline{position:absolute;top:520px;left:0;right:0;display:flex;justify-content:center;gap:26px;align-items:center}
+.moon{width:60px;height:60px;border-radius:50%;background:#C9A227;position:relative}
+.moon::after{content:"";position:absolute;right:-13px;top:-9px;width:52px;height:52px;border-radius:50%;background:#FBF7EC}
+.chain{font-size:26px;color:#C9A227;letter-spacing:6px}
+.cards{position:absolute;top:650px;left:100px;right:100px;display:flex;flex-direction:column;gap:24px}
+.card{background:#fff;border:2px solid #2C282B;border-radius:16px;padding:24px 32px;box-shadow:6px 6px 0 #2C282B;display:flex;align-items:center;gap:22px}
+.card .ico{width:60px;height:60px;border-radius:14px;background:#C2416B;color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card .ico.g{background:#C9A227}
+.card b{font-size:32px}
+.card span{font-size:23px;color:#6b6357;display:block;margin-top:5px}
+.bottom{position:absolute;bottom:130px;left:0;right:0;text-align:center}
+.free{display:inline-block;background:#2C282B;color:#FBF7EC;font-size:32px;font-weight:700;padding:16px 50px;border-radius:60px;letter-spacing:4px}
+.free .pink{color:#F5B8C9}
+.url{margin-top:20px;font-size:25px;color:#8a8175;letter-spacing:2px}
+</style></head><body>
+<div class="frame"></div>
+<div class="star" style="top:105px;left:115px;font-size:34px">✦</div>
+<div class="star" style="top:170px;right:135px;font-size:24px">✦</div>
+<div class="star" style="bottom:100px;left:145px;font-size:22px">✦</div>
+<div class="top">
+  <div class="for">写 给 秋 招 焦 虑 的 应 届 生</div>
+  <div class="title">秋招不想刷官网？<br><span class="em">让 AI 替你盯岗位</span></div>
+</div>
+<div class="moonline">
+  <div class="moon"></div>
+  <div class="chain">— — — —</div>
+</div>
+<div class="cards">
+  <div class="card"><div class="ico">盯</div><div><b>每天自动盯各大校招官网</b><span>不用再一个个官网反复刷</span></div></div>
+  <div class="card"><div class="ico g">筛</div><div><b>重复的自动去重，按方向城市打分</b><span>只剩真正值得投的</span></div></div>
+  <div class="card"><div class="ico">投</div><div><b>一键进求职看板，DDL 忘不了</b><span>投简历前最烦的一步，全自动</span></div></div>
+</div>
+<div class="bottom">
+  <div class="free">免费开源 <span class="pink">·</span> 数据不出电脑</div>
+  <div class="url">GitHub 搜： sakura-radar</div>
+</div>
+</body></html>

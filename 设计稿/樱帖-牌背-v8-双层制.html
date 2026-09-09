@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 牌背 v8 · 双层制（底纹层 / 封面层）</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-face:#E8CE74;
+  --serif:"Songti SC","Noto Serif SC",Georgia,serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.75;padding:30px 20px 80px}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-family:var(--serif);font-size:23px;font-weight:500;letter-spacing:2px}
+.lead{color:var(--sumi-mid);font-size:13px;margin:6px 0 4px;max-width:760px}
+.rule{height:1px;background:var(--kin);opacity:.45;margin:16px 0 26px}
+h2{font-family:var(--serif);font-size:17px;font-weight:500;margin:38px 0 6px;padding-left:11px;border-left:3px solid var(--shu)}
+h2 .en{font-size:11px;color:var(--sumi-light);letter-spacing:.1em;margin-left:8px;font-family:var(--sans)}
+.sub{font-size:12.5px;color:var(--sumi-mid);margin:0 0 16px 14px}
+.row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.cap{font-size:12px;color:var(--sumi-mid);margin-top:9px;max-width:280px;line-height:1.65}
+.cap b{color:var(--sumi);font-weight:500}
+.tag{display:inline-block;background:var(--kami);border:1px solid rgba(44,40,43,.25);border-radius:6px;padding:1px 8px;font-size:11.5px;color:var(--sumi-mid);margin:0 4px 6px 0}
+
+/* ── 通用牌壳 ── */
+.shell{border-radius:14px;overflow:hidden;position:relative;filter:drop-shadow(4px 5px 0 rgba(44,40,43,.16))}
+.shell svg.bg{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.paper{background:var(--kinari)}
+.crimson{background:var(--shu-deep)}
+
+/* ── A 层浓度对照 ── */
+.swatch{width:132px;height:204px}
+.boxlabel{font-size:12px;color:var(--sumi-mid);text-align:center;margin-top:8px}
+.boxlabel b{display:block;color:var(--sumi);font-size:13px}
+
+/* ── 真实场景 mock ── */
+.mock{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(44,40,43,.28)}
+.mock .inner{position:relative;z-index:2}
+.jobcard{width:268px;height:132px}
+.jobcard .inner{padding:14px 16px}
+.jobcard .co{font-size:15px;font-weight:500;color:var(--sumi)}
+.jobcard .po{font-size:12.5px;color:var(--sumi-mid);margin-top:1px}
+.jobcard .nx{font-size:12px;color:var(--shu-deep);margin-top:9px;border-top:1px dashed rgba(44,40,43,.3);padding-top:7px}
+.jobcard .pill{display:inline-block;background:var(--shu-soft);color:var(--shu-deep);border-radius:9999px;padding:1px 10px;font-size:11.5px;font-weight:500;margin-top:8px}
+
+.page{width:430px;height:250px}
+.page .inner{padding:14px 16px}
+.page .hd{font-size:13px;color:var(--shu-deep);font-weight:500;letter-spacing:.06em}
+.page .act{display:flex;align-items:center;gap:8px;margin-top:10px;background:#fff;border:1px solid rgba(44,40,43,.2);border-radius:10px;padding:9px 12px}
+.page .act b{font-size:13.5px;font-weight:500}
+.page .act span{font-size:11.5px;color:var(--sumi-mid);margin-left:auto}
+.page .ln{font-size:12px;color:var(--sumi-mid);margin-top:8px}
+
+.flashcard{width:300px;height:190px;cursor:pointer}
+.flashcard .inner{padding:0}
+.flashcard .fc{font-size:14.5px;font-weight:500;color:var(--sumi);padding:18px 20px 0;line-height:1.7;position:relative;z-index:2;background:rgba(251,247,236,.65)}
+.flashcard .fh{font-size:11.5px;color:var(--sumi-light);text-align:right;padding:0 20px;position:relative;z-index:2;background:rgba(251,247,236,.65)}
+.flashcard .fa{font-size:12.5px;color:var(--sumi-mid);padding:10px 20px 0;line-height:1.85;position:relative;z-index:2;background:rgba(251,247,236,.65)}
+.flashcard .inner{background:rgba(251,247,236,.92)}
+
+/* ── B 层 ── */
+.bigcard{width:190px;height:290px}
+.bigcard .empty{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:22px}
+.bigcard .empty .w{font-family:var(--serif);font-size:44px;color:var(--shu-deep);opacity:.75;line-height:1}
+.bigcard .empty .t{font-size:11.5px;color:var(--sumi-mid);margin-top:6px;letter-spacing:.14em}
+
+/* ── 去向表 ── */
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;background:#fff;border:1px solid rgba(44,40,43,.3);border-radius:12px;overflow:hidden}
+th{background:var(--kami);text-align:left;padding:9px 12px;font-weight:500;font-size:12px;color:var(--sumi-mid);border-bottom:1px solid rgba(44,40,43,.18)}
+td{padding:9px 12px;border-bottom:1px solid rgba(44,40,43,.13);color:var(--sumi-mid);vertical-align:middle}
+td:first-child{color:var(--sumi);font-weight:500;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.goA{color:#0F6E56;background:#E1F5EE;border-radius:6px;padding:1px 8px;font-size:11.5px;white-space:nowrap}
+.goB{color:#854F0B;background:#FAEEDA;border-radius:6px;padding:1px 8px;font-size:11.5px;white-space:nowrap}
+.goX{color:#993C1D;background:#FAECE7;border-radius:6px;padding:1px 8px;font-size:11.5px;white-space:nowrap}
+
+.note{background:#fff;border:1px solid rgba(44,40,43,.3);border-radius:12px;padding:14px 18px;margin-top:16px;font-size:13px;color:var(--sumi-mid)}
+.note b{color:var(--sumi);font-weight:500}
+.note.gold{background:#FFFDF5;border-color:var(--kin)}
+pre{background:var(--kami);border:1px solid rgba(44,40,43,.25);border-radius:10px;padding:12px 14px;overflow:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.7;color:var(--sumi);margin-top:10px}
+.foot{font-size:11.5px;color:var(--sumi-light);text-align:center;margin-top:34px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>樱帖 · 牌背 v8 · 双层制</h1>
+<p class="lead">不再做「一张又花又想垫底的牌背」。改成两层：<b>A 底纹层</b>负责九成场景（垫在文字下，极淡、单一符号、可平铺）；<b>B 封面层</b>负责一成场景（空位牌、存档封面、logo，没文字压着，随便花）。你点过头那些元素一个都没丢，只是各归其位。</p>
+<div class="rule"></div>
+
+<!-- ══════════ A 底纹层 ══════════ -->
+<h2>A 底纹层<span class="en">TEXTURE · 90% 场景</span></h2>
+<p class="sub">只留一个符号：弦月（品牌就是「月亮向」）。砍掉框、齿环、角花、五芒星——它们在小尺寸和文字底下只会变成噪点。下面三档浓度，推荐中间那档。</p>
+
+<div class="row">
+  <div>
+    <div class="shell swatch paper">
+      <svg viewBox="0 0 132 204" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="66" cy="102" r="52" fill="none" stroke="#C9A227" stroke-width="0.8" opacity="0.05"/>
+        <path d="M66,68 A34,34 0 1,0 66,136 A24.48,24.48 0 1,1 66,68 Z" fill="#C9A227" opacity="0.10"/>
+        <path d="M28,35 L28.72,37.28 L31,38 L28.72,38.72 L28,41 L27.28,38.72 L25,38 L27.28,37.28 Z" fill="#C9A227" opacity="0.08"/>
+        <path d="M106,163.6 L106.576,165.424 L108.4,166 L106.576,166.576 L106,168.4 L105.424,166.576 L103.6,166 L105.424,165.424 Z" fill="#C9A227" opacity="0.07"/>
+      </svg>
+    </div>
+    <div class="boxlabel"><b>10% · 太淡</b>几乎看不见，等于没做</div>
+  </div>
+  <div>
+    <div class="shell swatch paper" style="outline:2px solid var(--kin);outline-offset:4px">
+      <svg viewBox="0 0 132 204" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="66" cy="102" r="52" fill="none" stroke="#C9A227" stroke-width="0.8" opacity="0.07"/>
+        <path d="M66,68 A34,34 0 1,0 66,136 A24.48,24.48 0 1,1 66,68 Z" fill="#C9A227" opacity="0.14"/>
+        <path d="M28,35 L28.72,37.28 L31,38 L28.72,38.72 L28,41 L27.28,38.72 L25,38 L27.28,37.28 Z" fill="#C9A227" opacity="0.11"/>
+        <path d="M106,163.6 L106.576,165.424 L108.4,166 L106.576,166.576 L106,168.4 L105.424,166.576 L103.6,166 L105.424,165.424 Z" fill="#C9A227" opacity="0.09"/>
+      </svg>
+    </div>
+    <div class="boxlabel"><b>14% · 推荐</b>看得见、不抢字</div>
+  </div>
+  <div>
+    <div class="shell swatch paper">
+      <svg viewBox="0 0 132 204" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="66" cy="102" r="52" fill="none" stroke="#C9A227" stroke-width="0.8" opacity="0.12"/>
+        <path d="M66,68 A34,34 0 1,0 66,136 A24.48,24.48 0 1,1 66,68 Z" fill="#C9A227" opacity="0.24"/>
+        <path d="M28,35 L28.72,37.28 L31,38 L28.72,38.72 L28,41 L27.28,38.72 L25,38 L27.28,37.28 Z" fill="#C9A227" opacity="0.18"/>
+        <path d="M106,163.6 L106.576,165.424 L108.4,166 L106.576,166.576 L106,168.4 L105.424,166.576 L103.6,166 L105.424,165.424 Z" fill="#C9A227" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="boxlabel"><b>24% · 偏重</b>开始跟正文打架</div>
+  </div>
+  <div>
+    <div class="shell swatch crimson">
+      <svg viewBox="0 0 132 204" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="66" cy="102" r="52" fill="none" stroke="#F5DCE3" stroke-width="0.8" opacity="0.09"/>
+        <path d="M66,68 A34,34 0 1,0 66,136 A24.48,24.48 0 1,1 66,68 Z" fill="#F5DCE3" opacity="0.18"/>
+        <path d="M28,35 L28.72,37.28 L31,38 L28.72,38.72 L28,41 L27.28,38.72 L25,38 L27.28,37.28 Z" fill="#F5DCE3" opacity="0.13"/>
+        <path d="M106,163.6 L106.576,165.424 L108.4,166 L106.576,166.576 L106,168.4 L105.424,166.576 L103.6,166 L105.424,165.424 Z" fill="#F5DCE3" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="boxlabel"><b>深红底版</b>浅粉弦月 18%，同结构</div>
+  </div>
+</div>
+
+<div class="row" style="margin-top:30px">
+  <div>
+    <div class="mock jobcard paper">
+      <svg viewBox="0 0 268 132" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="248" cy="108" r="54" fill="none" stroke="#C9A227" stroke-width="0.9" opacity="0.10"/>
+        <path d="M248,70 A38,38 0 1,0 248,146 A27.36,27.36 0 1,1 248,70 Z" fill="#C9A227" opacity="0.13"/>
+        <path d="M214,51.4 L214.624,53.376 L216.6,54 L214.624,54.624 L214,56.6 L213.376,54.624 L211.4,54 L213.376,53.376 Z" fill="#C9A227" opacity="0.12"/>
+      </svg>
+      <div class="inner">
+        <div class="co">大华技术</div>
+        <div class="po">AI 交付 · 解决方案</div>
+        <div class="pill">周四 14:00 一面</div>
+        <div class="nx">先刷押题 · 用项目版简历</div>
+      </div>
+    </div>
+    <div class="cap"><b>场景 1 · 岗位牌</b>弦月缩到右下角当暗纹，文字区完全干净。</div>
+  </div>
+
+  <div>
+    <div class="mock page paper">
+      <svg viewBox="0 0 430 250" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="392" cy="196" r="74" fill="none" stroke="#C9A227" stroke-width="0.7" opacity="0.07"/>
+        <path d="M392,144 A52,52 0 1,0 392,248 A37.44,37.44 0 1,1 392,144 Z" fill="#C9A227" opacity="0.11"/>
+        <path d="M120,30 L120.5,31.5 L122,32 L120.5,32.5 L120,34 L119.5,32.5 L118,32 L119.5,31.5 Z" fill="#C9A227" opacity="0.10"/>
+        <path d="M68,90 L68.5,91.5 L70,92 L68.5,92.5 L68,94 L67.5,92.5 L66,92 L67.5,91.5 Z" fill="#C9A227" opacity="0.10"/>
+        <path d="M340,60 L340.5,61.5 L342,62 L340.5,62.5 L340,64 L339.5,62.5 L338,62 L339.5,61.5 Z" fill="#C9A227" opacity="0.10"/>
+        <path d="M200,200 L200.5,201.5 L202,202 L200.5,202.5 L200,204 L199.5,202.5 L198,202 L199.5,201.5 Z" fill="#C9A227" opacity="0.10"/>
+      </svg>
+      <div class="inner">
+        <div class="hd">该投 · 存了还没投的</div>
+        <div class="act"><b>字节跳动 · 前端开发</b><span>投官方网申 ›</span></div>
+        <div class="act"><b>美团 · AI 产品</b><span>换项目版简历 ›</span></div>
+        <div class="ln">最近翻开的牌 · 大华（面试）· 蔚来（面试）</div>
+      </div>
+    </div>
+    <div class="cap"><b>场景 2 · 整页底</b>大尺度就用星网（你喜欢的那个），弦月只在角落点一枚，全页只有一层暗纹。</div>
+  </div>
+
+  <div>
+    <div class="mock flashcard paper">
+      <svg viewBox="0 0 300 190" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">
+        <circle cx="150" cy="88" r="70" fill="none" stroke="#C9A227" stroke-width="0.8" opacity="0.09"/>
+        <path d="M150,42 A46,46 0 1,0 150,134 A33.12,33.12 0 1,1 150,42 Z" fill="#C9A227" opacity="0.12"/>
+        <path d="M46,150 L46.5,151.5 L48,152 L46.5,152.5 L46,154 L45.5,152.5 L44,152 L45.5,151.5 Z" fill="#C9A227" opacity="0.11"/>
+        <path d="M258,42 L258.5,43.5 L260,44 L258.5,44.5 L258,46 L257.5,44.5 L256,44 L257.5,43.5 Z" fill="#C9A227" opacity="0.10"/>
+      </svg>
+      <div class="inner">
+        <div class="fc">你做的 TRAE 跳舞记录页，双端同步怎么设计的？</div>
+        <div class="fa">本地优先 + 云端只存增量；断网可写，联网合并。</div>
+        <div class="fh">点卡片翻面看参考答法</div>
+      </div>
+    </div>
+    <div class="cap"><b>场景 3 · 刷题卡</b>之前魔法阵压在题目上，字是糊的；换成淡弦月后题目是绝对主角。</div>
+  </div>
+</div>
+
+<!-- ══════════ B 封面层 ══════════ -->
+<h2>B 封面层<span class="en">COVER · 10% 场景</span></h2>
+<p class="sub">你点过头的全套——双线框、刻度齿环、切面五芒星、头顶月亮章、雕花角件、星网——<b>原样保留</b>，但只出现在「上面没有文字」的地方。没有字要读，就可以尽情花。</p>
+
+<div class="row">
+  <div>
+    <div class="shell bigcard paper">
+      <svg class="bg" viewBox="0 0 190 290"><g id="cv1"></g></svg>
+      <div class="empty"><div class="w">待</div><div class="t">空位牌</div></div>
+    </div>
+    <div class="cap"><b>空列位「待」牌</b>没有正文，全套花纹上。这是牌背真正该出现的地方。</div>
+  </div>
+
+  <div>
+    <div class="shell bigcard crimson">
+      <svg class="bg" viewBox="0 0 190 290"><g id="cv2"></g></svg>
+      <div class="empty"><div class="w" style="color:var(--kin-face)">帖</div><div class="t" style="color:var(--shu-soft)">存档封面</div></div>
+    </div>
+    <div class="cap"><b>存档封面 / 深红版</b>导出 JSON 的封面、分享图、加载态用它。</div>
+  </div>
+
+  <div>
+    <div class="shell bigcard paper">
+      <svg class="bg" viewBox="0 0 190 290"><g id="cv3"></g></svg>
+      <div class="empty"><div class="w" style="font-size:34px">桜</div><div class="t">初次打开 · 引导页</div></div>
+    </div>
+    <div class="cap"><b>首启引导页</b>新用户第一次打开，先看到的是牌，不是表单。</div>
+  </div>
+</div>
+
+<!-- ══════════ 元素去向 ══════════ -->
+<h2>旧版六个元素 · 去哪了</h2>
+<table>
+<tr><th>元素</th><th>去向</th><th>理由</th></tr>
+<tr><td>外红框 + 内金框</td><td><span class="goB">B 封面层</span></td><td>双线框是「牌的边界」，只在整张牌没有内容时才成立；垫在文字下会变成格线，干扰阅读。</td></tr>
+<tr><td>刻度齿环</td><td><span class="goB">B 封面层</span></td><td>细密齿纹在小尺寸会摩尔纹、发糊；放大到封面级才显出工艺感。</td></tr>
+<tr><td>中央切面五芒星</td><td><span class="goB">B 封面层</span></td><td>它是最强的视觉焦点，跟「题目文字」抢主角——只能留一个。</td></tr>
+<tr><td>头顶月亮章</td><td><span class="goA">升级为 A 主符号</span></td><td>月亮是品牌内核（月亮向），把它从「小章」提成整站的暗纹符号，识别度反而更高。</td></tr>
+<tr><td>四角雕花（AI PNG）</td><td><span class="goX">改用纯 SVG 或砍掉</span></td><td>位图 + multiply 混色是「脏边」的元凶，缩放必糊，和矢量线框风格打架。要角花就手绘 SVG，不然不要。</td></tr>
+<tr><td>星网底纹</td><td><span class="goA">A 底纹层（大面积专用）</span></td><td>它天生适合平铺，压低到 12% 就是整页暗纹；但别和弦月同时出现在同一块区域。</td></tr>
+</table>
+
+<div class="note gold"><b>一条铁律：</b>同一块区域里，A 和 B 只能出现一个。有文字的地方用 A，没文字的地方用 B。之前五版之所以怎么改都丑，是因为想用一张牌背同时干这两件事。</div>
+
+<h2>可直接抄走的代码</h2>
+<p class="sub">A 层做成 SVG symbol，一处定义、全站复用；浓度用 opacity 调，不换图。</p>
+<pre>&lt;svg style="display:none"&gt;
+  &lt;symbol id="yt-moon" viewBox="0 0 100 100"&gt;
+    &lt;path d="M52,8 A44,44 0 1,0 52,92 A32,32 0 1,1 52,8 Z"/&gt;
+  &lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;!-- 用法：底纹，随手改 opacity --&gt;
+&lt;svg class="bg-mark"&gt;&lt;use href="#yt-moon" fill="#C9A227" opacity=".14"/&gt;&lt;/svg&gt;
+
+.bg-mark{position:absolute;right:-18px;bottom:-28px;width:190px;height:190px;
+         pointer-events:none;transform:rotate(-8deg)}</pre>
+
+<div class="foot">樱帖 · 牌背 v8 双层制 · 2026-09-08 · 只解决「牌背」，不动第 7 步原型的功能与布局</div>
+</div>
+
+<script>
+/* ── 工具：弦月 / 星网 ── */
+function moon(cx,cy,R,fill,op){
+  var r=R*0.72;
+  return '<path d="M'+cx+','+(cy-R)+' A'+R+','+R+' 0 1,0 '+cx+','+(cy+R)+' A'+r+','+r+' 0 1,1 '+cx+','+(cy-R)+' Z" fill="'+fill+'" opacity="'+op+'"/>';
+}
+function ring(cx,cy,r,stroke,w,op,dash){
+  return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+stroke+'" stroke-width="'+w+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+' opacity="'+op+'"/>';
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sparkle(x,y,s,c,o){return '<path d="M'+x+','+(y-s)+' L'+(x+s*.24)+','+(y-s*.24)+' L'+(x+s)+','+y+' L'+(x+s*.24)+','+(y+s*.24)+' L'+x+','+(y+s)+' L'+(x-s*.24)+','+(y+s*.24)+' L'+(x-s)+','+y+' L'+(x-s*.24)+','+(y-s*.24)+' Z" fill="'+c+'" opacity="'+o+'"/>'}
+function net(id,seed,n,w,h,c,op){
+  document.getElementById(id).innerHTML=netStr(seed,n,w,h,c,op);
+}
+function netStr(seed,n,w,h,c,op){
+  var R=mulberry32(seed),s='',pts=[],i,x,y;
+  for(i=0;i<n;i++){x=R()*w;y=R()*h;pts.push([x,y])}
+  for(i=0;i<pts.length;i++){s+=sparkle(pts[i][0],pts[i][1],1+R()*2,c,op+R()*.06)}
+  for(i=0;i+2<pts.length&&i<10;i+=3){
+    s+='<polyline points="'+pts[i]+' '+pts[i+1]+' '+pts[i+2]+'" fill="none" stroke="'+c+'" stroke-width=".5" opacity="'+(op*.55)+'"/>';
+  }
+  return s;
+}
+
+/* ── A 层与场景 mock 已用 hard-code SVG 内联在 HTML 中，不依赖 JS ── */
+</script>
+<script>
+/* ── B 封面层：全套花纹（只在没文字的地方用） ── */
+(function(){
+  var STAR='150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8';
+  function cover(id,paper,line,gold,face,deep){
+    var g='';
+    g+='<rect width="190" height="290" fill="'+paper+'"/>';
+    g+=netStr(20260908,22,190,290,gold,.30);
+    g+='<rect x="7" y="7" width="176" height="276" rx="8" fill="none" stroke="'+line+'" stroke-width="2.2"/>';
+    g+='<rect x="13" y="13" width="164" height="264" rx="6" fill="none" stroke="'+gold+'" stroke-width="1"/>';
+    g+=ring(95,145,80,line,2.4,1);
+    g+=ring(95,145,74,line,5,0.8,'2 6');
+    g+=ring(95,145,60,gold,1,1);
+    g+=ring(95,145,46,line,1.2,1);
+    g+='<g clip-path="url(#ic'+id+')"><path d="M95,110 L121,190 L69,152 L121,152 L69,190 Z" fill="none" stroke="'+line+'" stroke-width="1" opacity=".55"/></g>';
+    var star=STAR.split(' ').map(function(p){var a=p.split(',');return (95+(a[0]-150)*0.52)+','+(145+(a[1]-230)*0.52)}).join(' ');
+    g+='<polygon points="'+star+'" transform="translate(-2,-2)" fill="'+face+'"/>';
+    g+='<polygon points="'+star+'" fill="'+gold+'" stroke="'+deep+'" stroke-width="1.6" stroke-linejoin="round"/>';
+    g+=ring(95,58,13,paper,1.4,1);
+    g+=ring(95,58,13,gold,1.4,1);
+    g+='<circle cx="95" cy="58" r="7.5" fill="'+gold+'"/>';
+    g+='<circle cx="98.4" cy="58" r="6" fill="'+paper+'"/>';
+    g+='<g id="cn'+id+'"><path d="M0,30 L0,10 Q0,0 10,0 L30,0 L30,4.5 L12,4.5 Q4.5,4.5 4.5,12 L4.5,30 Z" fill="'+face+'" opacity=".9"/><circle cx="15" cy="15" r="3.2" fill="'+paper+'" stroke="'+line+'" stroke-width="1"/></g>';
+    g+='<use href="#cn'+id+'" transform="translate(9,9)"/>';
+    g+='<use href="#cn'+id+'" transform="translate(181,9) scale(-1,1)"/>';
+    g+='<use href="#cn'+id+'" transform="translate(9,281) scale(1,-1)"/>';
+    g+='<use href="#cn'+id+'" transform="translate(181,281) scale(-1,-1)"/>';
+    return g;
+  }
+  document.getElementById('cv1').innerHTML='<defs><clipPath id="iccv1"><circle cx="95" cy="145" r="44"/></clipPath></defs>'+cover('cv1','#FBF7EC','#C2416B','#C9A227','#E8CE74','#854F0B');
+  document.getElementById('cv2').innerHTML='<defs><clipPath id="iccv2"><circle cx="95" cy="145" r="44"/></clipPath></defs>'+cover('cv2','#A83358','#E8CE74','#E8CE74','#F5DCE3','#FBF7EC');
+  document.getElementById('cv3').innerHTML='<defs><clipPath id="iccv3"><circle cx="95" cy="145" r="44"/></clipPath></defs>'+cover('cv3','#FBF7EC','#C2416B','#C9A227','#E8CE74','#854F0B');
+})();
+</script>
+</body>
+</html>

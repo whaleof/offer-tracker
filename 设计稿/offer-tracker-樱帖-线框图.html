@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 第 5 步 线框图（灰盒子布局）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#ececea;color:#2b2b2b;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.7;padding:24px}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:20px;font-weight:500}
+.sub{font-size:12px;color:#8a8a8a;margin:4px 0 18px}
+h2{font-size:15px;font-weight:500;margin:30px 0 8px;padding-left:10px;border-left:3px solid #8a8a8a}
+.note{font-size:12px;color:#777;margin:6px 0 10px}
+.note b{color:#2b2b2b;font-weight:500}
+/* 浏览器框 */
+.frame{background:#fff;border:1.5px solid #9a9a9a;border-radius:10px;overflow:hidden;margin-bottom:6px}
+.chrome{background:#d9d9d6;padding:6px 12px;display:flex;gap:6px;align-items:center;border-bottom:1px solid #b5b5b2}
+.dot{width:9px;height:9px;border-radius:50%;background:#b0b0ad;border:1px solid #979794}
+.url{flex:1;background:#efefec;border-radius:6px;font-size:11px;color:#8a8a8a;padding:2px 10px;margin-left:8px}
+.screen{padding:14px;background:#fff}
+/* 通用灰盒 */
+.g{background:#f2f2ef;border:1px solid #b5b5b2;border-radius:8px;color:#444}
+.gl{background:#fafaf8;border:1px dashed #b5b5b2;border-radius:8px;color:#8a8a8a}
+.tag{font-size:10.5px;color:#8a8a8a}
+.tag.v2{background:#e4e4e1;border-radius:4px;padding:0 5px;color:#777}
+/* 顶栏 */
+.topnav{display:flex;align-items:center;gap:14px;padding:9px 14px;border-bottom:1px solid #ddd}
+.logo{width:84px;height:26px;background:#e4e4e1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888}
+.navbtn{padding:5px 14px;background:#f2f2ef;border:1px solid #b5b5b2;border-radius:7px;font-size:12px;color:#444}
+.navbtn.on{background:#3a3a38;color:#fff;border-color:#3a3a38}
+.spacer{flex:1}
+/* 首页 */
+.action{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e2e2df;font-size:12.5px}
+.dotst{width:9px;height:9px;border-radius:50%;background:#8a8a8a;flex:0 0 9px}
+.mini{margin-left:auto;font-size:11px;color:#8a8a8a;border:1px solid #c5c5c2;border-radius:6px;padding:1px 8px}
+.stats{display:flex;gap:10px;margin-top:10px}
+.stat{flex:1;text-align:center;padding:10px 4px}
+.stat b{font-size:19px;font-weight:500;display:block}
+.stat span{font-size:11px;color:#8a8a8a}
+/* 看板 */
+.toolbar{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid #ddd}
+.search{flex:1;max-width:280px;padding:5px 10px;font-size:12px;color:#999}
+.chip{padding:3px 10px;font-size:11.5px;border-radius:14px;border:1px solid #b5b5b2;color:#555}
+.chip.on{background:#3a3a38;color:#fff;border-color:#3a3a38}
+.addbtn{background:#3a3a38;color:#fff;border-radius:7px;padding:5px 12px;font-size:12px}
+.cols{display:flex;gap:8px;padding:12px 14px}
+.col{flex:1;background:#f7f7f4;border:1px solid #d5d5d2;border-radius:8px;padding:8px}
+.col h5{font-size:11.5px;color:#777;font-weight:500;margin-bottom:7px}
+.jcard{background:#fff;border:1px solid #b5b5b2;border-radius:7px;padding:7px 9px;margin-bottom:6px;font-size:11.5px;color:#444}
+.jcard .meta{font-size:10.5px;color:#999;margin-top:3px}
+/* 弹层 */
+.overlay{background:rgba(0,0,0,.18);padding:18px}
+.modal{background:#fff;border:1.5px solid #6a6a68;border-radius:12px;overflow:hidden;max-width:760px;margin:0 auto}
+.mhead{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #ddd}
+.stagebar{display:flex;gap:4px;margin-left:auto}
+.sg{width:34px;height:10px;border-radius:5px;background:#e4e4e1;border:1px solid #b5b5b2}
+.sg.on{background:#3a3a38;border-color:#3a3a38}
+.mbody{display:flex;gap:12px;padding:14px 16px}
+.wid{padding:9px 12px;margin-bottom:8px}
+.wid h6{font-size:12px;font-weight:500;color:#333}
+.wid p{font-size:11px;color:#8a8a8a;margin:2px 0 0}
+/* 备战 */
+.pgrid{display:flex;flex-wrap:wrap;gap:10px;padding:12px 14px}
+.pcard{flex:1 1 42%;padding:14px 16px;min-height:190px;display:flex;flex-direction:column;position:relative}
+.pcard h6{font-size:13.5px;font-weight:500}
+.pcard p{font-size:11px;color:#8a8a8a;margin:4px 0 0;max-width:75%}
+.picon{position:absolute;right:12px;bottom:12px;width:52px;height:52px;border-radius:50%;background:#e6e6e3;border:1px solid #b5b5b2;display:flex;align-items:center;justify-content:center;font-size:9.5px;color:#999}
+.pfoot{margin-top:auto;background:#fff;border:1px solid #c5c5c2;border-radius:6px;padding:3px 10px;font-size:11px;color:#777;max-width:80%}
+/* 设置 */
+.setrow{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e6e6e3;font-size:12.5px}
+.setrow .d{margin-left:auto;font-size:11px;color:#9a9a97}
+/* 导览 */
+.tour{position:relative}
+.tourbox{position:absolute;right:26px;top:52px;width:250px;background:#fff;border:1.5px solid #3a3a38;border-radius:10px;padding:12px 14px;box-shadow:0 0 0 4px rgba(0,0,0,.08)}
+.tourbox h6{font-size:12.5px;font-weight:500}
+.tourbox p{font-size:11px;color:#777;margin:4px 0 8px}
+.tb{display:flex;gap:8px}
+.tb .b{font-size:11px;border:1px solid #b5b5b2;border-radius:6px;padding:2px 10px;color:#555}
+.tb .b.on{background:#3a3a38;color:#fff;border-color:#3a3a38}
+.legend{background:#fff;border:1px solid #b5b5b2;border-radius:10px;padding:10px 14px;font-size:12px;color:#666;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>樱帖 · 第 5 步 线框图</h1>
+<div class="sub">全灰·只管东西放哪·不谈任何颜色 · 图为缩略示意，<b>真实页面是全屏宽</b>，比例以实际浏览器为准 · 确认后解锁视觉阶段</div>
+
+<div class="legend"><b>怎么看的：</b>实线盒＝v1 就有的东西；虚线盒＝v2 再点亮（AI 三件套、岗位雷达）；深色块＝点击的主要动作。位置、大小、层级就是本次要你验收的全部。</div>
+
+<h2>P1 · 今日作战（默认首页）</h2>
+<div class="note">打开第一眼＝<b>今天该干嘛</b>；统计在下面；v2 的新岗位雷达放底部——先干活，再看数，最后看新机会。</div>
+<div class="frame">
+  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">yingtie.app</span></div>
+  <div class="screen" style="padding:0">
+    <div class="topnav"><div class="logo">logo位</div><div class="navbtn on">今日作战</div><div class="navbtn">投递看板</div><div class="navbtn">面试备战</div><div class="spacer"></div><div class="navbtn" style="font-size:11px">设置</div></div>
+    <div style="padding:12px 14px">
+      <div class="g">
+        <div style="padding:8px 14px;border-bottom:1px solid #e2e2df;font-size:12.5px;font-weight:500">今天 · 9 月 8 日 周二</div>
+        <div class="action"><span class="dotst"></span>该投：字节跳动 · 前端开发（已存 3 天）<span class="mini">去投 ›</span></div>
+        <div class="action"><span class="dotst"></span>该投：美团 · AI 产品（底简历记得改成项目版）<span class="mini">去投 ›</span></div>
+        <div class="action"><span class="dotst"></span>该催：腾讯 PCG · 已投 12 天没回复<span class="mini">看岗位 ›</span></div>
+        <div class="action" style="border-bottom:none"><span class="dotst"></span>周四 14:00 · 大华 AI 交付 一面（复盘上轮笔试：3 题被问倒）<span class="mini">备战 ›</span></div>
+      </div>
+      <div class="stats">
+        <div class="g stat"><b>23</b><span>总投递</span></div>
+        <div class="g stat"><b>7</b><span>进行中</span></div>
+        <div class="g stat"><b>3</b><span>面试中</span></div>
+        <div class="g stat"><b>1</b><span>offer</span></div>
+      </div>
+      <div class="gl" style="margin-top:10px;padding:12px 14px;font-size:12px">新岗位雷达（v2）· 自动化每天喂对口新岗位 · 一键转正式岗位卡 <span class="tag v2">v2</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>P2 · 投递看板</h2>
+<div class="note">搜索+阶段筛选常驻顶部；<b>「＋添加岗位」钉死在右上</b>（任何页都能点它是全局按钮，这里只画看板形态）；五列各列多少卡一眼看进度。</div>
+<div class="frame">
+  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">yingtie.app</span></div>
+  <div class="screen" style="padding:0">
+    <div class="topnav"><div class="logo">logo位</div><div class="navbtn">今日作战</div><div class="navbtn on">投递看板</div><div class="navbtn">面试备战</div><div class="spacer"></div><div class="navbtn" style="font-size:11px">设置</div></div>
+    <div class="toolbar">
+      <div class="g search">搜公司 / 岗位 / 备注…</div>
+      <span class="chip on">全部</span><span class="chip">想投</span><span class="chip">已投</span><span class="chip">笔试</span><span class="chip">面试</span><span class="chip">offer</span>
+      <span class="spacer"></span>
+      <div class="addbtn">＋ 添加岗位</div>
+    </div>
+    <div class="cols">
+      <div class="col"><h5>想投 3</h5><div class="jcard">字节 · 前端开发<div class="meta">存了 3 天 · 简历✓</div></div><div class="jcard">美团 · AI产品<div class="meta">存了 1 天</div></div></div>
+      <div class="col"><h5>已投 12</h5><div class="jcard">腾讯 PCG · 体验<div class="meta">12 天没回复 ⚠</div></div><div class="jcard">网易 · 游戏AI<div class="meta">6 天</div></div></div>
+      <div class="col"><h5>笔试 2</h5><div class="jcard">大华 · AI交付<div class="meta">周四机考</div></div></div>
+      <div class="col"><h5>面试 3</h5><div class="jcard">快手 · 产品<div class="meta">下周二一面</div></div></div>
+      <div class="col"><h5>offer 1</h5><div class="jcard" style="border-style:dashed">（转生位）</div></div>
+    </div>
+  </div>
+</div>
+
+<h2>P3 · 岗位详情（弹层，盖在看板上）</h2>
+<div class="note">点任何岗位卡弹出；<b>左边 JD 原文、右边五个挂件</b>——复盘/简历对应/AI 对版/话术全在这，不用跳页。</div>
+<div class="frame">
+  <div class="overlay">
+    <div class="modal">
+      <div class="mhead"><b style="font-size:13px;font-weight:500">腾讯 PCG · 体验设计</b><span class="tag">已投 12 天</span><div class="stagebar"><span class="sg"></span><span class="sg on"></span><span class="sg"></span><span class="sg"></span><span class="sg"></span></div></div>
+      <div class="mbody">
+        <div class="g" style="flex:1;min-height:220px;padding:10px 12px;font-size:11.5px;color:#666">JD 原文（可滚动）<br><br>岗位职责：…<br>任职要求：…</div>
+        <div style="flex:1.2">
+          <div class="g wid"><h6>复盘（1）</h6><p>10.2 一面：被问倒 2 题 → 已进题库 ｜ ＋记一笔</p></div>
+          <div class="g wid"><h6>简历对应</h6><p>用「作品集项目版.pdf」· 改了：突出工作台项目 ｜ 打开文件夹 ›</p></div>
+          <div class="gl wid"><h6>AI 对版 <span class="tag v2">v2</span></h6><p>底简历 vs 这份 JD → 微调建议（突出什么/改哪句）</p></div>
+          <div class="gl wid"><h6>BOSS 话术 <span class="tag v2">可以档</span></h6><p>用 JD+我的亮点生成开场白</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>P4 · 面试备战（定版：3 张等大竖长卡 · 按时间顺序）</h2>
+<div class="note">按你的指令改：①三卡<b>一样大</b>（以后加功能不挤）②<b>按使用时间排序</b>：备战资料（面以前）→ 面试复盘（面完记）→ 刷题库（自动收集+翻卡练）③命名简洁统一：备战资料 / 面试复盘 / 刷题库。</div>
+<div class="frame">
+  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">yingtie.app</span></div>
+  <div class="screen" style="padding:0">
+    <div class="topnav"><div class="logo">logo位</div><div class="navbtn">今日作战</div><div class="navbtn">投递看板</div><div class="navbtn on">面试备战</div><div class="spacer"></div><div class="navbtn" style="font-size:11px">设置</div></div>
+    <div class="pgrid">
+      <div class="g pcard"><h6>备战资料 <span class="tag v2">v2</span></h6><p>选公司 → 押题＋搜这家真题/经验帖；押出的题进刷题库</p><div class="pfoot">选公司生成 ›</div><div class="picon">图标位</div></div>
+      <div class="g pcard"><h6>面试复盘</h6><p>面完记：被问啥/卡哪/下轮改啥，挂在公司下</p><div class="pfoot">3 次复盘 · ＋记一笔</div><div class="picon">图标位</div></div>
+      <div class="g pcard"><h6>刷题库</h6><p>被问倒的题自动收集＋种子题；点「刷卡模式」翻卡练</p><div class="pfoot">30 题 · 3 家公司 · 刷卡模式 ›</div><div class="picon">图标位</div></div>
+    </div>
+  </div>
+</div>
+
+<h2>P5 · 设置（低频，原位即可）</h2>
+<div class="note">按你的反馈改：<b>标签只留名词，一句解释都不放</b>——说明全部收进新手导览里讲，界面大大方方、简洁。</div>
+<div class="frame">
+  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">yingtie.app</span></div>
+  <div class="screen" style="padding:0">
+    <div class="topnav"><div class="logo">logo位</div><div class="navbtn">今日作战</div><div class="navbtn">投递看板</div><div class="navbtn">面试备战</div><div class="spacer"></div><div class="navbtn on" style="font-size:11px">设置</div></div>
+    <div style="padding:12px 14px">
+      <div class="g setrow">AI 接入<span class="d">已连接 ✓</span></div>
+      <div class="g setrow">我的亮点<span class="d">3 条</span></div>
+      <div class="g setrow">备份与导入<span class="d">9.7</span></div>
+      <div class="g setrow">演示数据<span class="d"></span></div>
+      <div class="g setrow" style="border-bottom:none">功能导览<span class="d"></span></div>
+    </div>
+  </div>
+</div>
+
+<h2>P0 · 新手功能导览（第一次打开自动出现）</h2>
+<div class="note">治"有功能看不见"：3 步带完「有什么·在哪」，可跳过；设置里可重看。<b>不弹提醒条、不加常驻提示</b>——只此一次。</div>
+<div class="frame tour">
+  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">yingtie.app</span></div>
+  <div class="screen" style="padding:0;min-height:210px">
+    <div class="topnav"><div class="logo">logo位</div><div class="navbtn on">今日作战</div><div class="navbtn">投递看板</div><div class="navbtn">面试备战</div><div class="spacer"></div><div class="navbtn" style="font-size:11px">设置</div></div>
+    <div style="padding:12px 14px">
+      <div class="g" style="padding:10px 14px;font-size:12px">今天 · 该投：字节-前端 · 该催：腾讯（12天） · 周四：大华一面</div>
+      <div class="g" style="padding:10px 14px;margin-top:8px;font-size:12px">23 投递 · 7 进行中 · 3 面试 · 1 offer</div>
+    </div>
+    <div class="tourbox">
+      <h6>① 这是你的今日作战</h6>
+      <p>每天打开先看这：该投谁、该催谁、哪天面试。左上 logo 旁还有看板和备战，逛一圈就熟了。</p>
+      <div class="tb"><span class="b on">下一步</span><span class="b">跳过</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="legend" style="margin-top:24px"><b>验收问题（对着图答）：</b>①首页的行动卡，写的这几类"该投/该催/面试"对不对、还缺啥？②看板五列的顺序顺不顺你的习惯？③岗位详情里五个挂件的排列，最常用的复盘放最上面对不对？④导览那一步的说明够不够明白？哪里不对直接指着说，全对就回"确认"——流程 1-5 步收官，解锁视觉阶段。</div>
+</div>
+</body>
+</html>

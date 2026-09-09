@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 第 4 步 核心流程图</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.75;padding:24px;max-width:940px;margin:0 auto}
+h1{font-size:21px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:14px}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:6px 0 16px}
+h2{font-size:15.5px;font-weight:500;margin:24px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+p{margin:6px 0;color:var(--sumi-mid)}
+p b,li b{color:var(--sumi);font-weight:500}
+.flow{background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.flowmeta{font-size:12px;color:var(--sumi-light);margin-bottom:10px}
+.steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+.stp{flex:1;min-width:120px;background:var(--kami);border:1.5px solid var(--sumi);border-radius:10px;padding:9px 11px}
+.stp h4{font-size:12.5px;font-weight:500;line-height:1.4}
+.stp p{font-size:11.5px;color:var(--sumi-mid);margin:3px 0 0;line-height:1.5}
+.arr{display:flex;align-items:center;padding:0 5px;color:var(--sumi-light);font-size:14px}
+.check{background:var(--kin-soft);border-left:3px solid var(--kin);border-radius:8px;padding:9px 13px;margin-top:12px;font-size:12.5px;color:#6B5410}
+.risk{background:var(--shu-soft);border-left:3px solid var(--shu);border-radius:8px;padding:9px 13px;margin-top:8px;font-size:12.5px;color:var(--shu-deep)}
+.tagv2{display:inline-block;background:var(--kin-soft);color:#6B5410;font-size:11px;border-radius:5px;padding:0 6px;vertical-align:1px}
+.loop{background:var(--sumi);color:#F5EDEE;border-radius:12px;padding:13px 18px;margin:12px 0;font-size:14px;line-height:1.8}
+.loop b{color:#F3C8D4;font-weight:500}
+.footer{font-size:11px;color:var(--sumi-light);text-align:center;margin-top:22px}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:11px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+</style>
+</head>
+<body>
+
+<h1>樱帖 · 第 4 步 核心流程图</h1>
+<div class="sub">2026-09-08 · 三条主路径 + 每步点击数 + 会卡壳的地方 · 确认后进第 5 步线框图（真正的验收点）</div>
+<div class="gold-rule"></div>
+
+<div class="loop">
+你的一天就一个圈：<b>看到岗位 → 30 秒记进来 → 投出去 → 有动静就推进一格 → 面完花 5 分钟复盘</b> → 回到看今天该干嘛。三条流程就是这个圈的三个分解动作。
+</div>
+
+<h2>流程 A · 添加岗位（目标 ≤ 30 秒，4 步）</h2>
+<div class="flow">
+<div class="flowmeta">入口：任何页都有的「＋添加岗位」按钮 · 必填只有 2 项</div>
+<div class="steps">
+  <div class="stp"><h4>1 点「＋添加岗位」</h4><p>看板工具条 + 空状态大按钮，随时可点</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>2 贴 JD（可选）</h4><p>把招聘页原文粘进来<span class="tagv2">v2 自动识别公司/岗位名/薪资</span></p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>3 填 2 项必填</h4><p>公司名 + 岗位名，其他全留空不拦路</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>4 保存</h4><p>卡片落进「想投」列，自动带出：简历对应空档 + AI 对版入口</p></div>
+</div>
+<div class="check">零摩擦校验：不填 JD 也能 10 秒建完卡；贴了 JD 也就多一步粘贴。表单不弹层级、不跳页。</div>
+<div class="risk">会卡壳的地方：JD 太长粘贴卡顿 → 限长保存；忘了公司全名 → 允许随手写简称，不搞联想强校验。</div>
+</div>
+
+<h2>流程 B · 跟踪推进（改阶段 ≤ 2 次点击）</h2>
+<div class="flow">
+<div class="flowmeta">入口：首页今日行动卡 / 投递看板</div>
+<div class="steps">
+  <div class="stp"><h4>1 打开首页</h4><p>今日行动卡直接告诉你：该投 A、B 投了 10 天没动静该催了、周四有面试</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>2 点那一条</h4><p>直达岗位详情弹层（不用先找页再找卡）</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>3 推进一格</h4><p>阶段条点下一状态；看板里也可直接把卡拖/点到目标列</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>4 自动记账</h4><p>时间戳自动记，漏斗和大数即时更新，不用你补任何字段</p></div>
+</div>
+<div class="check">零摩擦校验：从"打开页面"到"改完阶段"＝2 次点击；"10 天没回复"不靠你记，今日卡自动浮出来。</div>
+<div class="risk">会卡壳的地方：推进时想补一句备注 → 弹层里就地一行输入，不强制；误推进 → 阶段可随时点回，无"确认框"打断。</div>
+</div>
+
+<h2>流程 C · 面试复盘（面后 5 分钟内完成）</h2>
+<div class="flow">
+<div class="flowmeta">入口：岗位详情弹层「复盘」挂件 / 面试备战页</div>
+<div class="steps">
+  <div class="stp"><h4>1 面完打开该岗位</h4><p>从今日卡或看板点进去，详情里就有复盘挂件</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>2 点「＋记一笔」</h4><p>三栏快记：被问啥（一行一题）/ 卡在哪 / 下轮改啥，写多少算多少</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>3 保存自动归档</h4><p>复盘挂在岗位时间线；<b>被问倒的题自动进题库</b>，不打第二遍</p></div>
+  <div class="arr">→</div>
+  <div class="stp"><h4>4 下场面试前取用</h4><p>备战页按公司过一遍题库；<span class="tagv2">v2：AI 出押题+联网搜这家真题经验帖</span></p></div>
+</div>
+<div class="check">零摩擦校验：复盘表单无必填——面完脑瓜子是懵的，写一行也算记了；题库自动收集，不手动搬运。</div>
+<div class="risk">会卡壳的地方：懒得复盘 → 死线设计成"下次打开该岗位时轻问一句'上轮面完要补一笔吗'"，写进今日卡而不是弹窗打断。</div>
+</div>
+
+<h2>对架构的反向检查（Pre-mortem 一遍）</h2>
+<div class="flow">
+<ol style="margin:4px 0 4px 22px">
+<li><b>每日主循环成立</b>：首页（看任务）→ 看板（推进）→ 详情（补记录），三个页面互相直达，没有死胡同。</li>
+<li><b>流程 B 依赖今日卡的"算账"规则</b>（什么算该投/该催/该面）——这是第 5 步线框后、写代码前要定死的第一个数据规则，我到时会先列规则表给你看。</li>
+<li><b>流程 C 的题库自动收集</b>要求复盘的"被问啥"按行结构化存——写代码时每行一题入库，别存成一坨文本。</li>
+<li><b>AI 三处入口（对版/备战/资讯）都挂在别的页面里</b>，v1 全部先放"入口位"（点了提示 v2 见），骨架不返工。</li>
+</ol>
+</div>
+
+<div class="callout"><b>确认点：</b>三条流程你扫一眼，觉得"每天就这么用"就行；有哪步觉得烦直接指出来。确认后进<b>第 5 步线框图</b>——每页一个灰盒子布局，那才是你能"看出来"的验收环节。</div>
+
+<div class="footer">樱帖重启 · 第 4 步 / 共 5 步 · 2026-09-08</div>
+</body>
+</html>

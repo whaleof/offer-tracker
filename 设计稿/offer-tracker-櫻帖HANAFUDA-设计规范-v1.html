@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>櫻帖 HANAFUDA · 设计规范 v1（Offer Tracker）</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2; --kami-deep:#EAE3D2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0;
+  --ai:#3A5A7A; --wakatake:#6E8B5E;
+  --line:rgba(44,40,43,.18); --line-mid:rgba(44,40,43,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.7;padding:24px;max-width:1000px;margin:0 auto}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:22px}
+h2{font-size:16px;font-weight:500;margin:26px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+h3{font-size:13.5px;font-weight:500;margin:14px 0 6px}
+p{margin:6px 0;color:var(--sumi-mid)}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:8px 0 18px}
+.card{background:#fff;border:1px solid var(--line-mid);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.card.feat{border:1.5px solid var(--sumi)}
+.seal{display:inline-flex;align-items:center;justify-content:center;background:var(--shu);color:#fff;border-radius:5px;width:26px;height:26px;font-size:13px;font-weight:500;flex:0 0 26px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+th{background:var(--kami);text-align:left;padding:8px 10px;font-weight:500;font-size:12px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500}
+.swatch{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0}
+.sw{border:1px solid var(--line-mid);border-radius:10px;overflow:hidden;background:#fff}
+.sw .chip{height:56px}
+.sw .info{padding:8px 10px}
+.sw .nm{font-size:12.5px;font-weight:500}
+.sw .hex{font-size:11px;color:var(--sumi-light);font-family:ui-monospace,Menlo,monospace}
+ul{margin:6px 0 6px 20px}
+li{margin:4px 0;color:var(--sumi-mid);font-size:13.5px}
+li b{color:var(--sumi);font-weight:500}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:12px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.callout.dark{background:#2C282B;color:#EFE7EA;border-color:#2C282B}
+.no{color:var(--shu-deep);font-weight:500}
+.demo{background:var(--kinari);border:1px solid var(--line-mid);border-radius:12px;padding:16px 18px;margin:12px 0}
+.pill{display:inline-block;background:var(--kami);border:1px solid var(--line-mid);border-radius:999px;padding:5px 15px;font-size:12.5px;color:var(--sumi-mid);margin-right:6px}
+.pill.on{background:var(--sumi);color:var(--kinari);border-color:var(--sumi)}
+.tag{display:inline-block;background:var(--kami);border:1px solid var(--line);color:var(--sumi-mid);border-radius:4px;padding:2px 8px;font-size:11px}
+.toc{background:var(--kami);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px}
+.toc a{color:var(--shu);text-decoration:none;display:block;padding:2px 0}
+.toc a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<h1 class="serif">櫻帖 <span style="font-size:13px;color:var(--sumi-light);font-family:'PingFang SC',sans-serif">HANAFUDA</span></h1>
+<div class="sub">Offer Tracker 视觉设计规范 v1 · 2026-09-08 · 概念＝「每投一个岗位＝收进一张花札牌」</div>
+<div class="gold-rule"></div>
+
+<div class="toc">
+  <b class="serif">目录</b>
+  <a href="#1">一、这不是抄的：三个参考源的解构</a>
+  <a href="#2">二、色板（六个色，各有出处）</a>
+  <a href="#3">三、字体规则</a>
+  <a href="#4">四、五大视觉元素</a>
+  <a href="#5">五、和航海志的差异（为什么不撞）</a>
+  <a href="#6">六、应用到 Offer Tracker 的映射表</a>
+  <a href="#7">七、禁忌清单</a>
+</div>
+
+<h2 id="1">一、这不是抄的：三个参考源的解构</h2>
+<div class="card">
+<table>
+<tr><th>参考源</th><th>借什么（可迁移的方法）</th><th>扔什么（照搬就露馅的部分）</th></tr>
+<tr><td>魔卡少女樱</td><td>樱瓣几何、星月光晕、金线、奶白纸的柔光与仪式感</td><td class="no">卡通立绘、库洛牌插画、大眼睛角色、飘落动画</td></tr>
+<tr><td>花札（日本传统纸牌）</td><td>「收集卡牌」的隐喻、本白纸 + 墨线 + 朱印的成人向质感、壱弐参记数</td><td class="no">具象的松鹤樱月花鸟图案</td></tr>
+<tr><td>航海志</td><td>卡牌分区、编号 tag、色块权重（它真正做对的地方）</td><td class="no">猫狗吉祥物、转盘、立绘、它的具体配色</td></tr>
+</table>
+<div class="callout"><b>方法：</b>参考源的「形」都扔掉，只留「为什么它让人觉得好」——小樱让人觉得好是因为<b>柔光+仪式感</b>，花札让人觉得好是因为<b>纸墨的实感</b>，航海志让人觉得好是因为<b>卡牌的分区清晰</b>。这三件事合成「櫻帖」。</div>
+</div>
+
+<h2 id="2">二、色板（六个色，各有出处）</h2>
+<div class="swatch">
+  <div class="sw"><div class="chip" style="background:#FBF7EC"></div><div class="info"><div class="nm">生成り 本白纸</div><div class="hex">#FBF7EC · 页面底</div></div></div>
+  <div class="sw"><div class="chip" style="background:#F4EFE2"></div><div class="info"><div class="nm">紙 深一档</div><div class="hex">#F4EFE2 · 状态条/未选中</div></div></div>
+  <div class="sw"><div class="chip" style="background:#2C282B"></div><div class="info"><div class="nm">墨</div><div class="hex">#2C282B · 标题/选中/描边</div></div></div>
+  <div class="sw"><div class="chip" style="background:#C2416B"></div><div class="info"><div class="nm">朱 ＝原品牌色</div><div class="hex">#C2416B · 印/主按钮</div></div></div>
+  <div class="sw"><div class="chip" style="background:#C9A227"></div><div class="info"><div class="nm">金</div><div class="hex">#C9A227 · 分隔线/成就</div></div></div>
+  <div class="sw"><div class="chip" style="background:#3A5A7A"></div><div class="info"><div class="nm">藍 / 若竹</div><div class="hex">#3A5A7A / #6E8B5E · 状态辅色</div></div></div>
+</div>
+<div class="callout gold"><b>关键：这不是换色。</b>你的品牌色 <code>#c2416b</code> 本来就在「朱」的位置上——樱帖做的事是<b>把你的樱花粉放回它本来的文化语境里</b>，不是另起一套颜色。</div>
+
+<h2 id="3">三、字体规则</h2>
+<div class="card">
+<ul>
+<li><b>标题、公司名、卡名</b> → 宋体/衬线（<code>"Songti SC","Noto Serif SC",Georgia,serif</code>）——书卷气，是「帖」的质感来源</li>
+<li><b>正文、数据、按钮</b> → 黑体（<code>"PingFang SC","Microsoft YaHei"</code>）——功能件要清楚，不能文艺过头</li>
+<li><b>字重只用两档</b>：400 / 500。绝不用 600、700（粗体会把和风的轻薄感压死）</li>
+<li><b>字号下限 11px</b>，辅助信息用灰度不用缩小字号</li>
+</ul>
+</div>
+
+<h2 id="4">四、五大视觉元素</h2>
+<div class="card feat">
+  <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px"><span class="seal serif">墨</span><div><b>① 墨线</b>：卡片一律 <code>1–1.5px solid #2C282B</code>（或 <code>rgba(44,40,43,.6)</code>）。<b>不用彩色实底卡</b>，纸白卡 + 墨线是花札的形。</div></div>
+  <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px"><span class="seal serif">朱</span><div><b>② 朱印</b>：<code>#C2416B</code> 方块（26–30px，圆角 4–5px）+ 白字宋体单字。用于编号（壱弐参）和状态（投/面/终/签）。<b>替代所有 emoji 贴纸</b>。</div></div>
+  <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px"><span class="seal serif" style="background:#3A5A7A">月</span><div><b>③ 月相</b>：状态进度用月相盈亏（新月→上弦→满月）代替彩色圆点。隐喻「路程渐满」，<b>且色盲友好</b>——不靠颜色区分进度。</div></div>
+  <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px"><span class="seal serif" style="background:#C9A227;color:#2C282B">金</span><div><b>④ 金线</b>：<code>1px #C9A227 · opacity .45</code> 的水平分隔线。只用在页头和分区，<b>全页不超过 3 条</b>。</div></div>
+  <div style="display:flex;gap:10px;align-items:flex-start"><span class="seal serif" style="background:#F5DCE3;color:#C2416B">櫻</span><div><b>⑤ 樱瓣</b>：五圆瓣 + 金蕊的极简 SVG。<b>只出现在空态和成就达成两处</b>，全页最多 1–2 枚。<b>不做飘落动画</b>（太吵，违反安静工具原则）。</div></div>
+</div>
+
+<h2 id="5">五、和航海志的差异（为什么不撞）</h2>
+<table>
+<tr><th>维度</th><th>航海志</th><th>櫻帖</th></tr>
+<tr><td>卡</td><td>实底彩色大卡</td><td><b>纸白卡 + 墨线</b></td></tr>
+<tr><td>阴影</td><td>4px 错位硬阴影</td><td><b>不要硬阴影</b>，靠墨线和留白撑</td></tr>
+<tr><td>装饰</td><td>猫狗吉祥物 / 立绘</td><td><b>朱印 / 月相 / 樱瓣</b>（几何化，无角色）</td></tr>
+<tr><td>编号</td><td>米色圆贴纸 + emoji</td><td><b>朱红方印 + 汉字</b></td></tr>
+<tr><td>色彩</td><td>五色高饱和</td><td><b>纸白 + 墨 + 朱 + 金，低饱和</b></td></tr>
+<tr><td>调性</td><td>活泼、游戏化</td><td><b>沉静、有仪式感、成人向</b></td></tr>
+</table>
+<div class="callout dark">一句话区分：<b>航海志是「游戏化的航海冒险」，櫻帖是「一本装牌的册子」。</b>前者要你兴奋，后者要你静下来整理。</div>
+
+<h2 id="6">六、应用到 Offer Tracker 的映射表</h2>
+<table>
+<tr><th>现有元素（航海志版）</th><th>改成（櫻帖版）</th></tr>
+<tr><td>主导航药丸（深底）</td><td>保留，但底改墨色 <code>#2C282B</code>、字改 <code>#FBF7EC</code></td></tr>
+<tr><td>行卡状态徽章（彩色）</td><td>朱印单字 <code>投 / 面 / 终 / 签</code> + 月相</td></tr>
+<tr><td>入口卡（实底五色）</td><td>纸白卡 + 墨线 + 朱印编号（壱弐参…）</td></tr>
+<tr><td>米色圆贴纸 emoji</td><td>删除，全部换成朱印汉字</td></tr>
+<tr><td>底部米白状态条</td><td>保留，色改 <code>#F4EFE2</code> + 极细墨边</td></tr>
+<tr><td>列头彩线</td><td><b>删除</b>（你本来就批过「还不如不加」）</td></tr>
+<tr><td>深色模式</td><td>反相：墨底 <code>#232022</code> + 生成り字 + 朱印不变</td></tr>
+</table>
+
+<h2 id="7">七、禁忌清单</h2>
+<div class="card">
+<ul>
+<li class="no">不放任何卡通角色、吉祥物、立绘</li>
+<li class="no">不用 emoji 当功能图标（各平台渲染不一致，且廉价）</li>
+<li class="no">不用 4px 错位硬阴影（那是航海志的签名，用了就撞）</li>
+<li class="no">不用高饱和五色卡（墨线纸白是櫻帖的骨架）</li>
+<li class="no">不做樱瓣飘落动画（安静工具原则）</li>
+<li class="no">字重不超过 500</li>
+<li class="no">金线全页 ≤3 条；樱瓣全页 ≤2 枚</li>
+</ul>
+</div>
+
+<div class="gold-rule" style="margin-top:26px"></div>
+<p style="font-size:11px;color:var(--sumi-light);text-align:center">櫻帖 HANAFUDA v1 · WorkBuddy 生成 · 待你确认后再动 index.html</p>
+
+</body>
+</html>

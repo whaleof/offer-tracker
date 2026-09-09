@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offer Tracker · UI 诊断卡（2026-09-08）</title>
+<style>
+:root{
+  --paper:#F5F4F0; --paper-2:#EFEEE9; --paper-3:#EAE8E2;
+  --ink:#3a2a30; --ink-mid:#7a6a72; --ink-light:#9a7a85;
+  --brand:#c2416b; --brand-deep:#a83358; --brand-soft:#fdeef3;
+  --accent:#D4537E; --accent-deep:#b83f66; --accent-soft:#fbe4ec;
+  --ok:#639922; --warn:#BA7517; --bad:#E24B4A; --info:#378ADD;
+  --line:rgba(58,42,48,.12);
+  --radius-card:18px; --radius:14px; --radius-btn:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+body{background:var(--paper);color:var(--ink);line-height:1.6;padding:20px;max-width:980px;margin:0:auto;font-size:14px}
+h1{font-size:20px;font-weight:600;color:var(--brand-deep);margin-bottom:6px}
+h2{font-size:16px;font-weight:600;color:var(--brand);margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--brand)}
+h3{font-size:14px;font-weight:600;color:var(--ink);margin:14px 0 8px}
+p{margin:6px 0;color:var(--ink-mid)}
+.meta{font-size:12px;color:var(--ink-light);margin-bottom:18px}
+.meta b{color:var(--brand);font-weight:600}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);padding:18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(58,42,48,.04)}
+.tag{display:inline-block;background:var(--brand-soft);color:var(--brand-deep);border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;margin-right:6px}
+.tag.warn{background:#faf0e0;color:var(--warn)}
+.tag.bad{background:#fdecea;color:var(--bad)}
+.tag.ok{background:#eaf3de;color:var(--ok)}
+.tag.info{background:#e6f1fb;color:var(--info)}
+.screenshot{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff;margin:12px 0;box-shadow:0 4px 14px rgba(58,42,48,.06)}
+.screenshot img{display:block;width:100%}
+.cap{font-size:11px;color:var(--ink-light);text-align:center;padding:6px 10px;background:var(--paper-2)}
+ul{margin:6px 0 6px 22px}
+li{margin:4px 0;color:var(--ink-mid);font-size:13.5px}
+li b{color:var(--ink);font-weight:600}
+.callout{background:var(--brand-soft);border-left:3px solid var(--brand);padding:12px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--brand-deep)}
+.callout.warn{background:#faf0e0;border-color:var(--warn);color:#854F0B}
+.callout.info{background:#e6f1fb;border-color:var(--info);color:#0C447C}
+.prompt-box{background:#2C282B;color:#EFE7EA;border-radius:var(--radius);padding:16px 18px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;margin:10px 0;max-height:480px;overflow-y:auto;border:1px solid rgba(255,255,255,.08)}
+.prompt-box::-webkit-scrollbar{width:8px}
+.prompt-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+.copy-row{display:flex;gap:8px;align-items:center;margin:-6px 0 12px}
+.copy-btn{background:var(--brand);color:#fff;border:none;border-radius:var(--radius-btn);padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.copy-btn:hover{background:var(--brand-deep)}
+.copy-hint{font-size:11px;color:var(--ink-light)}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+th{background:var(--paper-2);color:var(--ink);text-align:left;padding:8px 10px;font-weight:600;font-size:12px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink-mid);vertical-align:top}
+td:first-child{color:var(--ink);font-weight:600;width:30%}
+.step{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
+.step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.step .t{flex:1;font-size:13.5px;color:var(--ink-mid)}
+.step .t b{color:var(--ink)}
+.divider{height:1px;background:var(--line);margin:22px 0}
+.kbd{background:var(--paper-3);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:11.5px;font-family:ui-monospace,Menlo,monospace;color:var(--ink)}
+.toc{background:var(--paper-2);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;font-size:13px}
+.toc a{color:var(--brand);text-decoration:none;display:block;padding:3px 0}
+.toc a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<h1>Offer Tracker · UI 诊断卡</h1>
+<div class="meta">生成时间：2026-09-08 17:04 · 输入：<code>index.html</code>（119KB / 1801 行）+ Edge headless 截图（空态）· 用法：截图存证 + 提示词包喂给 GLM-5.3-Flash</div>
+
+<div class="toc">
+  <b>目录</b>
+  <a href="#1">一、现状：空态截图（首屏 1440×1000）</a>
+  <a href="#2">二、从代码+截图我能直接看到的问题（5 条）</a>
+  <a href="#3">三、需用真实数据状态才能诊断的项（4 条）</a>
+  <a href="#4">四、给 GLM-5.3-Flash 的提示词包（点击复制）</a>
+  <a href="#5">五、建议下一步（3 步）</a>
+</div>
+
+<h2 id="1">一、现状截图（headless 空态）</h2>
+<div class="screenshot">
+  <img src="offer-tracker-UI诊断-2026-09-08.png" alt="Offer Tracker 空态首屏">
+  <div class="cap">Edge headless 截取 1440×1000，因为真实数据在你浏览器 localStorage 里，截图只显示空态</div>
+</div>
+<p>视觉体系已是 v2 规范：暖白底 <code>#F5F4F0</code> + 樱花粉唯一强调 <code>#c2416b</code> + 玻璃拟态 header。整体调性稳，没有装饰底纹、空态禁口号——这两条做到了。</p>
+
+<h2 id="2">二、从代码+截图我能直接看到的问题（5 条）</h2>
+<div class="card">
+  <span class="tag bad">P0</span> <b>空态下，主导航（投递管理/面试备战/我的画像/设置）完全不可见</b>
+  <p>主导航 <code>.mainnav</code> 定义在 <code>style.css</code> 约 290 行，但在空态时根本没渲染。用户首次打开、还没添加任何岗位时，看不到模块导航——只能靠右上角「···」摸黑。<b>这不是设计缺陷，是漏判</b>：v9.2 把"空态"作为导航引导时机反而最合理，但你没做。</p>
+</div>
+<div class="card">
+  <span class="tag warn">P1</span> <b>空态三按钮的视觉权重和"添加岗位"重复</b>
+  <p>"添加岗位"出现在两个位置：右上角粉色主按钮 + 空态中央粉按钮。同一任务两个入口，会让用户犹豫"我点哪个"。空态中央那一颗应该降级为"载入演示"或"去面试备战逛逛"，而不是再放一个"添加岗位"。</p>
+</div>
+<div class="card">
+  <span class="tag warn">P1</span> <b>header 副标题"岗位池 · 投递追踪 · 漏斗复盘 · 数据钉子"像目录，但它是装饰性描述</b>
+  <p>副标题用句点分隔的"菜单"写法会让人误以为是可点击的二级导航。建议改成一句说明性短句（如"一个数据在你本机、不丢的求职管理面板"），或干脆只留"数据钉子本机浏览器，换设备用「更多→导入」搬家"这条最有用的提示。</p>
+</div>
+<div class="card">
+  <span class="tag info">P2</span> <b>漏斗统计行（Lv.1 新兵 / 再 50 分升级章兵 / 🔥 0）位置尴尬</b>
+  <p>在空态下显示"0"和"Lv.1 新兵"没问题，但它紧贴 header，像下，挤掉了下面空态区的视觉重量。数据为 0 时这条应该折叠/降级，有数据时再展开。</p>
+</div>
+<div class="card">
+  <span class="tag info">P2</span> <b>深色模式（<code>body.dark</code>）在 headless 截图上看着正常，但暗色板子和亮色"竞技场"渐变可能有对比度死角</b>
+  <p>代码里有完整 dark 主题变量，但实际渲染要靠你浏览器手动切。建议录一段 dark 状态截图对照——这块没数据我没法判断。</p>
+</div>
+
+<h2 id="3">三、需用真实数据状态才能诊断的项（4 条）</h2>
+<p>这些条目是 UI 是否"耐看耐点"的关键，但空态看不出来——必须用真实数据状态截图喂给 Flash 才能诊断：</p>
+<div class="card">
+  <b>① 行卡视图（一行一岗+状态下拉直改）</b>
+  <p>v9 主视图。看真实状态下，行卡间距、状态徽章颜色、48h 高亮逻辑（v8 加入）的视觉效果是否稳定。</p>
+</div>
+<div class="card">
+  <b>② 面试备战的三列入口卡（v9.1 卡牌质感）</b>
+  <p>五色卡（墨绿/赭橙/青蓝/琥珀/米黄）+ 编号 tag「训练营地·01」+ 米色圆贴纸 emoji + 4px 硬阴影。截图状态下的色彩饱和度、米色贴纸字体是否够大、阴影是否有"假"的双层感——这一块极易翻车。</p>
+</div>
+<div class="card">
+  <b>③ 工作台 modal（点击入口卡→弹出功能面板）</b>
+  <p>米白 <code>#FBF7EC</code> 面板 + 2px 深描边。要看 modal 弹起时背景蒙层深浅、关闭按钮位置、ESC 行为、滚动锁定。</p>
+</div>
+<div class="card">
+  <b>④ 漏斗统计+柱状图+热力图</b>
+  <p>只有"再 50 分升级章兵"这种空态可见。柱状图数字标在柱子上方（v9 要求）、热力图限高可滚动（v9 要求）——有数据时的密度和可读性必须人工过一遍。</p>
+</div>
+
+<div class="callout warn">
+⚠️ <b>诚实边界</b>：我没法直接调你的 GLM API（没有 key），所以这一轮是"代码 + 空态截图"的两层诊断。上面 §三 的 4 条 + 颜色微调/细节文案，得靠你把真实数据状态的页面截图喂给 Flash 来跑——下面的提示词包就是给 Flash 用的。
+</div>
+
+<h2 id="4">四、给 GLM-5.3-Flash 的提示词包（点击复制）</h2>
+<p>在智谱清言（chatglm.cn 网页版）或 ZCode 里，把模型切到 <b>GLM-5.3-Flash</b>，然后 ① 粘贴下方提示词，② 上传 offer-tracker 真实数据状态的截图（最好同时含行卡视图、面试备战三列卡、工作台 modal 三张），③ 再附上 <code>index.html</code> 全文。直接点下面按钮复制：</p>
+
+<div class="copy-row">
+  <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('pr').innerText).then(()=>{this.textContent='✓ 已复制';setTimeout(()=>this.textContent='复制提示词',1600)})">复制提示词</button>
+  <span class="copy-hint">复制后粘进智谱清言 / ZCode + 附截图 + 附 index.html</span>
+</div>
+
+<div class="prompt-box" id="pr">你是一位对中国一线互联网产品审美有强直觉的产品设计评审，同时是一位有十年经验的前端工程师，正在帮我诊断一个求职管理工具 Offer Tracker 的 UI 现状。
+
+【项目背景】
+这是一个单文件 HTML（localStorage 存储），独立 git 仓库，已部署到 GitHub Pages。我按"航海志"风格做过 v9.2 重构：暖白底 #F5F4F0 + 樱花粉 #c2416b 唯一强调、卡牌化设计、入口卡→点击→工作台 modal 的交互。
+完整代码在下方；我将提供 3 张真实数据状态的截图（行卡视图、面试备战三列入口卡、工作台 modal）。
+
+【你的诊断任务】
+请按以下 7 个维度逐一评分（每项 1-5 分）+ 给出具体问题清单 + 修复建议（按优先级 P0/P2/P3 标注），并标注每条修复的工作量预估（≤30 分钟 / ≤2 小时 / >2 小时）：
+
+1. 信息层级（权重是否对：首屏焦点、大数字、状态徽章）
+2. 字体层级（字号/字重/行距/中文可读性）
+3. 控件一致性（按钮/chip/输入框在 hover/active/disabled 状态是否统一，是否有装饰性高亮）
+4. 配色与对比度（暖白底 + 樱花粉主导，是否有元素破坏对比度，是否有 WCAG AA 死角）
+6. 卡片质感（边框粗细、阴影风格、圆角分级是否一致，2px 深描边+4px 硬阴影有没有"假"的双层感）
+7. 交互流畅性（空态/有数据态切换是否跳眼，状态徽章位置是否稳定）
+8. 空白与呼吸感（信息密度——过高拥挤 or 过低空洞）
+
+【我的硬约束（请严格遵守）】
+- 颜色只用 #F5F4F0 / #c2416b / #a83358 / #D4537E / #FBF7EC / #F6EFDD 这套暖白+粉系，不要引入新色
+- 不加任何提醒条/提示框/批量按钮——这是"安静工具"的设计原则
+- 列头禁止彩色描边和浅底
+- 按钮用名词（"简历"而非"导入简历"）
+- 调研先行铁律：如发现可优化点，请同时引用一款主流产品（滴答清单 / Things 3 / Linear / 航海志同类）怎么处理的
+
+【输出格式】
+请用 Markdown 表格 + 编号清单混合输出。最后给出 Top 3 优先级最高的具体修改建议（每条 ≤50 字，附 1 句 why）。
+
+【输入材料】
+附件 1：index.html 全文（下方）
+附件 2-4：3 张截图（行卡视图 / 面试备战三列卡 / 工作台 modal）
+
+请开始诊断。</p>
+
+<h2 id="5">五、建议下一步</h2>
+
+<div class="step">
+  <div class="n">1</div>
+  <div class="t"><b>今天先修空态</b>（P0）。这条我就能改：让空态下也显示主导航+把"添加岗位"在空态中央降级为"导入演示数据 / 面试备战逛逛"两选项。需要我现在就改吗？改前先说一声，我会先备份。</div>
+</div>
+<div class="step">
+  <div class="n">2</div>
+  <div class="t"><b>今晚把提示词包丢给 ZCode 里的 Flash</b>，传 3 张真实数据状态的截图 + index.html。Flash 跑出的 Top 3 修复建议扔回来给我。</div>
+</div>
+<div class="step">
+  <div class="n">3</div>
+  <div class="t"><b>我和她一起做优先级排序</b>，先动最影响"看着舒服 / 点得顺手"的那几条。改一行 push 一行（不是攒一批），GitHub Pages 自动构建约 1–2 分钟，<span class="kbd">git push -c http.proxy=http://127.0.0.1:7890</span>。</div>
+</div>
+
+<div class="callout info">
+📌 <b>工具提醒</b>：ZCode 今晚 23:00–09:00 Coding Plan 用户调 Flash 额度归零——把诊断跑在夜里是白嫖。9/9 前 5.3-Flash 还是 5 折，今天能充就充。
+</div>
+
+<div class="divider"></div>
+<p style="font-size:11px;color:var(--ink-light);text-align:center">本卡由 WorkBuddy 生成 · 输入：index.html (1801 行) + Edge headless 截图 · 不碰你浏览器 localStorage 里的真实数据</p>
+
+</body>
+</html>

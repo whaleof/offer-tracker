@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 视觉资产 v2（Offer Tracker）</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0; --ai:#3A5A7A; --take:#6E8B5E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.7;padding:24px;max-width:1000px;margin:0 auto}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:20px}
+h2{font-size:16px;font-weight:500;margin:26px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+h3{font-size:13.5px;font-weight:500;margin:14px 0 6px}
+p{margin:6px 0;color:var(--sumi-mid)}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:8px 0 18px}
+.card{background:#fff;border:1px solid rgba(44,40,43,.4);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.card.feat{border:1.5px solid var(--sumi)}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+th{background:var(--kami);text-align:left;padding:8px 10px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18)}
+td{padding:8px 10px;border-bottom:1px solid rgba(44,40,43,.18);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500}
+code{background:var(--kami);padding:1px 5px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+pre{background:#2C282B;color:#EFE7EA;border-radius:12px;padding:14px 16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.65;overflow-x:auto;white-space:pre;margin:10px 0}
+pre::-webkit-scrollbar{height:8px}
+pre::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+ul{margin:6px 0 6px 20px}
+li{margin:4px 0;color:var(--sumi-mid);font-size:13.5px}
+li b{color:var(--sumi);font-weight:500}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:12px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.callout.ok{background:#eaf3de;border-color:#639922;color:#3B6D11}
+.no{color:var(--shu-deep);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:12px}
+.ic{text-align:center}
+.toc{background:var(--kami);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px}
+.toc a{color:var(--shu);text-decoration:none;display:block;padding:2px 0}
+.toc a:hover{text-decoration:underline}
+.copy-btn{background:var(--shu);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;margin:8px 0}
+.copy-btn:hover{background:var(--shu-deep)}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="yt-logo" viewBox="0 0 52 52"><rect x="2" y="2" width="48" height="48" rx="9" fill="#C2416B"/><g fill="#fff"><circle cx="26" cy="15" r="6.2"/><circle cx="37" cy="22" r="6.2"/><circle cx="33" cy="35" r="6.2"/><circle cx="19" cy="35" r="6.2"/><circle cx="15" cy="22" r="6.2"/></g><circle cx="26" cy="25" r="3.4" fill="#C9A227"/></symbol>
+  <symbol id="yt-sakura" viewBox="0 0 40 40"><g fill="#C2416B"><circle cx="20" cy="8" r="7"/><circle cx="31" cy="16" r="7"/><circle cx="27" cy="29" r="7"/><circle cx="13" cy="29" r="7"/><circle cx="9" cy="16" r="7"/></g><circle cx="20" cy="19" r="4" fill="#C9A227"/></symbol>
+  <symbol id="yt-xiang" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11C5 5.5,7.5 5.5,10 11C12.5 5.5,15 5.5,18 11"/><path d="M4 14.5C6.5 11,8.5 11,10 14.5C11.5 11,13.5 11,16 14.5"/></g></symbol>
+  <symbol id="yt-jian" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 L10 12.5"/><path d="M5.5 12.5 L14.5 12.5"/><path d="M10 12.5 L10 16.5"/><path d="M7.5 17.5 L12.5 17.5"/></g></symbol>
+  <symbol id="yt-jing" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="10" cy="8" rx="6" ry="6.8"/><path d="M10 14.8 L10 18"/></g></symbol>
+  <symbol id="yt-cheng" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 L10 6.5"/><path d="M3.5 6.5 L16.5 6.5"/><path d="M3.5 6.5 L1.8 11.5"/><path d="M16.5 6.5 L18.2 11.5"/><path d="M1.8 11.5 L5.2 11.5"/><path d="M14.8 11.5 L18.2 11.5"/></g></symbol>
+  <symbol id="yt-shi" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 5.5 L10 10 L13 12"/></g></symbol>
+  <symbol id="yt-lun" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 3 L10 17"/><path d="M3 10 L17 10"/></g></symbol>
+</svg>
+
+<h1 class="serif">樱帖 <span style="font-size:13px;color:var(--sumi-light);font-family:'PingFang SC',sans-serif">视觉资产 v2</span></h1>
+<div class="sub">Offer Tracker · 2026-09-08 · v1 → v2 修正：全部简体中文、去掉日文字与繁体</div>
+<div class="gold-rule"></div>
+
+<div class="toc">
+  <b class="serif">目录</b>
+  <a href="#0">〇、v2 改了什么（中文约束）</a>
+  <a href="#1">一、标识 · 樱印</a>
+  <a href="#2">二、图标系统（库洛牌牌名语义）</a>
+  <a href="#3">三、朱印字集</a>
+  <a href="#4">四、牌背纹样 / 空态插画 / 樱树进度</a>
+  <a href="#5">五、可直接复制的 SVG sprite</a>
+  <a href="#6">六、落地顺序</a>
+  <a href="#7">七、禁忌清单</a>
+</div>
+
+<h2 id="0">〇、v2 改了什么</h2>
+<div class="card">
+<table>
+<tr><th>v1（作废）</th><th>v2（现行）</th><th>原因</th></tr>
+<tr><td class="no">櫻帖（繁体「櫻」）</td><td><b>樱帖</b></td><td>不用繁体字</td></tr>
+<tr><td class="no">壱弐参（日文数字）</td><td><b>壹贰叁</b></td><td>不用日文字，看不懂</td></tr>
+<tr><td>只有色板 + 文字规范</td><td><b>补上 logo / 图标 / 牌背 / 插画</b></td><td>你指出的问题：我们缺图案资产</td></tr>
+</table>
+<div class="callout ok"><b>关于借鉴：</b>动漫是灵感源不是同行（奶茶比喻）。魔卡少女樱该用就用——星芒、翅膀、金边、樱瓣、牌背纹样全部拿来。</div>
+</div>
+
+<h2 id="1">一、标识 · 樱印</h2>
+<div class="card feat">
+  <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+    <svg width="52" height="52"><use href="#yt-logo"/></svg>
+    <svg width="52" height="52" viewBox="0 0 52 52"><rect x="3" y="3" width="46" height="46" rx="9" fill="none" stroke="#2C282B" stroke-width="1.6"/><g fill="#2C282B"><circle cx="26" cy="16" r="5.4"/><circle cx="36" cy="22.5" r="5.4"/><circle cx="32" cy="34" r="5.4"/><circle cx="20" cy="34" r="5.4"/><circle cx="16" cy="22.5" r="5.4"/></g><circle cx="26" cy="25" r="2.8" fill="#C9A227"/></svg>
+    <div style="display:flex;align-items:center;gap:9px">
+      <svg width="32" height="32"><use href="#yt-logo"/></svg>
+      <div><div class="serif" style="font-size:17px;font-weight:500;letter-spacing:.06em">樱帖</div><div style="font-size:9.5px;color:#9A9189;letter-spacing:.16em">HANAFUDA</div></div>
+    </div>
+  </div>
+  <p style="margin-top:10px">三个变体：<b>朱底白樱</b>（默认）、<b>墨线稿</b>（浅底/印刷/禁用态）、<b>横排字标</b>（页头）。樱＝五瓣＋金蕊，取自小樱的樱与库洛牌的金。</p>
+</div>
+
+<h2 id="2">二、图标系统（库洛牌牌名语义）</h2>
+<div class="card">
+<div class="grid">
+  <div class="ic"><svg width="28" height="28" style="color:#2C282B"><use href="#yt-xiang"/></svg><div style="font-size:12px;margin-top:5px;font-weight:500">翔 · 投递</div></div>
+  <div class="ic"><svg width="28" height="28" style="color:#2C282B"><use href="#yt-jian"/></svg><div style="font-size:12px;margin-top:5px;font-weight:500">剑 · 面试</div></div>
+  <div class="ic"><svg width="28" height="28" style="color:#2C282B"><use href="#yt-jing"/></svg><div style="font-size:12px;margin-top:5px;font-weight:500">镜 · 画像</div></div>
+  <div class="ic"><svg width="28" height="28" style="color:#2C282B"><use href="#yt-cheng"/></svg><div style="font-size:12px;margin-top:5px;font-weight:500">秤 · 数据</div></div>
+  <div class="ic"><svg width="28" height="28" style="color:#2C282B"><use href="#yt-shi"/></svg><div style="font-size:12px;margin-top:5px;font-weight:500">时 · 复盘</div></div>
+  <div class="ic"><svg width="28" height="28" style="color:#2C282B"><use href="#yt-lun"/></svg><div style="font-size:12px;margin-top:5px;font-weight:500">轮 · 设置</div></div>
+</div>
+<p style="margin-top:12px"><b>为什么选这几个字：</b>它们本来就是库洛牌的牌名（翔/剑/镜/时/秤/轮），语义正好对上求职流程——投递＝把牌放出去（翔），面试＝上阵（剑），画像＝照见自己（镜），数据＝衡量（秤），复盘＝回看（时）。<b>用中文单字，不画卡通人物。</b></p>
+<p>图标统一：<code>20×20</code> viewBox、<code>stroke-width 1.5</code>、圆头圆角、<code>currentColor</code>（自动跟随文字色）。</p>
+</div>
+
+<h2 id="3">三、朱印字集</h2>
+<div class="card">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+    <span style="background:#C2416B;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">壹</span>
+    <span style="background:#C2416B;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">贰</span>
+    <span style="background:#C2416B;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">叁</span>
+    <span style="width:1px;height:24px;background:rgba(44,40,43,.2);margin:0 4px"></span>
+    <span style="background:#C2416B;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">投</span>
+    <span style="background:#C2416B;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">面</span>
+    <span style="background:#3A5A7A;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">终</span>
+    <span style="background:#6E8B5E;color:#fff;border-radius:5px;width:30px;height:30px;display:flex;align-items:center;justify-content:center" class="serif">签</span>
+  </div>
+  <p><b>编号</b>用壹贰叁（入口卡 / 步骤）。<b>状态</b>：投＝已投递（朱）、面＝面试中（朱）、终＝终面（靛）、签＝已签约（竹绿）。<b>全部中文单字 + 宋体。</b></p>
+</div>
+
+<h2 id="4">四、牌背纹样 / 空态插画 / 樱树进度</h2>
+<div class="card feat">
+<div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+  <svg width="72" height="100" viewBox="0 0 80 110"><rect x="3" y="3" width="74" height="104" rx="8" fill="#FFFFFF" stroke="#C9A227" stroke-width="1.6"/><rect x="9" y="9" width="62" height="92" rx="5" fill="none" stroke="rgba(44,40,43,.22)" stroke-width="0.8"/><g fill="#C2416B" opacity=".75"><path d="M0-4.5 L1.1-1.1 L4.5 0 L1.1 1.1 L0 4.5 L-1.1 1.1 L-4.5 0 L-1.1-1.1Z" transform="translate(16,17)"/><path d="M0-4.5 L1.1-1.1 L4.5 0 L1.1 1.1 L0 4.5 L-1.1 1.1 L-4.5 0 L-1.1-1.1Z" transform="translate(64,17)"/><path d="M0-4.5 L1.1-1.1 L4.5 0 L1.1 1.1 L0 4.5 L-1.1 1.1 L-4.5 0 L-1.1-1.1Z" transform="translate(16,93)"/><path d="M0-4.5 L1.1-1.1 L4.5 0 L1.1 1.1 L0 4.5 L-1.1 1.1 L-4.5 0 L-1.1-1.1Z" transform="translate(64,93)"/></g><g fill="#C2416B"><circle cx="40" cy="35" r="6"/><circle cx="47" cy="41" r="6"/><circle cx="44.5" cy="49.5" r="6"/><circle cx="35.5" cy="49.5" r="6"/><circle cx="33" cy="41" r="6"/></g><circle cx="40" cy="43.5" r="3.2" fill="#C9A227"/><rect x="17" y="64" width="46" height="19" rx="3" fill="#F4EFE2" stroke="rgba(44,40,43,.2)" stroke-width="0.7"/><text x="40" y="77.5" text-anchor="middle" font-family="'Songti SC',serif" font-size="12" font-weight="500" fill="#2C282B">樱帖</text><path d="M26 90 Q33 85 40 90 Q47 85 54 90" fill="none" stroke="#C2416B" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg>
+  <div style="flex:1;min-width:200px;font-size:12.5px;color:#6B625C;line-height:1.8">
+    <b style="color:#2C282B">牌背四构件</b><br>① 金线外框＋内细线（真牌的烫金边）<br>② 四角星芒（库洛牌背面的星）<br>③ 中央樱印（＝logo）<br>④ 底部翅膀弧线（「翔」）<br><span style="color:#9A9189">用在：空牌位、未解锁成就、modal 占位</span>
+  </div>
+</div>
+<div class="gold-rule" style="margin:16px 0"></div>
+<div style="font-size:11px;color:#9A9189;letter-spacing:.08em;margin-bottom:6px">空态插画 · 一枝樱（不画人物，靠「绘」撑住画面）</div>
+<svg width="100%" height="120" viewBox="0 0 320 130" style="display:block"><path d="M8 118 Q70 104 128 74 Q186 44 312 18" fill="none" stroke="#2C282B" stroke-width="2.4" stroke-linecap="round"/><path d="M128 74 Q140 66 152 72 M186 56 Q200 50 208 60" fill="none" stroke="#2C282B" stroke-width="1.6" stroke-linecap="round"/><g fill="#C2416B"><circle cx="60" cy="106" r="7.5"/><circle cx="69" cy="100" r="7.5"/><circle cx="65.5" cy="111" r="7.5"/><circle cx="56.5" cy="111" r="7.5"/><circle cx="52" cy="100" r="7.5"/><circle cx="152" cy="70" r="7"/><circle cx="160.5" cy="64.5" r="7"/><circle cx="157.5" cy="75" r="7"/><circle cx="148.5" cy="75" r="7"/><circle cx="144" cy="64.5" r="7"/><circle cx="252" cy="38" r="6.4"/><circle cx="260" cy="33" r="6.4"/><circle cx="257" cy="43" r="6.4"/><circle cx="248.5" cy="43" r="6.4"/><circle cx="244.5" cy="33" r="6.4"/></g><circle cx="61" cy="105" r="4" fill="#C9A227"/><circle cx="152" cy="69.5" r="3.7" fill="#C9A227"/><circle cx="252" cy="38" r="3.4" fill="#C9A227"/><g fill="#C2416B" opacity=".6"><ellipse cx="196" cy="86" rx="5" ry="2.8" transform="rotate(24 196 86)"/><ellipse cx="228" cy="102" rx="4.4" ry="2.5" transform="rotate(-36 228 102)"/><ellipse cx="286" cy="76" rx="4" ry="2.3" transform="rotate(52 286 76)"/></g></svg>
+<div class="serif" style="text-align:center;font-size:14px;font-weight:500">还没有收进第一张牌</div>
+<div style="text-align:center;font-size:11.5px;color:#9A9189">投出第一个岗位，这枝樱就开始长</div>
+<div class="gold-rule" style="margin:16px 0"></div>
+<div style="font-size:11px;color:#9A9189;letter-spacing:.08em;margin-bottom:10px">樱树进度 · 取代进度条</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px">
+  <div class="ic"><svg width="70" height="80" viewBox="0 0 80 92"><path d="M40 84 L40 52" fill="none" stroke="#2C282B" stroke-width="3.4" stroke-linecap="round"/><path d="M40 66 L26 50 M40 61 L54 47 M40 55 L40 42" fill="none" stroke="#2C282B" stroke-width="2.2" stroke-linecap="round"/><circle cx="26" cy="50" r="2.6" fill="none" stroke="#9A9189" stroke-width="1.3"/><circle cx="54" cy="47" r="2.6" fill="none" stroke="#9A9189" stroke-width="1.3"/></svg><div style="font-size:11.5px;margin-top:4px">0–9 投 · 枯枝</div></div>
+  <div class="ic"><svg width="70" height="80" viewBox="0 0 80 92"><path d="M40 84 L40 52" fill="none" stroke="#2C282B" stroke-width="3.4" stroke-linecap="round"/><path d="M40 66 L26 50 M40 61 L54 47 M40 55 L40 42" fill="none" stroke="#2C282B" stroke-width="2.2" stroke-linecap="round"/><g fill="#F5DCE3" stroke="#C2416B" stroke-width="1.3"><circle cx="26" cy="49" r="4"/><circle cx="54" cy="46" r="4"/><circle cx="40" cy="41" r="4"/><circle cx="33" cy="58" r="3.4"/><circle cx="48" cy="56" r="3.4"/></g></svg><div style="font-size:11.5px;margin-top:4px">10–29 投 · 花苞</div></div>
+  <div class="ic"><svg width="70" height="80" viewBox="0 0 80 92"><path d="M40 84 L40 52" fill="none" stroke="#2C282B" stroke-width="3.4" stroke-linecap="round"/><path d="M40 66 L26 50 M40 61 L54 47 M40 55 L40 42" fill="none" stroke="#2C282B" stroke-width="2.2" stroke-linecap="round"/><g fill="#C2416B"><circle cx="26" cy="43" r="4.6"/><circle cx="31.5" cy="47.5" r="4.6"/><circle cx="29" cy="54" r="4.6"/><circle cx="22" cy="54" r="4.6"/><circle cx="19.5" cy="47.5" r="4.6"/><circle cx="54" cy="40" r="4.6"/><circle cx="59.5" cy="44.5" r="4.6"/><circle cx="57" cy="51" r="4.6"/><circle cx="50" cy="51" r="4.6"/><circle cx="47.5" cy="44.5" r="4.6"/><circle cx="40" cy="34" r="4.6"/><circle cx="45.5" cy="38.5" r="4.6"/><circle cx="43" cy="45" r="4.6"/><circle cx="36" cy="45" r="4.6"/><circle cx="33.5" cy="38.5" r="4.6"/></g><circle cx="26" cy="49" r="2.6" fill="#C9A227"/><circle cx="54" cy="46" r="2.6" fill="#C9A227"/><circle cx="40" cy="40" r="2.6" fill="#C9A227"/></svg><div style="font-size:11.5px;margin-top:4px">30 投以上 · 盛开</div></div>
+</div>
+</div>
+
+<h2 id="5">五、可直接复制的 SVG sprite</h2>
+<p>整段粘进 <code>index.html</code> 的 <code>&lt;body&gt;</code> 最前面（<code>display:none</code> 不占位），之后全站用 <code>&lt;svg&gt;&lt;use href="#yt-xxx"/&gt;&lt;/svg&gt;</code> 引用：</p>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('sp').innerText).then(()=>{this.textContent='✓ 已复制';setTimeout(()=>this.textContent='复制 sprite 代码',1600)})">复制 sprite 代码</button>
+<pre id="sp">&lt;svg style="display:none" aria-hidden="true"&gt;
+  &lt;symbol id="yt-logo" viewBox="0 0 52 52"&gt;&lt;rect x="2" y="2" width="48" height="48" rx="9" fill="#C2416B"/&gt;&lt;g fill="#fff"&gt;&lt;circle cx="26" cy="15" r="6.2"/&gt;&lt;circle cx="37" cy="22" r="6.2"/&gt;&lt;circle cx="33" cy="35" r="6.2"/&gt;&lt;circle cx="19" cy="35" r="6.2"/&gt;&lt;circle cx="15" cy="22" r="6.2"/&gt;&lt;/g&gt;&lt;circle cx="26" cy="25" r="3.4" fill="#C9A227"/&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-sakura" viewBox="0 0 40 40"&gt;&lt;g fill="#C2416B"&gt;&lt;circle cx="20" cy="8" r="7"/&gt;&lt;circle cx="31" cy="16" r="7"/&gt;&lt;circle cx="27" cy="29" r="7"/&gt;&lt;circle cx="13" cy="29" r="7"/&gt;&lt;circle cx="9" cy="16" r="7"/&gt;&lt;/g&gt;&lt;circle cx="20" cy="19" r="4" fill="#C9A227"/&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-xiang" viewBox="0 0 20 20"&gt;&lt;g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;path d="M2 11C5 5.5,7.5 5.5,10 11C12.5 5.5,15 5.5,18 11"/&gt;&lt;path d="M4 14.5C6.5 11,8.5 11,10 14.5C11.5 11,13.5 11,16 14.5"/&gt;&lt;/g&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-jian" viewBox="0 0 20 20"&gt;&lt;g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;path d="M10 2 L10 12.5"/&gt;&lt;path d="M5.5 12.5 L14.5 12.5"/&gt;&lt;path d="M10 12.5 L10 16.5"/&gt;&lt;path d="M7.5 17.5 L12.5 17.5"/&gt;&lt;/g&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-jing" viewBox="0 0 20 20"&gt;&lt;g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;ellipse cx="10" cy="8" rx="6" ry="6.8"/&gt;&lt;path d="M10 14.8 L10 18"/&gt;&lt;/g&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-cheng" viewBox="0 0 20 20"&gt;&lt;g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;path d="M10 3.5 L10 6.5"/&gt;&lt;path d="M3.5 6.5 L16.5 6.5"/&gt;&lt;path d="M3.5 6.5 L1.8 11.5"/&gt;&lt;path d="M16.5 6.5 L18.2 11.5"/&gt;&lt;path d="M1.8 11.5 L5.2 11.5"/&gt;&lt;path d="M14.8 11.5 L18.2 11.5"/&gt;&lt;/g&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-shi" viewBox="0 0 20 20"&gt;&lt;g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;circle cx="10" cy="10" r="7"/&gt;&lt;path d="M10 5.5 L10 10 L13 12"/&gt;&lt;/g&gt;&lt;/symbol&gt;
+  &lt;symbol id="yt-lun" viewBox="0 0 20 20"&gt;&lt;g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;circle cx="10" cy="10" r="7"/&gt;&lt;path d="M10 3 L10 17"/&gt;&lt;path d="M3 10 L17 10"/&gt;&lt;/g&gt;&lt;/symbol&gt;
+&lt;/svg&gt;</pre>
+
+<h2 id="6">六、落地顺序</h2>
+<div class="card">
+<ul>
+<li><b>第 1 步 · 打底</b>：色板换成本白纸＋墨＋朱＋金；底色 <code>#F5F4F0 → #FBF7EC</code></li>
+<li><b>第 2 步 · 塞 sprite</b>：上面那段 SVG 粘进 body 最前，替换掉所有 emoji 图标</li>
+<li><b>第 3 步 · 上 logo</b>：页头「Offer Tracker」旁加樱印，标题改「樱帖」</li>
+<li><b>第 4 步 · 换卡片</b>：彩色实底卡 → 纸白卡＋墨线；去掉 4px 硬阴影</li>
+<li><b>第 5 步 · 朱印上状态</b>：投/面/终/签 替掉彩色徽章；编号改壹贰叁</li>
+<li><b>第 6 步 · 空态插画</b>：樱枝 SVG 替掉现在的纯文字空态（顺带修 P0：空态下主导航不可见）</li>
+<li><b>第 7 步 · 樱树</b>：进度条换成樱树三阶段（可后置，不急）</li>
+</ul>
+<p style="margin-top:8px;color:#9A9189;font-size:12.5px">每一步独立可回滚，改一步 push 一步。第 1–5 步做完就有脱胎换骨的效果。</p>
+</div>
+
+<h2 id="7">七、禁忌清单</h2>
+<div class="card">
+<ul>
+<li class="no">不用日文字（壱弐参／仮名／日式汉字）→ 一律中文</li>
+<li class="no">不用繁体字（櫻→樱）</li>
+<li class="no">不用 emoji 当功能图标</li>
+<li class="no">不用 4px 错位硬阴影（航海志签名）</li>
+<li class="no">不做樱瓣飘落动画（安静工具原则，静态最多 2 枚）</li>
+<li class="no">字重不超过 500</li>
+<li class="no">金线全页 ≤3 条；樱印当装饰全页 ≤2 枚</li>
+</ul>
+</div>
+
+<div class="gold-rule" style="margin-top:26px"></div>
+<p style="font-size:11px;color:var(--sumi-light);text-align:center">樱帖 视觉资产 v2 · 全部简体中文 · 待确认后落地 index.html</p>
+
+</body>
+</html>

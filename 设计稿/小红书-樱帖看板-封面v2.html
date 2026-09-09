@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1440px;background:#FBF7EC;font-family:"Microsoft YaHei",sans-serif;color:#2C282B;position:relative;overflow:hidden}
+/* 库洛牌式双层金边框 */
+.frame{position:absolute;inset:42px;border:3px double #C9A227;border-radius:18px;box-shadow:inset 0 0 0 10px #FBF7EC, inset 0 0 0 12px #C9A227}
+/* 顶部四角星 */
+.star{position:absolute;color:#C9A227;font-size:36px}
+/* 中部魔法阵：移到底部装饰，不再挡字 */
+.magic{position:absolute;bottom:230px;left:50%;transform:translateX(-50%);width:130px;height:130px;border:2px solid #C9A227;border-radius:50%;opacity:.55}
+.magic::before{content:"";position:absolute;inset:14px;border:1px dashed #C9A227;border-radius:50%}
+.magic::after{content:"✦";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;color:#C9A227}
+.top{position:absolute;top:200px;left:90px;right:90px;text-align:center}
+.eyebrow{font-size:30px;letter-spacing:14px;color:#8a8175}
+.title{font-size:148px;font-weight:800;line-height:1.18;margin-top:48px;letter-spacing:6px}
+.title .em{color:#C2416B}
+.divider{display:flex;align-items:center;justify-content:center;gap:22px;margin:60px 0 36px}
+.divider .l{height:2px;width:160px;background:#C9A227}
+.divider .mid{font-size:38px;color:#C9A227}
+.sub{font-size:78px;font-weight:700;letter-spacing:8px;color:#2C282B}
+.sub .em{color:#C2416B}
+.bottom{position:absolute;bottom:130px;left:0;right:0;text-align:center}
+.free{font-size:34px;font-weight:600;color:#2C282B;letter-spacing:4px}
+.url{margin-top:18px;font-size:28px;color:#8a8175;letter-spacing:3px}
+</style></head><body>
+<div class="frame"></div>
+<div class="star" style="top:84px;left:104px">✦</div>
+<div class="star" style="top:120px;right:120px;font-size:26px">✦</div>
+<div class="star" style="bottom:120px;left:130px;font-size:22px">✦</div>
+<div class="star" style="bottom:160px;right:140px;font-size:30px">✦</div>
+<div class="top">
+  <div class="eyebrow">写给秋招焦虑的你</div>
+  <div class="title">投了 30 家<br><span class="em">全忘光</span></div>
+  <div class="divider"><div class="l"></div><div class="mid">✦</div><div class="l"></div></div>
+  <div class="sub">一张表 <span class="em">全管住</span></div>
+</div>
+<div class="magic"></div>
+<div class="bottom">
+  <div class="free">免费 · 一张网页就能用</div>
+  <div class="url">GitHub 搜： offer-tracker</div>
+</div>
+</body></html>

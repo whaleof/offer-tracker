@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 风格样品 v3 · 星空质感</title>
+<style>
+/* ============ 樱帖风格样品 v3（9/8 深夜）· 按 4 张参考图提炼 DNA ============
+   DNA：①背景＝细金线星网（大弧线+小闪星+连线节点，星罗密布有逻辑）
+       ②角件＝小樱式扇贝（弧形包角+圆+双星点，替代幼稚车轮）
+       ③太阳章＝铸币式（垫底断环+三角光芒，替代火柴棍射线）
+       ④五芒星线收进内环 clip，不再戳出去
+   待定：中央带翅膀星徽是否走可灵 AI 生成贴图（约 5-10 积分/张，先问过再花）
+======================================================== */
+:root{
+  --kinari:#FBF7EC; --sumi:#2C282B; --sumi-mid:#6B625C;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-soft:#EDE0C0; --kin-face:#E8CE74;
+  --serif:"Songti SC","Noto Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;padding:30px 20px 70px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:var(--serif);font-size:22px;letter-spacing:2px}
+.note{color:var(--sumi-mid);font-size:12.5px;margin:6px 0 26px}
+h2{font-family:var(--serif);font-size:16px;margin:34px 0 14px;color:var(--shu-deep)}
+.row{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start}
+.cap{font-size:12px;color:var(--sumi-mid);max-width:290px;margin-top:10px}
+.card{width:300px;filter:drop-shadow(4px 5px 0 rgba(44,40,43,.18))}
+.hero-demo{position:relative;overflow:hidden;background:#fff;border:1.5px solid var(--sumi);border-radius:14px;padding:22px 26px;max-width:640px;min-height:120px}
+.hero-demo .bgstar{position:absolute;inset:0;pointer-events:none}
+.hero-demo .mc{position:absolute;right:-64px;top:-64px;pointer-events:none}
+.hero-demo .t{font-family:var(--serif);font-size:16px;position:relative}
+.hero-demo .s{font-family:var(--serif);font-size:14px;color:var(--shu-deep);margin-top:4px;position:relative}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>樱帖 · 风格样品 v3 · 星空质感</h1>
+<div class="note">背景有星网了、角件换扇贝了、太阳章重铸了、五芒星线收进内环了——都是照着你给的参考图提炼的。牌背纸底/深红还是二选一。</div>
+
+<h2>① 牌背 · 星空版</h2>
+<div class="row">
+<div>
+<svg class="card" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="cardclip"><rect x="0" y="0" width="300" height="460" rx="16"/></clipPath>
+    <clipPath id="innerclip"><circle cx="150" cy="230" r="74"/></clipPath>
+  </defs>
+  <rect width="300" height="460" rx="16" fill="#FBF7EC"/>
+  <g clip-path="url(#cardclip)">
+    <!-- 星网底纹：大弧线 + 小闪星 + 连线节点（JS 生成） -->
+    <g id="net1"></g>
+  </g>
+  <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#C2416B" stroke-width="3"/>
+  <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#C9A227" stroke-width="1.5"/>
+  <!-- 魔法阵主体 -->
+  <circle cx="150" cy="230" r="132" fill="none" stroke="#C2416B" stroke-width="3.5"/>
+  <circle cx="150" cy="230" r="141" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".7"/>
+  <circle cx="150" cy="230" r="123" fill="none" stroke="#C2416B" stroke-width="8" stroke-dasharray="2 7" opacity=".8"/>
+  <circle cx="150" cy="230" r="99" fill="none" stroke="#C9A227" stroke-width="1.4"/>
+  <circle cx="150" cy="230" r="76" fill="none" stroke="#C2416B" stroke-width="2"/>
+  <g clip-path="url(#innerclip)">
+    <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#C2416B" stroke-width="1.4" opacity=".7"/>
+  </g>
+  <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" transform="translate(-3,-3)" fill="#E8CE74"/>
+  <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" fill="#C9A227" stroke="#854F0B" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- 小樱式扇贝角件 -->
+  <g id="corners1"></g>
+  <!-- 铸币式太阳章（垫底断环+三角光芒） -->
+  <circle cx="150" cy="98" r="22" fill="#FBF7EC" stroke="#C9A227" stroke-width="2"/>
+  <circle cx="150" cy="98" r="12" fill="#C9A227" stroke="#854F0B" stroke-width="1.5"/>
+  <g id="sun1"></g>
+  <circle cx="150" cy="98" r="3" fill="#854F0B"/>
+  <!-- 月章 -->
+  <circle cx="150" cy="362" r="22" fill="#FBF7EC" stroke="#C9A227" stroke-width="2"/>
+  <path d="M156,349 a13,13 0 1,0 0,26 a10,10 0 1,1 0,-26 z" fill="#C2416B"/>
+  <path d="M164,351.5 L165.3,355.2 L169,356.5 L165.3,357.8 L164,361.5 L162.7,357.8 L159,356.5 L162.7,355.2 Z" fill="#C9A227"/>
+</svg>
+<div class="cap">纸底·星空版：背景一层细金线星网（大弧线+闪星+连线），角件是小樱式扇贝，太阳章是铸币式三角光芒，五芒星线收在内环里不再戳出去。</div>
+</div>
+
+<div>
+<svg class="card" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="cardclip2"><rect x="0" y="0" width="300" height="460" rx="16"/></clipPath>
+    <clipPath id="innerclip2"><circle cx="150" cy="230" r="74"/></clipPath>
+  </defs>
+  <rect width="300" height="460" rx="16" fill="#A83358"/>
+  <g clip-path="url(#cardclip2)">
+    <g id="net2"></g>
+  </g>
+  <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#E8CE74" stroke-width="2.5"/>
+  <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".7"/>
+  <circle cx="150" cy="230" r="132" fill="none" stroke="#E8CE74" stroke-width="3"/>
+  <circle cx="150" cy="230" r="141" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".55"/>
+  <circle cx="150" cy="230" r="123" fill="none" stroke="#F5DCE3" stroke-width="7" stroke-dasharray="2 7" opacity=".85"/>
+  <circle cx="150" cy="230" r="99" fill="none" stroke="#E8CE74" stroke-width="1.2"/>
+  <circle cx="150" cy="230" r="76" fill="none" stroke="#E8CE74" stroke-width="1.8"/>
+  <g clip-path="url(#innerclip2)">
+    <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#F5DCE3" stroke-width="1.2" opacity=".7"/>
+  </g>
+  <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" transform="translate(-3,-3)" fill="#F5DCE3"/>
+  <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" fill="#E8CE74" stroke="#FBF7EC" stroke-width="1.8" stroke-linejoin="round"/>
+  <g id="corners2"></g>
+  <circle cx="150" cy="98" r="22" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+  <circle cx="150" cy="98" r="12" fill="#E8CE74"/>
+  <g id="sun2"></g>
+  <circle cx="150" cy="98" r="3" fill="#A83358"/>
+  <circle cx="150" cy="362" r="22" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+  <path d="M156,349 a13,13 0 1,0 0,26 a10,10 0 1,1 0,-26 z" fill="#FBF7EC"/>
+  <path d="M164,351.5 L165.3,355.2 L169,356.5 L165.3,357.8 L164,361.5 L162.7,357.8 L159,356.5 L162.7,355.2 Z" fill="#E8CE74"/>
+</svg>
+<div class="cap">深红·星空版：同一套结构换色——金线星网在深红上更像深夜占星帖。两版结构完全一致，只是换色，选哪个都不用重做。</div>
+</div>
+</div>
+
+<h2>② 今日帖 · 星空底 hero</h2>
+<div class="hero-demo">
+  <svg class="bgstar" width="100%" height="100%" viewBox="0 0 640 170" preserveAspectRatio="xMidYMid slice">
+    <g id="net3"></g>
+  </svg>
+  <svg class="mc" width="220" height="220" viewBox="0 0 240 240">
+    <circle cx="120" cy="118" r="110" fill="none" stroke="#C2416B" stroke-width="3"/>
+    <circle cx="120" cy="118" r="98" fill="none" stroke="#C2416B" stroke-width="7" stroke-dasharray="2 7" opacity=".8"/>
+    <circle cx="120" cy="118" r="80" fill="none" stroke="#C9A227" stroke-width="1.4"/>
+    <path d="M120,40 L165.9,181.1 L45.8,93.9 L194.2,93.9 L74.1,181.1 Z" fill="none" stroke="#C2416B" stroke-width="1.2" opacity=".6"/>
+    <polygon points="120,72 130.3,103.8 163.7,103.8 136.7,123.4 147.0,155.2 120,135.6 93.0,155.2 103.3,123.4 76.3,103.8 109.7,103.8" transform="translate(-4,-4)" fill="#E8CE74"/>
+    <polygon points="120,72 130.3,103.8 163.7,103.8 136.7,123.4 147.0,155.2 120,135.6 93.0,155.2 103.3,123.4 76.3,103.8 109.7,103.8" fill="#C9A227" stroke="#854F0B" stroke-width="1.6" stroke-linejoin="round"/>
+  </svg>
+  <div class="t">九月八日 · 星期二 · 娥眉月</div>
+  <div class="s">今日宜投 · 大华产品解决方案岗就在阵中等你</div>
+</div>
+<div class="cap" style="max-width:640px">今日帖：整条 hero 底下铺细星网，右侧魔法阵压角——就是你说的"既有逻辑、又像天上星星交织"的那层。</div>
+
+<div class="note" style="margin-top:38px">回我三件事：①星空这层质感对不对？②纸底还是深红？③中央星徽要不要加小翅膀——加的话我建议走可灵 AI 生成贴图（约 5-10 积分/张），比 SVG 手画像得多，你点头我再花。</div>
+</div>
+
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sparkle(x,y,s,c,o){return '<path d="M'+x+','+(y-s)+' L'+(x+s*0.24)+','+(y-s*0.24)+' L'+(x+s)+','+y+' L'+(x+s*0.24)+','+(y+s*0.24)+' L'+x+','+(y+s)+' L'+(x-s*0.24)+','+(y+s*0.24)+' L'+(x-s)+','+y+' L'+(x-s*0.24)+','+(y-s*0.24)+' Z" fill="'+c+'" opacity="'+o+'"/>'}
+function scatter(id,seed,n,w,h,c,avoid){
+  var R=mulberry32(seed),s='',pts=[],i,x,y;
+  for(i=0;i<n;i++){x=R()*w;y=R()*h;if(avoid&&Math.hypot(x-avoid[0],y-avoid[1])<avoid[2]){i--;continue}pts.push([x,y])}
+  for(i=0;i<pts.length;i++){s+=sparkle(pts[i][0],pts[i][1],1.4+R()*2.8,c,.3+R()*.4)}
+  for(i=0;i+2<pts.length&&i<12;i+=3){
+    s+='<polyline points="'+pts[i]+' '+pts[i+1]+' '+pts[i+2]+'" fill="none" stroke="'+c+'" stroke-width=".6" opacity=".3"/>';
+    s+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="1.2" fill="'+c+'" opacity=".5"/>';
+  }
+  document.getElementById(id).innerHTML=s;
+}
+function corners(id,pink,gold,soft){
+  var mk='translate(38,38)',mk2='translate(262,38) scale(-1,1)',mk3='translate(38,422) scale(1,-1)',mk4='translate(262,422) scale(-1,-1)';
+  var one='<path d="M-17,9 A19,19 0 0 1 9,-17" fill="none" stroke="'+gold+'" stroke-width="1.6"/>'+
+    '<circle r="6" fill="'+soft+'" stroke="'+pink+'" stroke-width="1.4"/>'+
+    '<circle cx="-13" cy="-3" r="1.8" fill="'+gold+'"/><circle cx="-3" cy="-13" r="1.8" fill="'+gold+'"/>';
+  document.getElementById(id).innerHTML=
+    '<g transform="'+mk+'">'+one+'</g><g transform="'+mk2+'">'+one+'</g><g transform="'+mk3+'">'+one+'</g><g transform="'+mk4+'">'+one+'</g>';
+}
+function sunRays(id,cx,cy,c){
+  var s='';for(var i=0;i<8;i++){var a=i*Math.PI/4,ca=Math.cos(a),sa=Math.sin(a);
+    var bx=cx+ca*14,by=cy+sa*14,tx=cx+ca*20,ty=cy+sa*20,px=-sa*3.4,py=ca*3.4;
+    s+='<polygon points="'+(bx+px)+','+(by+py)+' '+tx+','+ty+' '+(bx-px)+','+(by-py)+'" fill="'+c+'"/>'}
+  document.getElementById(id).innerHTML=s;
+}
+/* 纸底版 */
+scatter('net1',20260908,30,300,460,'#C9A227');
+document.getElementById('net1').innerHTML='<path d="M-30,140 Q150,30 330,210" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".25"/><path d="M-30,340 Q160,240 330,330" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".22"/>'+document.getElementById('net1').innerHTML;
+corners('corners1','#C2416B','#C9A227','#F5DCE3');
+sunRays('sun1',150,98,'#C9A227');
+/* 深红版 */
+scatter('net2',20260909,30,300,460,'#F5DCE3');
+document.getElementById('net2').innerHTML='<path d="M-30,140 Q150,30 330,210" fill="none" stroke="#F5DCE3" stroke-width=".7" opacity=".28"/><path d="M-30,340 Q160,240 330,330" fill="none" stroke="#F5DCE3" stroke-width=".7" opacity=".24"/>'+document.getElementById('net2').innerHTML;
+corners('corners2','#F5DCE3','#E8CE74','#C2416B');
+sunRays('sun2',150,98,'#E8CE74');
+/* hero 星网 */
+scatter('net3',20260910,34,640,170,'#C9A227');
+</script>
+</body>
+</html>

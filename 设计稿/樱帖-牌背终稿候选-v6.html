@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 牌背终稿候选 v6</title>
+<style>
+/* ============ 樱帖牌背终稿候选 v6（9/8 深夜四）· v3 微调版 ============
+   以 v3 星空质感为基底，只动三处：
+   ①角件＝AI 雕花卷草（缩小一号，四角裁切，不再压中央）
+   ②头顶太阳章＝月亮章（饱满弦月，无星星）
+   ③底部对称月亮章
+   保留：金丝线框＋红线框 / 刻度齿环 / 内环贯穿五芒星 / 切面五芒星（无点）/ 可见细金线星网
+======================================================== */
+:root{
+  --kinari:#FBF7EC; --sumi:#2C282B; --sumi-mid:#6B625C;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-face:#E8CE74;
+  --serif:"Songti SC","Noto Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;padding:30px 20px 70px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:var(--serif);font-size:22px;letter-spacing:2px}
+.note{color:var(--sumi-mid);font-size:12.5px;margin:6px 0 26px}
+.row{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
+.cap{font-size:12px;color:var(--sumi-mid);max-width:290px;margin-top:10px}
+.cardwrap{width:300px;height:460px;position:relative;border-radius:16px;overflow:hidden;filter:drop-shadow(4px 5px 0 rgba(44,40,43,.18))}
+.cardwrap svg.inner{position:absolute;inset:0}
+.corner{position:absolute;width:118px;height:118px;background-image:url("../generated-images/樱帖资产/复古塔罗牌边框角花装饰件_一图包含四个角件分别位于画面四角__2026-09-08T13-55-58.png");background-size:236px 236px;background-repeat:no-repeat;mix-blend-mode:multiply;pointer-events:none}
+.c-tl{left:9px;top:9px;background-position:left top}
+.c-tr{right:9px;top:9px;background-position:right top}
+.c-bl{left:9px;bottom:9px;background-position:left bottom}
+.c-br{right:9px;bottom:9px;background-position:right bottom}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>樱帖 · 牌背终稿候选 v6</h1>
+<div class="note">v3 原样微调：中央回到五芒星；角件换 AI 雕花并缩小；头顶章改月亮章（饱满弦月无星）；底部对称一个月亮章；金丝框＋红线框＋可见星网全在。</div>
+
+<div class="row">
+<div>
+<div class="cardwrap" style="background:#FBF7EC">
+  <svg class="inner" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="cc"><rect width="300" height="460" rx="16"/></clipPath>
+      <clipPath id="ic"><circle cx="150" cy="230" r="74"/></clipPath>
+    </defs>
+    <rect width="300" height="460" fill="#FBF7EC"/>
+    <g clip-path="url(#cc)"><g id="net1"></g></g>
+    <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#C2416B" stroke-width="3"/>
+    <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#C9A227" stroke-width="1.5"/>
+    <circle cx="150" cy="230" r="132" fill="none" stroke="#C2416B" stroke-width="3.5"/>
+    <circle cx="150" cy="230" r="141" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".7"/>
+    <circle cx="150" cy="230" r="123" fill="none" stroke="#C2416B" stroke-width="8" stroke-dasharray="2 7" opacity=".8"/>
+    <circle cx="150" cy="230" r="99" fill="none" stroke="#C9A227" stroke-width="1.4"/>
+    <circle cx="150" cy="230" r="76" fill="none" stroke="#C2416B" stroke-width="2"/>
+    <g clip-path="url(#ic)">
+      <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#C2416B" stroke-width="1.3" opacity=".6"/>
+    </g>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" transform="translate(-3,-3)" fill="#E8CE74"/>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" fill="#C9A227" stroke="#854F0B" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 头顶月亮章：饱满弦月，无星 -->
+    <circle cx="150" cy="98" r="21" fill="#FBF7EC" stroke="#C9A227" stroke-width="2"/>
+    <circle cx="150" cy="98" r="12" fill="#C9A227"/>
+    <circle cx="155.5" cy="98" r="9.5" fill="#FBF7EC"/>
+    <!-- 底部对称月亮章 -->
+    <circle cx="150" cy="362" r="21" fill="#FBF7EC" stroke="#C9A227" stroke-width="2"/>
+    <circle cx="150" cy="362" r="12" fill="#C2416B"/>
+    <circle cx="155.5" cy="362" r="9.5" fill="#FBF7EC"/>
+  </svg>
+  <i class="corner c-tl"></i><i class="corner c-tr"></i><i class="corner c-bl"></i><i class="corner c-br"></i>
+</div>
+<div class="cap">纸底版：v3 的环＋齿＋五芒星原样，角件换成 AI 雕花（缩小一号），上月章金、下月章粉，双线框和星网都在。</div>
+</div>
+
+<div>
+<div class="cardwrap" style="background:#A83358">
+  <svg class="inner" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="460" fill="#A83358"/>
+    <g clip-path="url(#cc)"><g id="net2"></g></g>
+    <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#E8CE74" stroke-width="2.5"/>
+    <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".7"/>
+    <circle cx="150" cy="230" r="132" fill="none" stroke="#E8CE74" stroke-width="3"/>
+    <circle cx="150" cy="230" r="141" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".55"/>
+    <circle cx="150" cy="230" r="123" fill="none" stroke="#F5DCE3" stroke-width="7" stroke-dasharray="2 7" opacity=".85"/>
+    <circle cx="150" cy="230" r="99" fill="none" stroke="#E8CE74" stroke-width="1.2"/>
+    <circle cx="150" cy="230" r="76" fill="none" stroke="#E8CE74" stroke-width="1.8"/>
+    <g clip-path="url(#ic)">
+      <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#F5DCE3" stroke-width="1.1" opacity=".65"/>
+    </g>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" transform="translate(-3,-3)" fill="#F5DCE3"/>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" fill="#E8CE74" stroke="#FBF7EC" stroke-width="1.8" stroke-linejoin="round"/>
+    <circle cx="150" cy="98" r="21" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+    <circle cx="150" cy="98" r="12" fill="#E8CE74"/>
+    <circle cx="155.5" cy="98" r="9.5" fill="#A83358"/>
+    <circle cx="150" cy="362" r="21" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+    <circle cx="150" cy="362" r="12" fill="#FBF7EC"/>
+    <circle cx="155.5" cy="362" r="9.5" fill="#A83358"/>
+  </svg>
+  <i class="corner c-tl"></i><i class="corner c-tr"></i><i class="corner c-bl"></i><i class="corner c-br"></i>
+</div>
+<div class="cap">深红版：同结构换色。上章金月、下章白月。</div>
+</div>
+</div>
+
+<div class="note" style="margin-top:34px">这版就是 v3 微调：星网、双线框、齿环、切面五芒星全是你点过头的原样。回我「纸底」或「深红」，我就把牌背连同全页星网、小可、岗位牌一起铺进 v1.3，你看整体。</div>
+</div>
+
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sparkle(x,y,s,c,o){return '<path d="M'+x+','+(y-s)+' L'+(x+s*0.24)+','+(y-s*0.24)+' L'+(x+s)+','+y+' L'+(x+s*0.24)+','+(y+s*0.24)+' L'+x+','+(y+s)+' L'+(x-s*0.24)+','+(y+s*0.24)+' L'+(x-s)+','+y+' L'+(x-s*0.24)+','+(y-s*0.24)+' Z" fill="'+c+'" opacity="'+o+'"/>'}
+function scatter(id,seed,n,w,h,c){
+  var R=mulberry32(seed),s='',pts=[],i,x,y;
+  for(i=0;i<n;i++){x=R()*w;y=R()*h;pts.push([x,y])}
+  for(i=0;i<pts.length;i++){s+=sparkle(pts[i][0],pts[i][1],1.4+R()*2.8,c,.3+R()*.4)}
+  for(i=0;i+2<pts.length&&i<12;i+=3){
+    s+='<polyline points="'+pts[i]+' '+pts[i+1]+' '+pts[i+2]+'" fill="none" stroke="'+c+'" stroke-width=".6" opacity=".3"/>';
+    s+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="1.2" fill="'+c+'" opacity=".5"/>';
+  }
+  document.getElementById(id).innerHTML=s;
+}
+scatter('net1',20260908,30,300,460,'#C9A227');
+document.getElementById('net1').innerHTML='<path d="M-30,140 Q150,30 330,210" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".25"/><path d="M-30,340 Q160,240 330,330" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".22"/>'+document.getElementById('net1').innerHTML;
+scatter('net2',20260909,30,300,460,'#F5DCE3');
+document.getElementById('net2').innerHTML='<path d="M-30,140 Q150,30 330,210" fill="none" stroke="#F5DCE3" stroke-width=".7" opacity=".28"/><path d="M-30,340 Q160,240 330,330" fill="none" stroke="#F5DCE3" stroke-width=".7" opacity=".24"/>'+document.getElementById('net2').innerHTML;
+</script>
+</body>
+</html>

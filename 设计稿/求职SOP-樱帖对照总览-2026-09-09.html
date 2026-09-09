@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>求职 SOP × 樱帖 对照总览</title>
+<style>
+  :root{ --pink:#C2416B; --gold:#C9A227; --paper:#FBF7EC; --ink:#2C282B; --mut:#7a746f; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65;font-size:14px;}
+  .wrap{max-width:880px;margin:0 auto;padding:28px 22px 64px;}
+  header{border-bottom:3px solid var(--pink);padding-bottom:14px;margin-bottom:22px;}
+  header h1{margin:0 0 4px;font-size:22px;font-weight:700;}
+  header .sub{color:var(--mut);font-size:13px;}
+  h2{font-size:17px;margin:30px 0 12px;padding-left:10px;border-left:4px solid var(--gold);}
+  h3{font-size:14px;margin:18px 0 8px;color:var(--pink);}
+  p{margin:8px 0;}
+  .anchor{background:var(--paper);border:1px solid #e8dfca;border-radius:10px;padding:14px 16px;font-size:13px;}
+  .anchor b{color:var(--pink);}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;}
+  th,td{border:1px solid #e7ddd0;padding:8px 10px;vertical-align:top;text-align:left;}
+  th{background:var(--paper);font-weight:600;}
+  .tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;}
+  .t-yes{background:#eaf3de;color:#3b6d11;}
+  .t-part{background:#faeeeda;color:#854f0b;}
+  .t-no{background:#fcebeb;color:#a32d2d;}
+  .t-fake{background:#f1efe8;color:#5f5e5a;}
+  .stage{font-weight:600;white-space:nowrap;}
+  ul{margin:8px 0;padding-left:20px;}
+  li{margin:5px 0;}
+  .p0{color:#a32d2d;font-weight:600;}
+  .p1{color:#854f0b;font-weight:600;}
+  .p2{color:#3b6d11;font-weight:600;}
+  .note{border-left:3px solid var(--gold);background:var(--paper);padding:10px 14px;margin:12px 0;border-radius:0 8px 8px 0;font-size:13px;}
+  code{background:#f4efe4;padding:1px 5px;border-radius:4px;font-size:12px;}
+  .foot{margin-top:34px;color:var(--mut);font-size:12px;border-top:1px solid #eee;padding-top:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>求职 SOP × 樱帖（Offer Tracker）对照总览</h1>
+  <div class="sub">常玉涵 · 2026 届 AI 产品方向 · 整理日 2026-09-09 · 数据来自工作台记忆与工作区日志</div>
+</header>
+
+<div class="anchor">
+  <b>时间线定锚（回答「有一周吗」）：</b>严格可考证的最早一次「成功提交」＝<b>腾讯 AI 产培生（人才专项）</b>，9/4 截止前投出、9/5–9/8 做 AI 实战评估→已进流程。
+  到今天 9/9 约 <b>5 天，未满一周</b>。真正「批量爆发」是 <b>9/8 一晚三连投</b>（DeepSeek ✅ / MiniMax ✅ / 腾讯 27 校招正式批 ✅），外加 9/9 在投智谱、小红书等。
+  所以结论：<b>还没满一周，但已跑通「找→改→投→跟进」整条链路</b>。
+</div>
+
+<h2>一、求职全流程 SOP（七阶段链条）</h2>
+<p>从第一次投递到现在，你实际在跑的链路是这样的。每一步标注「谁在做」——这是后面和樱帖对比的基准。</p>
+<table>
+  <tr><th style="width:54px">阶段</th><th>做什么</th><th>我做（AI）</th><th>你做</th><th>樱帖做</th></tr>
+  <tr><td class="stage">① 准备</td><td>定位方向 / 作品集 / BOSS 在线简历 / 定位句库</td><td>做简历 HTML+PDF、作品集、定位句</td><td>定方向、开 BOSS</td><td class="t-no">无</td></tr>
+  <tr><td class="stage">② 找岗</td><td>平台分工 / 届别核验 / 企查查核底细 / 适配度打分</td><td>联网搜岗 + 届别核验 + 企查查 + 分层打分</td><td>开 BOSS、看页</td><td class="t-part">雷达增量导入（无核验/打分）</td></tr>
+  <tr><td class="stage">③ 对版</td><td>按 JD 定制 / 多版本管理 / 定位句 / PDF 导出</td><td>改 HTML + Edge 导 PDF（已做 8+ 份）</td><td>确认方向</td><td class="t-part">简历对应挂件（手动）</td></tr>
+  <tr><td class="stage">④ 投递</td><td>官网 / 邮件 / BOSS / 内推 渠道分流，本人点提交</td><td>备文案 + 记录进库</td><td>本人点「投递」</td><td class="t-yes">状态记录（已投/池）</td></tr>
+  <tr><td class="stage">⑤ 跟进</td><td>测评 / 笔试 / 面试 / 状态推进 / 催办</td><td>每日巡检提醒（独立 automation）</td><td>做测评、面试</td><td class="t-part">漏斗+月历（空态有 bug）</td></tr>
+  <tr><td class="stage">⑥ 备战</td><td>闪卡 / 复盘 / 话术 / 按公司真题</td><td>按 JD 生成备战 + 搜真题经验帖</td><td>练 + 复盘</td><td class="t-fake">闪卡有；深度分析等是伪功能未体验</td></tr>
+  <tr><td class="stage">⑦ 落地</td><td>杭州驿站 / 官方招聘会 / 车票倒排</td><td>排倒推日历、双路凭证</td><td>买票、去现场</td><td class="t-no">无（独立「杭州线」卡）</td></tr>
+</table>
+<div class="note">贯穿全程的自动化：<b>07:30 岗位雷达搜岗</b>（sakura-radar）→ <b>21:00 投递巡检</b> → <b>认知晨读</b>。这三条现在跑在 WorkBuddy 后台，不依赖樱帖页面。</div>
+
+<h2>二、樱帖功能对照（现在有什么 / 缺什么）</h2>
+<table>
+  <tr><th>阶段</th><th>现状</th><th>现在实际谁在做</th><th>关键缺口</th></tr>
+  <tr><td class="stage">① 准备</td><td><span class="tag t-no">缺</span></td><td>AI 对话 + 独立卡</td><td>无「我的素材库」入口（简历/作品集/定位句集中管理）</td></tr>
+  <tr><td class="stage">② 找岗</td><td><span class="tag t-part">部分</span></td><td>AI 对话</td><td><b>届别核验、企查查风控、适配度分层打分</b>这三件每次都散在对话里，没进樱帖；雷达只负责「拉新岗」，不负责「这岗我能不能投」</td></tr>
+  <tr><td class="stage">③ 对版</td><td><span class="tag t-part">部分</span></td><td>AI 对话</td><td><b>「这岗用哪份简历」自动建议</b>、多版本简历库、一键按 JD 微调——这是你最高频痛点，樱帖只有手动挂件</td></tr>
+  <tr><td class="stage">④ 投递</td><td><span class="tag t-yes">有</span></td><td>AI 记录 + 你点</td><td>缺「投递凭证」留存（官网链接/邮件底稿/BOSS 对话截图）；「已投」与「成功提交」未区分</td></tr>
+  <tr><td class="stage">⑤ 跟进</td><td><span class="tag t-part">部分</span></td><td>AI 巡检</td><td>巡检在樱帖外跑；樱帖内漏斗/月历<b>空态导航不可见（P0 bug）</b>，且催办不主动弹</td></tr>
+  <tr><td class="stage">⑥ 备战</td><td><span class="tag t-fake">伪/不全</span></td><td>AI 生成</td><td>闪卡有；但「深度分析/个人画像/BOSS 话术」你反馈<b>没实现、没体验过</b>；缺按公司归属的真题库（你要求带公司标签）</td></tr>
+  <tr><td class="stage">⑦ 落地</td><td><span class="tag t-no">缺</span></td><td>独立卡</td><td>杭州线完全独立，未并入求职主流程</td></tr>
+</table>
+
+<h2>三、必做 / 高频功能清单（按你的真实行为排序）</h2>
+<h3>你现在每天真在用的（高频 · 必保）</h3>
+<ul>
+  <li><b>今日作战首页</b>＝「今天该投哪个 + 对应简历在哪」。你明确认可，v9.2 其实没有真正的「今日帖」，新设计已定名「今日帖」但还没做成上线版。</li>
+  <li><b>岗位雷达（自动搜岗增量）</b>＝sakura-radar + 「合并雷达岗位」按钮，每天 07:30 跑，是最高频入口。</li>
+  <li><b>简历 ↔ 岗位对应</b>＝「这岗用哪份简历 / 要不要改定位句」。你 9/9 还在逐份加定位句，是头号高频痛点。</li>
+  <li><b>状态推进 + 漏斗</b>＝已投→测评→笔试→面试→转生，你靠它看「卡在哪」。</li>
+</ul>
+<h3>你设计里要、但还没体验的（中频 · 等面试才有用）</h3>
+<ul>
+  <li>面试闪卡 / 复盘 / 话术——逻辑在，但还没真实面试数据喂进去。</li>
+  <li>按公司归属的真题库 + AI 按 JD 生成备战（v2 路线：AI 生成 + 联网搜经验帖合流）。</li>
+</ul>
+
+<h2>四、AI（我）做不到的事 + 原因 + 解法（诚实边界）</h2>
+<table>
+  <tr><th>做不到</th><th>为什么</th><th>解法</th></tr>
+  <tr><td>自动投简历 / BOSS 批量打招呼</td><td>账号在你手机需扫码登录；反自动化风控严，封号＝求职期灾难；岗位动态加载</td><td>你点「投递」，我备文案+记录；v2 接云服务器做「点更新直拉」，但<b>绝不代投</b></td></tr>
+  <tr><td>实时读 BOSS 状态 / 已读回执</td><td>BOSS 不开放 API、反爬</td><td>设计为「自行记录」模式：投完你在樱帖记一笔；每日巡检按规则提醒催办</td></tr>
+  <tr><td>面试 / 薪资谈判 / 线下动作</td><td>必须本人到场</td><td>我备题库、话术、反问模板；你上场</td></tr>
+  <tr><td>公司底细实时核查（企查查）</td><td>企查查连接器当前断开；非实时结构化</td><td>WebSearch 核实 + 把常用几家预核查存进岗位卡；或接企查查连接器</td></tr>
+  <tr><td>跨设备云同步樱帖</td><td>当前 localStorage 单文件，换设备丢</td><td>v2 接云服务器（密钥只存服务器，不进仓库）</td></tr>
+  <tr><td>语音播报</td><td>当前环境无 TTS</td><td>图示 + 结论前置 + 短句；或用 Edge「朗读」</td></tr>
+  <tr><td>「投递成功」回读确认</td><td>提交动作须本人（承诺动作）</td><td>你提交后，我把成功页信息写进樱帖该岗位</td></tr>
+</table>
+<div class="note"><b>一句话总结边界：</b>凡是「动你账号 / 替你承诺 / 要实时爬第三方」的动作，我都做不了；凡是「信息整理 / 生成文案 / 按规则提醒 / 本地记录」的事，我都能做且已在做。樱帖的定位应该是「你的求职外脑 + 记录中枢」，不是「自动投递机器人」。</div>
+
+<h2>五、下一步补强建议（优先级）</h2>
+<h3 class="p0">P0（投递季现在就要，先补）</h3>
+<ul>
+  <li>修樱帖空态 P0 bug：首次打开主导航（今日帖/牌阵/试炼）必须可见。</li>
+  <li>把「今日帖」做成真首页：聚合「雷达新岗 + 该投的 + 对应简历在哪」。</li>
+  <li>岗位卡加「届别核验结论 + 适配度分层 + 用哪份简历」三字段（把对话里散落的三件事固化进卡）。</li>
+</ul>
+<h3 class="p1">P1（本周内）</h3>
+<ul>
+  <li>简历版本库：列出已有 8+ 份 PDF，岗位卡一键关联「推荐简历」。</li>
+  <li>投递凭证留存：官网链接 / 邮件底稿 / BOSS 对话截图挂到岗位。</li>
+  <li>樱帖内催办：把 21:00 巡检的「该面了 / 该催了」提醒接进页面主动弹。</li>
+</ul>
+<h3 class="p2">P2（有面试后 / v2）</h3>
+<ul>
+  <li>按公司真题库 + AI 按 JD 生成备战（联网搜经验帖合流）。</li>
+  <li>落地（杭州线）并入主流程；云同步。</li>
+</ul>
+
+<div class="foot">本卡为「第二大脑」外挂记忆，可截图留存。数据截至 2026-09-09 工作台日志；樱帖线上版仍为 v9.2 + 雷达合并，新设计（今日帖/牌阵/试炼）在 cards/ 为规格与原型，未上线。</div>
+
+</div>
+</body>
+</html>

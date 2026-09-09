@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 第 2 步 功能清单打分卡</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.7;padding:24px;max-width:920px;margin:0 auto}
+h1{font-size:21px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:14px}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:6px 0 16px}
+h2{font-size:15.5px;font-weight:500;margin:22px 0 8px;padding-left:11px;border-left:3px solid var(--shu)}
+p{margin:6px 0;color:var(--sumi-mid)}
+.card{background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:12px;padding:6px 14px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--kami);text-align:left;padding:7px 8px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18)}
+td{padding:7px 8px;border-bottom:1px solid rgba(44,40,43,.12);color:var(--sumi-mid);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+td.name{color:var(--sumi);font-weight:500;width:150px}
+td.note{font-size:12px;color:var(--sumi-light)}
+.seg{display:flex;gap:0;border:1px solid rgba(44,40,43,.3);border-radius:8px;overflow:hidden;width:max-content}
+.seg button{border:none;background:#fff;color:var(--sumi-light);font-size:12px;padding:3px 9px;cursor:pointer;font-family:inherit}
+.seg button+button{border-left:1px solid rgba(44,40,43,.15)}
+.seg button.on1{background:#C2416B;color:#fff;font-weight:500}
+.seg button.on2{background:#C9A227;color:#fff;font-weight:500}
+.seg button.on3{background:#9A9189;color:#fff;font-weight:500}
+.seg button.on4{background:#2C282B;color:#fff;font-weight:500}
+.copy-btn{background:var(--shu);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;margin:10px 0}
+.copy-btn:hover{background:var(--shu-deep)}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:11px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--sumi-mid);margin:8px 0 4px;flex-wrap:wrap}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+.tag-new{display:inline-block;background:var(--kin-soft);color:#6B5410;font-size:11px;border-radius:5px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.tag-ai{display:inline-block;background:#E6F1FB;color:#185FA5;font-size:11px;border-radius:5px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.footer{font-size:11px;color:var(--sumi-light);text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+
+<h1>樱帖 · 第 2 步 功能清单打分卡</h1>
+<div class="sub">2026-09-08 · 档位已按你的回答预填推荐 · 只改不同意的 → 点底部按钮复制结果发我</div>
+<div class="gold-rule"></div>
+
+<div class="legend">
+  <span><b style="background:#C2416B"></b>必须＝没有它工具就不成立</span>
+  <span><b style="background:#C9A227"></b>应该＝v1 就要，但可稍晚</span>
+  <span><b style="background:#9A9189"></b>可以＝以后再说，不背进 v1</span>
+  <span><b style="background:#2C282B"></b>砍＝删掉，别带进新版</span>
+</div>
+
+<h2>A · 投递管理（主战场）</h2>
+<div class="card"><table>
+<tr><th style="width:150px">功能</th><th style="width:230px">档位（点击改）</th><th>说明 / 推荐理由</th></tr>
+<tr><td class="name">添加 / 编辑岗位</td><td><div class="seg" data-f="添加编辑岗位"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">粘贴 JD 快速建档，目标 ≤30 秒——工具的地基</td></tr>
+<tr><td class="name">看板视图</td><td><div class="seg" data-f="看板视图"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">阶段推进的主界面，Huntr 验证过的核心</td></tr>
+<tr><td class="name">列表视图</td><td><div class="seg" data-f="列表视图"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">批量浏览比看板高效，留；但排看板之后</td></tr>
+<tr><td class="name">搜索 + 阶段筛选</td><td><div class="seg" data-f="搜索筛选"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">岗位过 20 个后没有它就抓瞎</td></tr>
+<tr><td class="name">今日卡（该干嘛）</td><td><div class="seg" data-f="今日卡"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">你定的首页第一眼：「今天该投哪个+简历在哪」</td></tr>
+<tr><td class="name">统计大数条</td><td><div class="seg" data-f="统计大数条"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">投了多少、到哪了，一眼进展</td></tr>
+<tr><td class="name">岗位↔简历对应</td><td><div class="seg" data-f="岗位简历对应"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div><span class="tag-new">新</span></td><td class="note">v1 先记「这岗位用哪份简历/放哪/改了啥」，v2 再上 AI 对版</td></tr>
+<tr><td class="name">月历视图</td><td><div class="seg" data-f="月历视图"><button>必须</button><button>应该</button><button class="on3">可以</button><button>砍</button></div></td><td class="note">你没点过、时间属性弱——默认延后，面试季排期需要可翻案</td></tr>
+<tr><td class="name">简历视图（旧版）</td><td><div class="seg" data-f="简历视图旧版"><button>必须</button><button>应该</button><button>可以</button><button class="on4">砍</button></div></td><td class="note">被「岗位↔简历对应」替代，旧壳不带进新版</td></tr>
+</table></div>
+
+<h2>B · 面试备战</h2>
+<div class="card"><table>
+<tr><th style="width:150px">功能</th><th style="width:230px">档位（点击改）</th><th>说明 / 推荐理由</th></tr>
+<tr><td class="name">面试/笔试复盘<span class="tag-new">新</span></td><td><div class="seg" data-f="复盘"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">你点名要的。v9.2 有底子但没做实——重做：挂在岗位下，记被问啥/卡哪/下轮改啥</td></tr>
+<tr><td class="name">题库（被问倒收集）</td><td><div class="seg" data-f="题库"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">你点名要的；复盘里被问倒的题自动汇进来，面试前按公司过一遍</td></tr>
+<tr><td class="name">闪卡刷题（22 题底子）</td><td><div class="seg" data-f="闪卡"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">题库的练习形态。若你从没刷过，打「可以」也行——诚实打分</td></tr>
+<tr><td class="name">AI 备战资料<span class="tag-ai">AI</span></td><td><div class="seg" data-f="AI备战"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">两路合流：AI 按 JD 出高概率考题+作战卡，<b>同时联网搜这家公司的真题/经验帖</b>（B站/小红书/牛客等，给链接和摘要）。v2 随服务器供电源头上</td></tr>
+<tr><td class="name">AI 简历对版<span class="tag-ai">AI</span></td><td><div class="seg" data-f="AI简历对版"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">你最痛的点：底简历 vs JD 给微调建议。v2 AI 路线打通后做，是全工具最值钱的功能</td></tr>
+<tr><td class="name">BOSS 打招呼话术<span class="tag-ai">AI</span></td><td><div class="seg" data-f="BOSS话术"><button>必须</button><button>应该</button><button class="on3">可以</button><button>砍</button></div></td><td class="note">你说没体验过。默认延后——不砍死，AI 供电源头通了顺手就能给</td></tr>
+</table></div>
+
+<h2>C · 数据统计</h2>
+<div class="card"><table>
+<tr><th style="width:150px">功能</th><th style="width:230px">档位（点击改）</th><th>说明 / 推荐理由</th></tr>
+<tr><td class="name">漏斗分析</td><td><div class="seg" data-f="漏斗"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">三大模块之一；"投了 10 天没回复"自动浮出来</td></tr>
+</table></div>
+
+<h2>D · 个人画像</h2>
+<div class="card"><table>
+<tr><th style="width:150px">功能</th><th style="width:230px">档位（点击改）</th><th>说明 / 推荐理由</th></tr>
+<tr><td class="name">个人画像页</td><td><div class="seg" data-f="个人画像"><button>必须</button><button>应该</button><button class="on3">可以</button><button>砍</button></div></td><td class="note">你说没体验过。但"我的亮点"是 AI 话术/对版的原料——建议降级成设置里的一小节，不当独立页</td></tr>
+</table></div>
+
+<h2>E · 底层支撑（公开产品标配）</h2>
+<div class="card"><table>
+<tr><th style="width:150px">功能</th><th style="width:230px">档位（点击改）</th><th>说明 / 推荐理由</th></tr>
+<tr><td class="name">导出/导入 JSON</td><td><div class="seg" data-f="导出导入"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">你的数据焦虑解药 + 换设备搬家，一行都不能丢</td></tr>
+<tr><td class="name">导出 CSV</td><td><div class="seg" data-f="导出CSV"><button>必须</button><button>应该</button><button class="on3">可以</button><button>砍</button></div></td><td class="note">有了 JSON，CSV 是锦上添花</td></tr>
+<tr><td class="name">AI 设置（供电源头）</td><td><div class="seg" data-f="AI设置"><button class="on1">必须</button><button>应该</button><button>可以</button><button>砍</button></div></td><td class="note">改成连你的云服务器中转；别人用可切自填 Key。v9.2 已有壳</td></tr>
+<tr><td class="name">演示数据（脱敏）</td><td><div class="seg" data-f="演示数据"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">公开产品+作品集双需要：别人打开不是空页面，面试官看到的是假数据不是你的求职隐私</td></tr>
+<tr><td class="name">首次引导 / 空状态</td><td><div class="seg" data-f="首次引导"><button>必须</button><button class="on2">应该</button><button>可以</button><button>砍</button></div></td><td class="note">别人第一次打开 30 秒内知道这是什么、怎么开始——产品化的门面</td></tr>
+<tr><td class="name">岗位资讯管道<span class="tag-new">新</span></td><td><div class="seg" data-f="资讯管道"><button>必须</button><button>应该</button><button class="on3">可以</button><button>砍</button></div></td><td class="note">自动化定时任务盯<b>各大厂/独角兽官网校招页 + 搜索引擎</b>（BOSS 有登录墙+反爬，不承诺）。你已有同类管道（AI 雷达每周扫描）+一个闲置的「求职投递·每日巡检」可改造。v2 上，架构第 3 步定</td></tr>
+</table></div>
+
+<div class="callout gold"><b>一句话原则：</b>必须档＝v1 的新骨架；应该档＝v1 一并做但不阻塞；可以档＝记入路线图不背进 v1；AI 三件套（备战/简历对版/话术）共用同一条服务器供电源头，通了一条全亮。</div>
+
+<button class="copy-btn" onclick="copyResult()">复制我的打分结果</button>
+<p style="font-size:12px;color:var(--sumi-light)">点按钮 → 粘贴回对话即可。粉色=必须 7 项 / 金色=应该 7 项 / 灰色=可以 5 项 / 黑色=砍 2 项（默认推荐）。</p>
+
+<div class="footer">樱帖重启 · 第 2 步 / 共 5 步 · 2026-09-08</div>
+
+<script>
+const LABEL={on1:"必须",on2:"应该",on3:"可以",on4:"砍"};
+document.querySelectorAll(".seg").forEach(seg=>{
+  seg.querySelectorAll("button").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      seg.querySelectorAll("button").forEach(b=>b.className="");
+      btn.className=btn.textContent.trim()==="必须"?"on1":btn.textContent.trim()==="应该"?"on2":btn.textContent.trim()==="可以"?"on3":"on4";
+    });
+  });
+});
+function copyResult(){
+  const lines=["【樱帖第2步打分结果】"];
+  document.querySelectorAll(".seg").forEach(seg=>{
+    const on=seg.querySelector("button[class^='on']");
+    lines.push(LABEL[on.className]+"："+seg.dataset.f);
+  });
+  const txt=lines.join("\n");
+  (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>flash("✓ 已复制，粘贴回对话即可")).catch(()=>{
+    const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();flash("✓ 已复制，粘贴回对话即可");
+  });
+}
+function flash(msg){const b=document.querySelector(".copy-btn");const t=b.textContent;b.textContent=msg;setTimeout(()=>b.textContent=t,1600);}
+</script>
+</body>
+</html>

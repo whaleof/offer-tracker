@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 风格样品 v2 · 重设计</title>
+<style>
+/* ============ 樱帖风格样品 v2（9.8 晚·按玉涵反馈重做） ============
+   改动：①符文汉字全撤（想写字放牌外标注）②顶日章不再压环，垫底干净断开或去掉
+   ③hero 星用标准五角星坐标、中心点居中、去掉违和粉点 ④岗位牌重设计：顶章简化成小星、
+   「面」字收进合身的细环、层次减到"少而有质感" ⑤空位牌去掉问号，直接写「待」
+======================================================== */
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-soft:#EDE0C0; --kin-face:#E8CE74;
+  --serif:"Songti SC","Noto Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;padding:30px 20px 70px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:var(--serif);font-size:22px;letter-spacing:2px}
+.note{color:var(--sumi-mid);font-size:12.5px;margin:6px 0 30px}
+h2{font-family:var(--serif);font-size:16px;margin:36px 0 14px;color:var(--shu-deep)}
+.row{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start}
+.cap{font-size:12px;color:var(--sumi-mid);max-width:290px;margin-top:10px}
+.card{width:300px;filter:drop-shadow(4px 5px 0 rgba(44,40,43,.18))}
+.divider{display:flex;align-items:center;gap:14px;margin:34px 0 6px}
+.divider .ln{flex:1;height:1px;background:var(--kin);opacity:.6}
+.hero-demo{position:relative;overflow:hidden;background:#fff;border:1.5px solid var(--sumi);border-radius:14px;padding:22px 26px;max-width:640px}
+.hero-demo .mc{position:absolute;right:-70px;top:-70px;pointer-events:none}
+.hero-demo .t{font-family:var(--serif);font-size:16px}
+.hero-demo .s{font-family:var(--serif);font-size:14px;color:var(--shu-deep);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>樱帖 · 风格样品 v2 · 按你的意见重做</h1>
+<div class="note">汉字符文全撤了；顶上的"圆球叠线"（太阳章）要么去掉要么垫底断开，不再压在环上；岗位牌是重新设计不是换色。牌背 A/B 二选一。</div>
+
+<h2>① 牌背 · 两个重设计（二选一）</h2>
+<div class="row">
+<div>
+<svg class="card" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+  <!-- 设计A 净环：只有环+刻度+星+角花，无任何文字无日月 -->
+  <rect width="300" height="460" rx="16" fill="#FBF7EC"/>
+  <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#C2416B" stroke-width="3"/>
+  <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#C9A227" stroke-width="1.5"/>
+  <g stroke="#C2416B" stroke-width="1.6" fill="none">
+    <circle cx="38" cy="38" r="9" fill="#F5DCE3"/><path d="M38,29 v18 M29,38 h18 M31.6,31.6 l12.8,12.8 M44.4,31.6 l-12.8,12.8"/>
+    <circle cx="262" cy="38" r="9" fill="#F5DCE3"/><path d="M262,29 v18 M253,38 h18 M255.6,31.6 l12.8,12.8 M268.4,31.6 l-12.8,12.8"/>
+    <circle cx="38" cy="422" r="9" fill="#F5DCE3"/><path d="M38,413 v18 M29,422 h18 M31.6,415.6 l12.8,12.8 M44.4,415.6 l-12.8,12.8"/>
+    <circle cx="262" cy="422" r="9" fill="#F5DCE3"/><path d="M262,413 v18 M253,422 h18 M255.6,415.6 l12.8,12.8 M268.4,415.6 l-12.8,12.8"/>
+  </g>
+  <circle cx="150" cy="230" r="132" fill="none" stroke="#C2416B" stroke-width="4"/>
+  <circle cx="150" cy="230" r="141" fill="none" stroke="#C9A227" stroke-width="1.6"/>
+  <circle cx="150" cy="230" r="122" fill="none" stroke="#C2416B" stroke-width="9" stroke-dasharray="2 7" opacity=".85"/>
+  <circle cx="150" cy="230" r="99" fill="none" stroke="#C9A227" stroke-width="1.6"/>
+  <circle cx="150" cy="230" r="76" fill="none" stroke="#C2416B" stroke-width="2.4"/>
+  <path d="M150,135 L205.9,306.9 L59.7,200.6 L240.3,200.6 L94.1,306.9 Z" fill="none" stroke="#C2416B" stroke-width="1.3" opacity=".6"/>
+  <polygon points="150,168 163.9,210.8 209.0,210.8 172.5,237.3 186.5,280.2 150,253.7 113.5,280.2 127.5,237.3 91.0,210.8 136.1,210.8" fill="#C9A227" stroke="#854F0B" stroke-width="2.5" stroke-linejoin="round"/>
+  <polygon points="150,190 159,217.6 188,217.6 164.5,222.7 173.5,262.4 150,245.3 126.5,262.4 135.5,222.7 112,217.6 141,217.6" fill="#E8CE74" opacity=".9"/>
+</svg>
+<div class="cap">设计 A「净环」：去掉太阳章、去掉日月、去掉所有字。就四层环＋刻度＋大五芒星＋角花。最秩序、最不会乱。</div>
+</div>
+
+<div>
+<svg class="card" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+  <!-- 设计B 日月对位：顶日底月，各垫同色底圆干净断开环线 -->
+  <rect width="300" height="460" rx="16" fill="#A83358"/>
+  <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#E8CE74" stroke-width="2.5"/>
+  <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".7"/>
+  <g stroke="#E8CE74" stroke-width="1.4" fill="none">
+    <circle cx="38" cy="38" r="9"/><path d="M38,29 v18 M29,38 h18 M31.6,31.6 l12.8,12.8 M44.4,31.6 l-12.8,12.8"/>
+    <circle cx="262" cy="38" r="9"/><path d="M262,29 v18 M253,38 h18 M255.6,31.6 l12.8,12.8 M268.4,31.6 l-12.8,12.8"/>
+    <circle cx="38" cy="422" r="9"/><path d="M38,413 v18 M29,422 h18 M31.6,415.6 l12.8,12.8 M44.4,415.6 l-12.8,12.8"/>
+    <circle cx="262" cy="422" r="9"/><path d="M262,413 v18 M253,422 h18 M255.6,415.6 l12.8,12.8 M268.4,415.6 l-12.8,12.8"/>
+  </g>
+  <circle cx="150" cy="230" r="132" fill="none" stroke="#E8CE74" stroke-width="3.4"/>
+  <circle cx="150" cy="230" r="141" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".6"/>
+  <circle cx="150" cy="230" r="122" fill="none" stroke="#F5DCE3" stroke-width="8" stroke-dasharray="2 7" opacity=".9"/>
+  <circle cx="150" cy="230" r="99" fill="none" stroke="#E8CE74" stroke-width="1.4"/>
+  <circle cx="150" cy="230" r="76" fill="none" stroke="#E8CE74" stroke-width="2"/>
+  <path d="M150,135 L205.9,306.9 L59.7,200.6 L240.3,200.6 L94.1,306.9 Z" fill="none" stroke="#E8CE74" stroke-width="1.1" opacity=".65"/>
+  <polygon points="150,168 163.9,210.8 209.0,210.8 172.5,237.3 186.5,280.2 150,253.7 113.5,280.2 127.5,237.3 91.0,210.8 136.1,210.8" fill="#E8CE74" stroke="#FBF7EC" stroke-width="2" stroke-linejoin="round"/>
+  <!-- 顶日：先垫一枚底色圆把环线干净断开，太阳坐里面 -->
+  <circle cx="150" cy="98" r="21" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+  <circle cx="150" cy="98" r="9.5" fill="#E8CE74"/>
+  <g stroke="#E8CE74" stroke-width="1.8">
+    <path d="M150,83 v5 M150,108 v5 M135,98 h5 M160,98 h5 M139.2,87.2 l3.6,3.6 M156.8,87.2 l-3.6,-3.6 M139.2,108.8 l3.6,-3.6 M156.8,108.8 l-3.6,3.6"/>
+  </g>
+  <!-- 底月：同款垫底 -->
+  <circle cx="150" cy="362" r="21" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+  <path d="M156,350 a13,13 0 1,0 0,26 a10,10 0 1,1 0,-26 z" fill="#E8CE74"/>
+</svg>
+<div class="cap">设计 B「日月对位」：顶日底月对称收尾，各自垫了底色圆——环线在那里是"干净断开"的，不再叠出乱线。深红金线更像塔罗礼盒。</div>
+</div>
+</div>
+
+<div class="divider"><i class="ln"></i><svg width="18" height="18" viewBox="0 0 18 18"><polygon points="9,1 11.2,6.8 17,9 11.2,11.2 9,17 6.8,11.2 1,9 6.8,6.8" fill="#C9A227"/></svg><i class="ln"></i></div>
+
+<h2>② 岗位牌 · 重设计（结构改了，不是换色）</h2>
+<div class="row">
+<div>
+<svg class="card" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="460" rx="16" fill="#FBF7EC"/>
+  <rect x="8" y="8" width="284" height="444" rx="12" fill="none" stroke="#C9A227" stroke-width="3"/>
+  <rect x="26" y="26" width="248" height="408" rx="10" fill="#F5DCE3" stroke="#C9A227" stroke-width="1.5"/>
+  <!-- 顶：一枚小金星，不再是大圆章套白圆加射线 -->
+  <polygon points="150,41 152.9,50 162.4,50 154.8,55.5 157.6,64.5 150,59 142.4,64.5 145.2,55.5 137.6,50 147.1,50" fill="#C9A227" stroke="#854F0B" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- 左右小星章（贴粉色面板边缘） -->
+  <circle cx="30" cy="230" r="10" fill="#FBF7EC" stroke="#C9A227" stroke-width="1.6"/>
+  <polygon points="30,224 31.3,228.1 33.5,228.1 31.3,231.9 33.5,234.9 30,231.9 26.5,234.9 28.7,231.9 26.5,228.1 28.7,228.1" fill="#C2416B"/>
+  <circle cx="270" cy="230" r="10" fill="#FBF7EC" stroke="#C9A227" stroke-width="1.6"/>
+  <polygon points="270,224 268.7,228.1 266.5,228.1 268.7,231.9 266.5,234.9 270,231.9 273.5,234.9 271.3,231.9 273.5,228.1 271.3,228.1" fill="#C2416B"/>
+  <!-- 中央：一枚合身的细金环，字稳稳在环里 -->
+  <circle cx="150" cy="222" r="62" fill="#FBF7EC" stroke="#C9A227" stroke-width="1.8"/>
+  <circle cx="150" cy="222" r="55" fill="none" stroke="#C9A227" stroke-width="1" opacity=".6"/>
+  <text x="150" y="247" text-anchor="middle" font-family="Songti SC,SimSun,serif" font-size="70" fill="#A83358">面</text>
+  <!-- 底：小弦月 -->
+  <path d="M156,306 a12,12 0 1,0 0,24 a9.2,9.2 0 1,1 0,-24 z" fill="#C2416B"/>
+  <!-- 缎带（你说好看的那块，保留） -->
+  <path d="M52,384 Q150,372 248,384 L248,410 Q150,422 52,410 Z" fill="#C9A227" stroke="#854F0B" stroke-width="1.6"/>
+  <path d="M52,384 L28,390 L40,398 L28,406 L52,410 Z" fill="#854F0B"/>
+  <path d="M248,384 L272,390 L260,398 L272,406 L248,410 Z" fill="#854F0B"/>
+  <text x="150" y="403" text-anchor="middle" font-family="Songti SC,SimSun,serif" font-size="16" fill="#FBF7EC" letter-spacing="3">产品经理 · 大华</text>
+</svg>
+<div class="cap">改了什么：顶章从"圆套圆加射线加字"减成一枚小金星；「面」放进白底细金环，环刚好合身、字不再出圈；白底圆让粉面板和金字不打架；层次整体变少。</div>
+</div>
+
+<div>
+<svg class="card" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+  <!-- 空位牌：去掉问号，直接写「待」 -->
+  <rect width="300" height="460" rx="16" fill="#FBF7EC"/>
+  <rect x="8" y="8" width="284" height="444" rx="12" fill="none" stroke="#C9A227" stroke-width="3"/>
+  <rect x="26" y="26" width="248" height="408" rx="10" fill="#F4EFE2" stroke="#C9A227" stroke-width="1.5"/>
+  <polygon points="150,41 152.9,50 162.4,50 154.8,55.5 157.6,64.5 150,59 142.4,64.5 145.2,55.5 137.6,50 147.1,50" fill="#EDE0C0" stroke="#C9A227" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="150" y="243" text-anchor="middle" font-family="Songti SC,SimSun,serif" font-size="68" fill="#854F0B">待</text>
+  <text x="150" y="282" text-anchor="middle" font-family="Songti SC,SimSun,serif" font-size="13" fill="#6B625C" letter-spacing="4">虚位以待</text>
+  <path d="M52,384 Q150,372 248,384 L248,410 Q150,422 52,410 Z" fill="#EDE0C0" stroke="#C9A227" stroke-width="1.5"/>
+  <text x="150" y="403" text-anchor="middle" font-family="Songti SC,SimSun,serif" font-size="15" fill="#854F0B" letter-spacing="3">下一张 · 由你抽</text>
+</svg>
+<div class="cap">空位牌：问号删了，中间就一个大字「待」＋「虚位以待」，一眼看懂；缎带保留但降成浅金，不抢已投牌的戏。</div>
+</div>
+</div>
+
+<h2>③ hero 五芒星 · 修正版</h2>
+<div class="hero-demo">
+  <svg class="mc" width="240" height="240" viewBox="0 0 240 240">
+    <circle cx="120" cy="118" r="110" fill="none" stroke="#C2416B" stroke-width="3"/>
+    <circle cx="120" cy="118" r="98" fill="none" stroke="#C2416B" stroke-width="7" stroke-dasharray="2 7" opacity=".8"/>
+    <circle cx="120" cy="118" r="80" fill="none" stroke="#C9A227" stroke-width="1.4"/>
+    <path d="M120,40 L165.9,181.1 L45.8,93.9 L194.2,93.9 L74.1,181.1 Z" fill="none" stroke="#C2416B" stroke-width="1" opacity=".45"/>
+    <polygon points="120,72 130.3,103.8 163.7,103.8 136.7,123.4 147.0,155.2 120,135.6 93.0,155.2 103.3,123.4 76.3,103.8 109.7,103.8" fill="#C9A227" stroke="#854F0B" stroke-width="1.6" stroke-linejoin="round"/>
+    <circle cx="120" cy="118" r="3.5" fill="#854F0B"/>
+  </svg>
+  <div class="t">九月八日 · 星期二 · 娥眉月</div>
+  <div class="s">今日宜投 · 大华产品解决方案岗就在阵中等你</div>
+</div>
+<div class="cap" style="max-width:640px">星星换成标准五角星坐标（每个顶点都算过），正中心就是 (120,118)；中间那点从粉色换成深金，不再违和。</div>
+
+<div class="note" style="margin-top:40px">——这轮看完回我：牌背 A 还是 B？岗位牌这版结构行不行？行我就铺进 v1.2 全站。</div>
+</div>
+</body>
+</html>

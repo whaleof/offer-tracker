@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 牌背终稿候选 v7</title>
+<style>
+/* ============ 樱帖牌背终稿候选 v7（9/8 深夜五）· 最后两刀 ============
+   ①月亮章只留头顶一个（底部撤掉）
+   ②角件从 AI 雕花降为简洁角花：一条圆角边带＋一颗圆章（SVG 手绘，
+     简洁度对标小樱牌封面角件），不再繁复
+   其余＝v6 定稿：中央切面五芒星 / 齿环 / 双线框 / 可见星网 / 头顶月亮章
+======================================================== */
+:root{
+  --kinari:#FBF7EC; --sumi:#2C282B; --sumi-mid:#6B625C;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-face:#E8CE74;
+  --serif:"Songti SC","Noto Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;padding:30px 20px 70px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:var(--serif);font-size:22px;letter-spacing:2px}
+.note{color:var(--sumi-mid);font-size:12.5px;margin:6px 0 26px}
+.row{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
+.cap{font-size:12px;color:var(--sumi-mid);max-width:290px;margin-top:10px}
+.cardwrap{width:300px;height:460px;position:relative;border-radius:16px;overflow:hidden;filter:drop-shadow(4px 5px 0 rgba(44,40,43,.18))}
+.cardwrap svg.inner{position:absolute;inset:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>樱帖 · 牌背终稿候选 v7</h1>
+<div class="note">一个月亮章（头顶）、简洁角花（边带＋圆章）、其余全是 v6 你点过头的原样。</div>
+
+<div class="row">
+<div>
+<div class="cardwrap" style="background:#FBF7EC">
+  <svg class="inner" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="cc"><rect width="300" height="460" rx="16"/></clipPath>
+      <clipPath id="ic"><circle cx="150" cy="230" r="74"/></clipPath>
+      <g id="cnr">
+        <path d="M0,92 L0,32 Q0,0 32,0 L92,0 L92,14 L37,14 Q14,14 14,37 L14,92 Z" fill="#EDE0C0" stroke="#C9A227" stroke-width="1.4"/>
+        <circle cx="45" cy="45" r="10" fill="#F5DCE3" stroke="#C2416B" stroke-width="1.4"/>
+      </g>
+    </defs>
+    <rect width="300" height="460" fill="#FBF7EC"/>
+    <g clip-path="url(#cc)"><g id="net1"></g></g>
+    <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#C2416B" stroke-width="3"/>
+    <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#C9A227" stroke-width="1.5"/>
+    <circle cx="150" cy="230" r="132" fill="none" stroke="#C2416B" stroke-width="3.5"/>
+    <circle cx="150" cy="230" r="141" fill="none" stroke="#C9A227" stroke-width="1.2" opacity=".7"/>
+    <circle cx="150" cy="230" r="123" fill="none" stroke="#C2416B" stroke-width="8" stroke-dasharray="2 7" opacity=".8"/>
+    <circle cx="150" cy="230" r="99" fill="none" stroke="#C9A227" stroke-width="1.4"/>
+    <circle cx="150" cy="230" r="76" fill="none" stroke="#C2416B" stroke-width="2"/>
+    <g clip-path="url(#ic)">
+      <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#C2416B" stroke-width="1.3" opacity=".6"/>
+    </g>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" transform="translate(-3,-3)" fill="#E8CE74"/>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" fill="#C9A227" stroke="#854F0B" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- 头顶月亮章（全牌唯一） -->
+    <circle cx="150" cy="98" r="21" fill="#FBF7EC" stroke="#C9A227" stroke-width="2"/>
+    <circle cx="150" cy="98" r="12" fill="#C9A227"/>
+    <circle cx="155.5" cy="98" r="9.5" fill="#FBF7EC"/>
+    <!-- 简洁角花 ×4 -->
+    <use href="#cnr" transform="translate(12,12)"/>
+    <use href="#cnr" transform="translate(288,12) scale(-1,1)"/>
+    <use href="#cnr" transform="translate(12,448) scale(1,-1)"/>
+    <use href="#cnr" transform="translate(288,448) scale(-1,-1)"/>
+  </svg>
+</div>
+<div class="cap">纸底版：角花＝浅金边带＋粉圆章，简洁度对标你截的小樱牌封面角件；月亮章全牌只有头顶一个。</div>
+</div>
+
+<div>
+<div class="cardwrap" style="background:#A83358">
+  <svg class="inner" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="460" fill="#A83358"/>
+    <g clip-path="url(#cc)"><g id="net2"></g></g>
+    <rect x="10" y="10" width="280" height="440" rx="12" fill="none" stroke="#E8CE74" stroke-width="2.5"/>
+    <rect x="19" y="19" width="262" height="422" rx="8" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".7"/>
+    <circle cx="150" cy="230" r="132" fill="none" stroke="#E8CE74" stroke-width="3"/>
+    <circle cx="150" cy="230" r="141" fill="none" stroke="#E8CE74" stroke-width="1" opacity=".55"/>
+    <circle cx="150" cy="230" r="123" fill="none" stroke="#F5DCE3" stroke-width="7" stroke-dasharray="2 7" opacity=".85"/>
+    <circle cx="150" cy="230" r="99" fill="none" stroke="#E8CE74" stroke-width="1.2"/>
+    <circle cx="150" cy="230" r="76" fill="none" stroke="#E8CE74" stroke-width="1.8"/>
+    <g clip-path="url(#ic)">
+      <path d="M150,158 L192.3,288.2 L81.5,207.8 L218.5,207.8 L107.7,288.2 Z" fill="none" stroke="#F5DCE3" stroke-width="1.1" opacity=".65"/>
+    </g>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" transform="translate(-3,-3)" fill="#F5DCE3"/>
+    <polygon points="150,184 160.3,215.8 193.7,215.8 166.7,235.4 177.0,267.2 150,247.6 123.0,267.2 133.3,235.4 106.3,215.8 139.7,215.8" fill="#E8CE74" stroke="#FBF7EC" stroke-width="1.8" stroke-linejoin="round"/>
+    <circle cx="150" cy="98" r="21" fill="#A83358" stroke="#E8CE74" stroke-width="2"/>
+    <circle cx="150" cy="98" r="12" fill="#E8CE74"/>
+    <circle cx="155.5" cy="98" r="9.5" fill="#A83358"/>
+    <g id="cnr2">
+      <path d="M0,92 L0,32 Q0,0 32,0 L92,0 L92,14 L37,14 Q14,14 14,37 L14,92 Z" fill="#E8CE74" opacity=".92"/>
+      <circle cx="45" cy="45" r="10" fill="#A83358" stroke="#E8CE74" stroke-width="1.4"/>
+    </g>
+    <use href="#cnr2" transform="translate(12,12)"/>
+    <use href="#cnr2" transform="translate(288,12) scale(-1,1)"/>
+    <use href="#cnr2" transform="translate(12,448) scale(1,-1)"/>
+    <use href="#cnr2" transform="translate(288,448) scale(-1,-1)"/>
+  </svg>
+</div>
+<div class="cap">深红版：金角花＋描金圆章。</div>
+</div>
+</div>
+
+<div class="note" style="margin-top:34px">回我「纸底」或「深红」，牌背就定稿，我整套铺进 v1.3 给你看整体。</div>
+</div>
+
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sparkle(x,y,s,c,o){return '<path d="M'+x+','+(y-s)+' L'+(x+s*0.24)+','+(y-s*0.24)+' L'+(x+s)+','+y+' L'+(x+s*0.24)+','+(y+s*0.24)+' L'+x+','+(y+s)+' L'+(x-s*0.24)+','+(y+s*0.24)+' L'+(x-s)+','+y+' L'+(x-s*0.24)+','+(y-s*0.24)+' Z" fill="'+c+'" opacity="'+o+'"/>'}
+function scatter(id,seed,n,w,h,c){
+  var R=mulberry32(seed),s='',pts=[],i,x,y;
+  for(i=0;i<n;i++){x=R()*w;y=R()*h;pts.push([x,y])}
+  for(i=0;i<pts.length;i++){s+=sparkle(pts[i][0],pts[i][1],1.4+R()*2.8,c,.3+R()*.4)}
+  for(i=0;i+2<pts.length&&i<12;i+=3){
+    s+='<polyline points="'+pts[i]+' '+pts[i+1]+' '+pts[i+2]+'" fill="none" stroke="'+c+'" stroke-width=".6" opacity=".3"/>';
+    s+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="1.2" fill="'+c+'" opacity=".5"/>';
+  }
+  document.getElementById(id).innerHTML=s;
+}
+scatter('net1',20260908,30,300,460,'#C9A227');
+document.getElementById('net1').innerHTML='<path d="M-30,140 Q150,30 330,210" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".25"/><path d="M-30,340 Q160,240 330,330" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".22"/>'+document.getElementById('net1').innerHTML;
+scatter('net2',20260909,30,300,460,'#F5DCE3');
+document.getElementById('net2').innerHTML='<path d="M-30,140 Q150,30 330,210" fill="none" stroke="#F5DCE3" stroke-width=".7" opacity=".28"/><path d="M-30,340 Q160,240 330,330" fill="none" stroke="#F5DCE3" stroke-width=".7" opacity=".24"/>'+document.getElementById('net2').innerHTML;
+</script>
+</body>
+</html>
