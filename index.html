@@ -536,6 +536,29 @@ const QBANK_SEED = [
 ];
 
 /* ═══════════ ② STORE 数据层（唯一入口，别绕过它改数据） ═══════════ */
+/* 云端自动备份：只在 101.43 服务器版生效（GitHub Pages 版跨域发不出去，静默跳过）。
+   备份是单向快照：本机改了就推上去，误删了可从云端拉回来；不参与合并逻辑。 */
+const OTCloud = {
+  get on(){ return typeof location!=="undefined" && /101\.43\.110\.207/.test(location.hostname); },
+  get api(){ return location.origin + "/api/backup?name=offer-tracker"; },
+  tkB64: "M2E0YTcxMDVlOGFkNjkyMjEyM2QzNmYzOTllNGNkY2U=",
+  _t: 0,
+  token(){ try{ const s=localStorage.getItem("sb_api_token"); if(s) return s; }catch(e){} return atob(this.tkB64).split("").reverse().join(""); },
+  push(){ if(!this.on || !STORE.data.jobs.length) return; clearTimeout(this._t);
+    this._t=setTimeout(()=>{ fetch(this.api+"&token="+encodeURIComponent(this.token()),
+      {method:"POST",headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({savedAt:new Date().toISOString(),jobs:STORE.data.jobs.length,data:STORE.data})})
+      .then(r=>r.json()).then(j=>{ const el=document.getElementById("cloudSt");
+        if(el) el.textContent=j.ok?("☁ 已备份 "+new Date().toTimeString().slice(0,5)):"☁ 备份失败"; })
+      .catch(()=>{}); },1200); },
+  restore(){ if(!this.on){ alert("云端备份要在服务器版（http://101.43.110.207:8080/offer-tracker/）打开才有"); return; }
+    fetch(this.api+"&token="+encodeURIComponent(this.token())+"&raw=1").then(r=>r.json()).then(j=>{
+      const d=j&&j.data&&j.data.data;
+      if(!j.ok||!d||!Array.isArray(d.jobs)) return alert("云端还没有备份");
+      if(!confirm("用云端备份（"+d.jobs.length+" 个岗位，"+String(j.data.savedAt||"").slice(0,10)+" 存的）覆盖本机数据？")) return;
+      STORE.replaceAll(d); renderMain(); alert("已从云端恢复 ✓");
+    }).catch(()=>alert("云端读取失败")); },
+};
 const STORE = {
   data: { version: CONFIG.DATA_VERSION, jobs: [] },
   load(){
@@ -544,7 +567,7 @@ const STORE = {
     }catch(e){ console.error("读取失败", e); }
     return this.data;
   },
-  save(){ localStorage.setItem(CONFIG.LS_KEY, JSON.stringify(this.data)); },
+  save(){ localStorage.setItem(CONFIG.LS_KEY, JSON.stringify(this.data)); OTCloud.push(); },
   migrate(d){
     if(!d.version) d.version = 1;
     if(!Array.isArray(d.jobs)) d.jobs = [];
@@ -1423,11 +1446,13 @@ const UI = {
           <button class="btn" onclick="IO.exportJSON()">📦 导出备份 (JSON)</button>
           <button class="btn" onclick="IO.exportCSV()">📄 导出 CSV</button>
           <button class="btn" onclick="document.getElementById('importFile').click()">📥 导入备份（覆盖式）</button>
+          <button class="btn" onclick="OTCloud.push()">☁️ 立即备份到云端</button>
+          <button class="btn" onclick="OTCloud.restore()">☁️ 从云端恢复</button>
           <button class="btn" onclick="document.getElementById('mergeFile').click()">🛰️ 合并雷达岗位（增量）</button>
           <button class="btn" onclick="UI.close('toolMask');UI.open('demoMask')">🎮 演示数据 / 清空</button>
           <button class="btn" id="themeBtn2" onclick="THEME.toggle(document.getElementById('themeBtn'));this.textContent=(document.body.classList.contains('dark')?'☀️ 切回浅色':'🌙 切换深色')">${document.body.classList.contains("dark")?"☀️ 切回浅色":"🌙 切换深色"}</button>
         </div>
-        <div class="fc-bar">数据只存本机浏览器 · 换设备用「导出 + 导入」搬家</div>`;
+        <div class="fc-bar">数据只存本机浏览器 · 换设备用「导出 + 导入」搬家 · 服务器版自动云端备份 <span id="cloudSt"></span></div>`;
     }
     $("#toolBody").innerHTML = html;
     this.open("toolMask");

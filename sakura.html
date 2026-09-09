@@ -317,7 +317,8 @@ body.empty .hero,body.empty .grid-home{display:none!important}
   </div>
 </section>
 
-<div class="footnote">樱帖 v2.0 · 真数据版 · 与旧作战板同一份 localStorage，投出去/推进/复盘实时互通 · 2026-09-09</div>
+<div class="footnote">樱帖 v2.1 · 真数据版 · 与旧作战板同一份本地数据，投出去/推进/复盘实时互通 · 2026-09-09
+<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button></span></div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
@@ -346,14 +347,17 @@ function loadDemo(){
 }
 function save(){
   if(DEMO){toast("示例模式 · 不写入真数据");return}
-  try{ localStorage.setItem(LS_KEY,JSON.stringify(REAL)); }catch(e){ toast("保存失败："+e.message); }
+  try{ localStorage.setItem(LS_KEY,JSON.stringify(REAL)); cloudPush(); }catch(e){ toast("保存失败："+e.message); }
 }
-/* 写入纪律：touch=true 才更新 updatedAt（阶段推进），备战/复盘/催记不碰它 */
+/* 写入纪律：touch=true 才更新 updatedAt（阶段推进），备战/复盘/催记不碰它。
+   每次写入前重读一遍本地存储再改——防止另一个标签页刚改过的数据被旧内存覆盖。 */
 function mut(id,fn,touch){
   if(DEMO){toast("示例模式 · 不写入真数据");return}
-  const j=REAL.jobs.find(x=>x.id===id); if(!j)return;
+  let fresh=REAL;
+  try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||"null"); if(d&&Array.isArray(d.jobs))fresh=d; }catch(e){}
+  const j=fresh.jobs.find(x=>x.id===id); if(!j)return;
   fn(j); if(touch)j.updatedAt=new Date().toISOString();
-  save(); renderAll();
+  REAL=fresh; save(); renderAll();
 }
 
 /* ═══════════ ② 字段映射：真数据 → 樱帖牌 ═══════════ */
@@ -535,7 +539,7 @@ function renderPrep(){
   const cks=j.raw.checks||[];
   $('ck-list').innerHTML=cks.length?cks.map((c,i)=>`<label class="ck${c.done?' done':''}"><input type="checkbox" ${c.done?'checked':''} onchange="toggleCk(${i})"><span>${esc(c.t)}</span></label>`).join(''):'<div style="font-size:12px;color:var(--sumi-light);padding:4px 2px">还没有清单——旧作战板跑「AI 深度分析」会生成，跑完这里就有了</div>';
 }
-function toggleCk(i){const j=REAL.jobs.find(x=>x.id===curId);if(!j)return;(j.checks=j.checks||[])[i].done=!(j.checks[i].done);save();renderPrep()}
+function toggleCk(i){mut(curId,j=>{const ck=(j.checks=j.checks||[]);ck[i].done=!ck[i].done});renderPrep()}
 function savePrep(){const v=$('prep-ta').value;if(!DEMO&&!curId)return;mut(curId,j=>{j.prep=$('prep-ta').value});toast('资料包已存进牌里 ✓')}
 
 /* ---- 面试复盘（写进岗位的 reviews，和旧作战板互通） ---- */
@@ -643,7 +647,43 @@ function init(){
   curId='';
   renderAll();renderPrep();renderRev();sync();
 }
+
+/* ═══════════ ⑧ 云端自动备份（只在 101.43 服务器版生效，GitHub 版静默跳过） ═══════════ */
+const CLOUD_ON=/101\.43\.110\.207/.test(location.hostname);
+const CLOUD_API=location.origin+'/api/backup?name=offer-tracker';
+const _tkB64='M2E0YTcxMDVlOGFkNjkyMjEyM2QzNmYzOTllNGNkY2U=';
+const cloudToken=()=>{try{const s=localStorage.getItem('sb_api_token');if(s)return s}catch(e){}return atob(_tkB64).split('').reverse().join('')};
+let _clT;
+function setCloud(t){const el=$('cloud-st');if(el)el.textContent=t}
+function cloudPush(){
+  if(!CLOUD_ON||DEMO)return;
+  clearTimeout(_clT);
+  _clT=setTimeout(()=>{
+    fetch(CLOUD_API+'&token='+encodeURIComponent(cloudToken()),
+      {method:'POST',headers:{'Content-Type':'application/json'},
+       body:JSON.stringify({savedAt:new Date().toISOString(),jobs:REAL.jobs.length,data:REAL})})
+    .then(r=>r.json()).then(j=>setCloud(j.ok?'☁ 已备份 '+new Date().toTimeString().slice(0,5):'☁ 备份失败'))
+    .catch(()=>setCloud('☁ 备份失败'));
+  },1200);
+}
+function cloudPullRaw(){return fetch(CLOUD_API+'&token='+encodeURIComponent(cloudToken())+'&raw=1').then(r=>r.json())}
+function cloudRestore(){
+  if(!CLOUD_ON){toast('云端备份在服务器版（101.43…）打开时才生效');return}
+  cloudPullRaw().then(j=>{
+    const d=j&&j.data&&j.data.data;
+    if(!j.ok||!d||!Array.isArray(d.jobs))return toast('云端还没有备份');
+    if(!confirm('用云端备份（'+d.jobs.length+' 张牌，'+(j.data.savedAt||'').slice(0,10)+' 存的）覆盖本机数据？'))return;
+    REAL=d;save();renderAll();toast('已从云端恢复 ✓');
+  }).catch(()=>toast('云端读取失败'));
+}
 boot();
+if(CLOUD_ON){
+  $('cloud-btns').style.display='inline';setCloud('☁ 云端备份已开');
+  if(!DEMO&&!REAL.jobs.length){
+    cloudPullRaw().then(j=>{ const d=j&&j.data&&j.data.data;
+      if(j.ok&&d&&Array.isArray(d.jobs)&&d.jobs.length){REAL=d;save();renderAll();toast('已从云端恢复 '+REAL.jobs.length+' 张牌 ✓')} }).catch(()=>{});
+  }
+}
 </script>
 </body>
 </html>
