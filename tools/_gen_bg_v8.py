@@ -71,8 +71,8 @@ def gen_svg(spark_lo, spark_hi, label):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" '
             f'preserveAspectRatio="xMidYMid slice">\n' + '\n'.join(body) + '\n</svg>\n')
 
-# 两份 spark 大小：card=小星，mini=原版
-(ROOT / "bg-card-v8.svg").write_text(gen_svg(6.0, 8.5, "card"), encoding="utf-8")
-(ROOT / "bg-mini-v8.svg").write_text(gen_svg(10.0, 14.0, "mini"), encoding="utf-8")
-print(f"[ok ] bg-card-v8.svg → spark 6.0~8.5px（大卡用，星小了）")
-print(f"[ok ] bg-mini-v8.svg → spark 10~14px（小卡/空列用，原版感）")
+# 两份 spark 大小：card=小星（再小一档以免压字），mini=小一档原版感
+(ROOT / "bg-card-v8.svg").write_text(gen_svg(4.5, 6.5, "card"), encoding="utf-8")
+(ROOT / "bg-mini-v8.svg").write_text(gen_svg(8.0, 11.5, "mini"), encoding="utf-8")
+print(f"[ok ] bg-card-v8.svg → spark 4.5~6.5px（大卡用，星再小一档）")
+print(f"[ok ] bg-mini-v8.svg → spark 8~11.5px（小卡/空列用，原版感也稍缩）")
