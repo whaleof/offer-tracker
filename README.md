@@ -2,7 +2,9 @@
 
 > 一个 HTML 文件，管住你从投简历到拿 offer 的全过程——零部署、零注册、数据在自己手里。
 
-👉 [在线使用](https://whaleof.github.io/offer-tracker/) · 或下载 `index.html` 双击打开
+👉 [在线使用](https://whaleof.github.io/offer-tracker/) · 或下载 `sakura.html` 双击打开
+
+> **2026-09-09 起主产品为樱帖（sakura.html）**：添牌 / 拖拽推阶段 / 撕牌删除都在樱帖内完成。旧作战板（列表式 UI）已退役，代码存档在 `归档备份/`（不进仓库），根目录 `index.html` 仅作跳转页。
 
 ## 它解决什么问题
 
@@ -46,11 +48,11 @@
 
 ```
 offer-tracker/
-├── index.html      旧作战板（单文件应用，GitHub Pages 入口）
-├── sakura.html     樱帖（求职卡牌化 UI，9090 端口云端入口）
+├── index.html      跳转页（GitHub Pages 入口 → 自动转到 sakura.html）
+├── sakura.html     樱帖（求职卡牌化 UI，9090 端口云端入口，主产品）
 ├── news.json       情报区数据流（index.html 相对路径引用，勿挪动）
 ├── assets/         牌背 / 卡片背景等静态资源
-├── tools/          一次性生成 / 截图 / 应用补丁的 Python 脚本 + 冒烟测试
+├── tools/          一次性生成 / 截图 / 应用补丁的 Python 脚本
 ├── 设计稿/         需求定义、线框、流程图、视觉定稿、牌背候选等设计 HTML
 ├── 素材图/         封面图、预览截图、装饰素材（小红书发布用）
 ├── 文档/           发布文案（小红书看板 / 雷达）
