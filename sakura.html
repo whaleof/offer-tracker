@@ -713,11 +713,6 @@ function renderCal(b){
     <div class="cal-note">${JOBS.length?'你在牌阵往里推一步，这里当天就自动多一笔；截止日与约面时间也自动摆上。点条目翻那张牌的档案。':'还没有牌——日程摆上历后，这里就是你的求职月历。'}</div>
   </div>`;
 }
-function coHTML(j){
-  const ch={want:'存',sent:'投',test:'笔',int:'面',offer:'转',fallen:'落'}[j.st];
-  const days=j.st==='offer'?'🌕 已转生':j.st==='fallen'?'🥀 落樱':stN(j.st)+(j.days?' · '+j.days+' 天':'');
-  return `<div class="pcard${j.st==='offer'?' off':''}${j.st==='fallen'?' fall':''}" onclick="openSheet('${j.id}')"><div class="top"><span class="stage">${ch}</span><span class="seal">${sealOf(j)}</span></div><div class="co">${esc(j.co)}</div><div class="po">${esc(j.po)}</div><div class="ft"><span>${days}</span><span>${esc(j.kw[0]||'')}</span></div></div>`;
-}
 /* 公司视图：一家一张牌。牌里把「走得最远」的岗位排在最上面（落樱垫底），点岗位直接翻那张牌的档案。 */
 const CO_ROWS_MAX=6;
 function coGroupHTML(list){
