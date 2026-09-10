@@ -158,7 +158,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 .mini .meta{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
 .mini .days{font-size:10.5px;color:var(--sumi-light)}
 .board.asco{display:block;overflow:visible}
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:18px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:18px}
 .pcard{position:relative;background:#FBF7EC url("assets/bg-card-v8.svg") no-repeat center / cover;border:2px solid #C9A227;border-radius:13px;padding:16px 15px 13px;aspect-ratio:300/460;display:flex;flex-direction:column;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16);transition:transform .12s}
 .pcard:hover{transform:translateY(-3px)}
 .pcard::before{content:'';position:absolute;inset:6px;border:1px solid #C2416B;opacity:.5;border-radius:8px;pointer-events:none}
@@ -170,18 +170,13 @@ body:not(:has(.page:target)) #p-today{display:block}
 .pcard .po{font-size:11.5px;color:var(--sumi-mid);line-height:1.5;margin-bottom:10px}
 .pcard .ft{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px;font-size:10.5px;color:var(--sumi-light)}
 .pcard .seal svg{display:block}
-/* 公司视图：一家一张牌，牌里列这家所有岗位 */
-.pcard.co-card{aspect-ratio:auto;min-height:214px}
-.pcard .cn{font-size:11px;color:var(--sumi-light);margin-bottom:8px}
-.co-rows{border-top:1px dashed rgba(201,162,39,.5);padding-top:6px;margin-top:2px}
-.co-row{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px dashed rgba(44,40,43,.1)}
-.co-row:last-child{border-bottom:0}
-.co-row .b{flex:none;width:19px;height:19px;border-radius:5px;border:1px solid var(--kin);color:var(--kin-deep);font-family:var(--serif);font-size:11px;display:flex;align-items:center;justify-content:center;background:#fff}
-.co-row .b.sent{border-color:var(--shu);color:var(--shu-deep)}
-.co-row .b.fall{border-color:var(--sumi-light);color:var(--sumi-light)}
-.co-row .r{flex:1;min-width:0;font-size:11.5px;line-height:1.35;color:var(--sumi);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-.co-row .d{flex:none;font-size:10.5px;color:var(--sumi-light);white-space:nowrap}
-.co-row.more .r{color:var(--sumi-light)}
+/* 公司视图：一家一张牌（尺寸样式与单岗牌完全一致），岗位并排落在牌里的岗位区 */
+.pcard .po .pl{display:flex;gap:5px}
+.pcard .po .pl+.pl{margin-top:3px}
+.pcard .po .pl span{min-width:0}
+.pcard .po .pc{flex:none;font-family:var(--serif);color:var(--kin-deep)}
+.pcard .po .pc.sent{color:var(--shu-deep)}
+.pcard .po .pc.fall{color:var(--sumi-light)}
 .seal{width:20px;height:20px}
 .empty{border:1.5px dashed rgba(201,162,39,.6);border-radius:12px;padding:14px 10px;text-align:center;font-size:11px;color:var(--sumi-light);background:rgba(237,224,192,.25)}
 /* 空列牌背：压到与明牌小卡等大（90px 高裁中心星环），不再放全尺寸大牌 */
@@ -664,7 +659,7 @@ function renderBoard(){
     JOBS.forEach(j=>{const g=groups.find(x=>x.co===j.co);if(g)g.list.push(j);else groups.push({co:j.co,list:[j]})});
     b.innerHTML='<div class="pgrid">'+groups.map(g=>coGroupHTML(g.list)).join('')+'</div>';
   }
-  $('bsub').textContent=view==='flow'?'从左到右推进：拖着牌到下一列即可推进阶段，点牌翻档案。':view==='cal'?'阶段推进、截止、约面都会自动摆上历；点条目翻那张牌的档案。':'一家一张牌，牌里列着这家所有岗位；点岗位翻档案。';
+  $('bsub').textContent=view==='flow'?'从左到右推进：拖着牌到下一列即可推进阶段，点牌翻档案。':view==='cal'?'阶段推进、截止、约面都会自动摆上历；点条目翻那张牌的档案。':'一家一张牌，牌里是这家所有岗位；点岗位翻档案。';
 }
 /* 月历：截止（剪）/ 事件（约面笔试）/ 投递日 三色条目，周一起始，‹›翻月 */
 let calY,calM;
@@ -713,26 +708,17 @@ function renderCal(b){
     <div class="cal-note">${JOBS.length?'你在牌阵往里推一步，这里当天就自动多一笔；截止日与约面时间也自动摆上。点条目翻那张牌的档案。':'还没有牌——日程摆上历后，这里就是你的求职月历。'}</div>
   </div>`;
 }
-/* 公司视图：一家一张牌。牌里把「走得最远」的岗位排在最上面（落樱垫底），点岗位直接翻那张牌的档案。 */
-const CO_ROWS_MAX=6;
+/* 公司视图：一家一张牌 —— 就是原来那张单岗牌，只是把岗位从「一个」换成「这家的全部」，
+   尺寸、边框、底部（阶段天数 + 渠道）一律照旧。点岗位翻那张牌的档案。 */
 function coGroupHTML(list){
   const rank=k=>k==='fallen'?1000:100-STAGES.findIndex(s=>s.k===k);
-  const sorted=list.slice().sort((a,b)=>rank(a.st)-rank(b.st));
-  const top=sorted[0];
-  const rows=sorted.slice(0,CO_ROWS_MAX).map(j=>{
-    const bcls=j.st==='sent'?'sent':j.st==='fallen'?'fall':'';
-    const d=j.st==='offer'?'已转生':j.st==='fallen'?'落樱':stN(j.st)+(j.days?'·'+j.days+'天':'');
-    return `<div class="co-row" onclick="event.stopPropagation();openSheet('${j.id}')"><span class="b ${bcls}">${CH[j.st]}</span><span class="r" title="${esc(j.po)}">${esc(j.po||'待定岗位')}</span><span class="d">${d}</span></div>`;
-  }).join('');
-  const more=sorted.length>CO_ROWS_MAX?`<div class="co-row more"><span class="b">…</span><span class="r">还有 ${sorted.length-CO_ROWS_MAX} 个岗位</span></div>`:'';
-  const cls='pcard co-card'+(top.st==='offer'?' off':'')+(top.st==='fallen'?' fall':'');
-  return `<div class="${cls}" onclick="openSheet('${top.id}')">
-    <div class="top"><span class="stage">${CH[top.st]}</span><span class="seal">${sealOf(top)}</span></div>
-    <div class="co">${esc(list[0].co)}</div>
-    <div class="cn">${list.length} 个岗位</div>
-    <div class="co-rows">${rows}${more}</div>
-  </div>`;
+  const top=list.slice().sort((a,b)=>rank(a.st)-rank(b.st))[0];
+  const rows=list.map(j=>`<div class="pl" onclick="event.stopPropagation();openSheet('${j.id}')"><span class="pc ${j.st==='sent'?'sent':j.st==='fallen'?'fall':''}">${CH[j.st]}</span><span>${esc(j.po||'待定岗位')}</span></div>`).join('');
+  const days=top.st==='offer'?'🌕 已转生':top.st==='fallen'?'🥀 落樱':stN(top.st)+(top.days?' · '+top.days+' 天':'');
+  const cls='pcard'+(top.st==='offer'?' off':'')+(top.st==='fallen'?' fall':'');
+  return `<div class="${cls}" onclick="openSheet('${top.id}')"><div class="top"><span class="stage">${CH[top.st]}</span><span class="seal">${sealOf(top)}</span></div><div class="co">${esc(list[0].co)}</div><div class="po">${rows}</div><div class="ft"><span>${days}</span><span>${esc((top.kw&&top.kw[0])||'')}</span></div></div>`;
 }
+const coN=()=>new Set(JOBS.map(j=>j.co)).size;
 function miniHTML(j){
   const line=j.st==='offer'?'#C9A227':j.st==='fallen'?'#9A9189':'#A83358';
   const days=j.st==='offer'?'🌕 已转生':j.st==='fallen'?'🥀 落樱':stN(j.st)+(j.days?' · '+j.days+'天':'');
@@ -1052,7 +1038,7 @@ document.getElementById('nav').addEventListener('click',e=>{if(e.target.dataset.
 document.getElementById('vt').addEventListener('click',e=>{
   if(!e.target.dataset.v)return;view=e.target.dataset.v;
   document.querySelectorAll('#vt span').forEach(s=>s.classList.toggle('on',s===e.target));
-  $('bt').textContent=view==='flow'?'每张牌走到哪一步了':view==='cal'?'这个月有哪些要紧日子':'按公司看 · 共 '+JOBS.length+' 张牌';
+  $('bt').textContent=view==='flow'?'每张牌走到哪一步了':view==='cal'?'这个月有哪些要紧日子':'按公司看 · 共 '+coN()+' 家';
   renderBoard();
 });
 function renderAll(){JOBS=REAL.jobs.map(vm);renderToday();renderBoard();renderChips();
@@ -1068,7 +1054,7 @@ function init(){
   if(vp.get('layout')==='co'&&JOBS.length){
     view='co';
     document.querySelectorAll('#vt span').forEach(s=>s.classList.toggle('on',s.dataset.v==='co'));
-    $('bt').textContent='按公司看 · 共 '+JOBS.length+' 张牌';
+    $('bt').textContent='按公司看 · 共 '+coN()+' 家';
     renderBoard();
   }
 }

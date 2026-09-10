@@ -143,14 +143,16 @@ if (!/进笔试/.test(calHtml)) throw new Error("月历没记上「进笔试」�
 if (!/投出/.test(calHtml)) throw new Error("月历丢了「投出」条目");
 console.log("PASS 7b/8 月历：投出、进笔试等阶段推进全部自动上历");
 
-// 8) 公司视图：一家一张牌，牌里列出这家所有岗位
+// 8) 公司视图：一家一张牌 —— 就是原来那张单岗牌，只把岗位换成一家的全部（不加尺寸/标签改动）
 const coHtml = ctx.coGroupHTML([
-  { id: "z1", co: "小红书", po: "产品经理", st: "sent", days: 2 },
-  { id: "z2", co: "小红书", po: "培训生 RPT", st: "want", days: 3 }
+  { id: "z1", co: "小红书", po: "产品经理", st: "sent", days: 2, kw: ["校招官网"] },
+  { id: "z2", co: "小红书", po: "培训生 RPT", st: "want", days: 3, kw: ["校招官网"] }
 ]);
-if ((coHtml.match(/co-row/g) || []).length < 2) throw new Error("公司牌里没列出多个岗位");
-if (!/2 个岗位/.test(coHtml)) throw new Error("公司牌没标出岗位数");
+if ((coHtml.match(/class="pl"/g) || []).length !== 2) throw new Error("公司牌里没把两个岗位都列出来");
+if (!/产品经理/.test(coHtml) || !/培训生 RPT/.test(coHtml)) throw new Error("岗位名丢了");
 if ((coHtml.match(/小红书/g) || []).length !== 1) throw new Error("公司名出现了多次——没有合并成一张牌");
-console.log("PASS 8/8 公司视图：一家一张牌，牌内列出这家所有岗位");
+if (!/class="pcard/.test(coHtml)) throw new Error("公司牌不再是标准 pcard，尺寸会跟单岗牌不一致");
+if (/co-card|co-row|个岗位|dashed/.test(coHtml)) throw new Error("公司牌里混进了多余的结构或标签");
+console.log("PASS 8/8 公司视图：一家一张牌、岗位并排列出，卡片尺寸与单岗牌一致、无多余结构");
 
 console.log("\nALL SMOKE TESTS PASSED ✓");
