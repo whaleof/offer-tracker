@@ -2,7 +2,7 @@ const fs = require("fs"), vm = require("vm");
 const html = fs.readFileSync("G:/_06_项目代码/offer-tracker/sakura.html", "utf8");
 const m = html.match(/<script>([\s\S]*?)<\/script>/);
 new vm.Script(m[1]);  // 1) 语法检查
-console.log("PASS 1/8 语法检查");
+console.log("PASS 1/9 语法检查");
 
 // ---- mock 环境 ----
 const store = {
@@ -36,7 +36,7 @@ class FakeReader { readAsText() { this.result = filePayload; this.onload(); } }
 ctx.FileReader = FakeReader;
 
 vm.runInNewContext(m[1], ctx);  // 2) 初始化无运行时错误
-console.log("PASS 2/8 初始化（boot+init）无运行时错误");
+console.log("PASS 2/9 初始化（boot+init）无运行时错误");
 
 const jobs0 = JSON.parse(store["job-tracker-v1"]).jobs.length;
 if (jobs0 !== 2) throw new Error("种子数据应为 2 条，实际 " + jobs0);
@@ -54,14 +54,14 @@ if (!added || added.status !== "pool") throw new Error("新牌应落 pool/想投
 if (added.id.length < 10) throw new Error("新牌缺唯一 id");
 const a2 = data.jobs.find(j => j.id === "a2");
 if (a2.status !== "applied" || a2.history.length !== 2) throw new Error("已有牌被合并改动——违反「只加不动」");
-console.log("PASS 3/8 雷达合并：去重正确、新牌落想投、已有牌分毫未动");
+console.log("PASS 3/9 雷达合并：去重正确、新牌落想投、已有牌分毫未动");
 
 // 3b) 再合并同文件 → 全部重复 → 不加
 const before = JSON.parse(store["job-tracker-v1"]).jobs.length;
 ctx.mergeRadar({ files: [{}], value: "" });
 data = JSON.parse(store["job-tracker-v1"]);
 if (data.jobs.length !== before) throw new Error("重复合并产生了重复记录");
-console.log("PASS 3b/8 重复合并不产生重复记录");
+console.log("PASS 3b/9 重复合并不产生重复记录");
 
 // 3c) confirm=false 时合并中止
 ctx.confirm = () => false;
@@ -70,7 +70,23 @@ ctx.mergeRadar({ files: [{}], value: "" });
 data = JSON.parse(store["job-tracker-v1"]);
 if (data.jobs.length !== before) throw new Error("取消确认仍写入了");
 ctx.confirm = () => true;
-console.log("PASS 3c/8 取消合并不写入");
+console.log("PASS 3c/9 取消合并不写入");
+
+// 3d) merge 文件已标 applied → 落阵即「已投」，并写 appliedAt 与 history
+filePayload = JSON.stringify({ newJobs: [
+  { company: "蔚来汽车（NIO）", role: "产品经理（内推）", city: "上海", channel: "内推",
+    status: "applied", appliedAt: "2026-09-11", history: [{ status: "applied", at: "2026-09-11T12:00:00.000Z" }],
+    source: "小红书", notes: "测试已投" }
+]});
+ctx.mergeRadar({ files: [{}], value: "" });
+data = JSON.parse(store["job-tracker-v1"]);
+const nio = data.jobs.find(j => j.company === "蔚来汽车（NIO）" && j.role === "产品经理（内推）");
+if (!nio) throw new Error("已投批次未写入");
+if (nio.status !== "applied") throw new Error("已投批次导入后状态不是 applied，实际 " + nio.status);
+if (nio.appliedAt !== "2026-09-11") throw new Error("已投批次 appliedAt 丢失，实际 " + nio.appliedAt);
+if (!nio.history.some(h => h.status === "applied")) throw new Error("已投批次没保留 applied 历史");
+if (!nio.notes.includes("小红书")) throw new Error("source 未写入 notes，信源丢失");
+console.log("PASS 3d/9 merge 文件标 applied → 落阵即已投，并保留 appliedAt/history/信源");
 
 // 4) 添牌（含三格）
 E("nf-co").value = "企查查测试公司"; E("nf-po").value = "数据 PM";
@@ -83,7 +99,7 @@ if (!nc) throw new Error("添牌未写入");
 if (nc.verify !== "存疑" || nc.fit !== "B" || nc.resume !== "腾讯版-带背景色") throw new Error("添牌三格字段丢失");
 if (nc.status !== "pool") throw new Error("添牌应落想投列");
 if (E("nf-co").value !== "" || E("nf-vf").value !== "") throw new Error("添牌后表单未清空");
-console.log("PASS 4/8 添牌：三格字段随牌写入、表单已清空");
+console.log("PASS 4/9 添牌：三格字段随牌写入、表单已清空");
 
 // 5) 档案存三格：不改历史、不碰 updatedAt
 E("sv-proof").value = "https://example.com/apply/tencent";
@@ -101,7 +117,7 @@ E("sv-vf").value = ""; E("sv-fit").value = ""; E("sv-resume").value = "";
 ctx.saveTri("a1");
 data = JSON.parse(store["job-tracker-v1"]);
 if (data.jobs.find(j => j.id === "a1").fit !== "") throw new Error("空值覆盖失败");
-console.log("PASS 5/8 档案存三格：字段写入、历史与 updatedAt 未动、空值可覆盖");
+console.log("PASS 5/9 档案存三格：字段写入、历史与 updatedAt 未动、空值可覆盖");
 
 // 6) 渠道拆解：雷达把整串投递网址写进 channel → 落阵前拆成 短渠道名 + applyUrl
 filePayload = JSON.stringify({ newJobs: [
@@ -115,7 +131,7 @@ if (xhs.channel !== "校招官网") throw new Error("牌面渠道应只留短名
 if (xhs.applyUrl !== "job.xiaohongshu.com/campus") throw new Error("网址未拆进 applyUrl，实际「" + xhs.applyUrl + "」");
 const clean2 = ctx.chClean("Moka/BOSS");
 if (clean2.n !== "Moka/BOSS" || clean2.u !== "") throw new Error("没有网址的渠道被误改：" + JSON.stringify(clean2));
-console.log("PASS 6/8 渠道拆解：牌面只留短名、网址进 applyUrl、无网址的渠道原样保留");
+console.log("PASS 6/9 渠道拆解：牌面只留短名、网址进 applyUrl、无网址的渠道原样保留");
 
 // 7) 拖牌推进：必须同时写 appliedAt（否则月历漏记「投出」——本次修的 bug）
 filePayload = JSON.stringify({ newJobs: [{ company: "测试公司甲", role: "PM", city: "杭州", channel: "官网" }] });
@@ -132,7 +148,7 @@ const ta3 = JSON.parse(store["job-tracker-v1"]).jobs.find(j => j.id === ta.id);
 if (ta3.status !== "test") throw new Error("推进到笔试失败，status=" + ta3.status);
 if (!(ta3.history || []).some(h => h.status === "test")) throw new Error("推进没写历史");
 if (!ctx.stageAt(ta3, "test")) throw new Error("stageAt 取不到「走到笔试」的日期");
-console.log("PASS 7/8 阶段推进：拖牌/推进都写历史与投递日，stageAt 能取到每一步日期");
+console.log("PASS 7/9 阶段推进：拖牌/推进都写历史与投递日，stageAt 能取到每一步日期");
 
 // 7b) 月历：条目来自历史记录（投出 + 进笔试都上历），不再只认 appliedAt
 const board = E("board");
@@ -141,7 +157,7 @@ const calHtml = board.innerHTML;
 if (!/测试公司甲/.test(calHtml)) throw new Error("月历没记上拖拽推进的「投出」");
 if (!/进笔试/.test(calHtml)) throw new Error("月历没记上「进笔试」——阶段推进没进化");
 if (!/投出/.test(calHtml)) throw new Error("月历丢了「投出」条目");
-console.log("PASS 7b/8 月历：投出、进笔试等阶段推进全部自动上历");
+console.log("PASS 7b/9 月历：投出、进笔试等阶段推进全部自动上历");
 
 // 8) 公司视图：一家一张牌 —— 就是原来那张单岗牌，只把岗位换成一家的全部（不加尺寸/标签改动）
 const coHtml = ctx.coGroupHTML([
@@ -153,6 +169,6 @@ if (!/产品经理/.test(coHtml) || !/培训生 RPT/.test(coHtml)) throw new Err
 if ((coHtml.match(/小红书/g) || []).length !== 1) throw new Error("公司名出现了多次——没有合并成一张牌");
 if (!/class="pcard/.test(coHtml)) throw new Error("公司牌不再是标准 pcard，尺寸会跟单岗牌不一致");
 if (/co-card|co-row|个岗位|dashed/.test(coHtml)) throw new Error("公司牌里混进了多余的结构或标签");
-console.log("PASS 8/8 公司视图：一家一张牌、岗位并排列出，卡片尺寸与单岗牌一致、无多余结构");
+console.log("PASS 8/9 公司视图：一家一张牌、岗位并排列出，卡片尺寸与单岗牌一致、无多余结构");
 
 console.log("\nALL SMOKE TESTS PASSED ✓");

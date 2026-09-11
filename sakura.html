@@ -105,6 +105,10 @@ body:not(:has(.page:target)) #p-today{display:block}
 .btn-merge:hover{border-color:var(--kin);color:var(--kin-deep)}
 .btn-merge::before{content:"⊕";color:var(--kin)}
 
+/* 今日雷达：只有"服务器上真有新牌"时才点亮（是状态不是装饰） */
+#btn-radar-today.has-new{border-color:var(--shu-deep);color:var(--shu-deep)}
+#btn-radar-today.has-new::before{content:"●";color:var(--shu-deep)}
+
 /* 落牌：樱印主操作 */
 .btn-add{border-color:var(--shu-deep);color:var(--shu-deep);background:var(--shu-soft)}
 .btn-add:hover{background:#EAD0D8}
@@ -151,7 +155,10 @@ body:not(:has(.page:target)) #p-today{display:block}
 .col-hd .cnt{margin-left:auto;font-size:11px;color:var(--sumi-light)}
 .col-fallen .col-hd{color:var(--sumi-light)}
 .col.drag-over{outline:2px dashed #C9A227;outline-offset:3px;border-radius:12px;background:rgba(201,162,39,.06)}
-.mini{position:relative;background:#FBF7EC url("assets/bg-mini-v8.svg") no-repeat center / cover;border:2px solid var(--line,var(--sumi));border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16)}
+/* 底色可染：v9-t 星图不自带纸色，纸色由 --pc-bg 决定；已投往后的牌染樱粉（想投/落樱保持米纸）。
+   星图小牌大牌都保留；樱粉调淡一档 #F9E8ED（她说 #F5DCE3 有点冒出来）。 */
+.pcard.pink,.mini.pink{--pc-bg:#F9E8ED}
+.mini{position:relative;background:var(--pc-bg,#FBF7EC) url("assets/bg-mini-v9-t.svg") no-repeat center / cover;border:2px solid var(--line,var(--sumi));border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16)}
 .mini:hover{transform:translateY(-2px)}
 .mini .co{font-family:var(--serif);font-size:13.5px}
 .mini .po{font-size:11px;color:var(--sumi-mid)}
@@ -159,7 +166,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 .mini .days{font-size:10.5px;color:var(--sumi-light)}
 .board.asco{display:block;overflow:visible}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:18px}
-.pcard{position:relative;background:#FBF7EC url("assets/bg-card-v8.svg") no-repeat center / cover;border:2px solid #C9A227;border-radius:13px;padding:16px 15px 13px;aspect-ratio:300/460;display:flex;flex-direction:column;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16);transition:transform .12s}
+.pcard{position:relative;background:var(--pc-bg,#FBF7EC) url("assets/bg-card-v9-t.svg") no-repeat center / cover;border:2px solid #C9A227;border-radius:13px;padding:16px 15px 13px;aspect-ratio:300/460;display:flex;flex-direction:column;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16);transition:transform .12s}
 .pcard:hover{transform:translateY(-3px)}
 .pcard::before{content:'';position:absolute;inset:6px;border:1px solid #C2416B;opacity:.5;border-radius:8px;pointer-events:none}
 .pcard.off{border-color:#C2416B}
@@ -320,6 +327,7 @@ body:not(:has(.page:target)) #p-today{display:block}
       <h2 id="bt">每张牌走到哪一步了</h2>
     </div>
     <div class="board-actions board-actions-primary">
+      <button class="btn-chip btn-merge" id="btn-radar-today" onclick="mergeTodayRadar()" title="今日雷达">今日雷达</button>
       <button class="btn-chip btn-merge" onclick="openMerge()">合并雷达</button>
       <button class="btn-chip btn-add" onclick="openAdd()">落牌</button>
     </div>
@@ -675,13 +683,15 @@ function renderCal(b){
   const items={};
   const put=(ds,it)=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(ds||""));if(!m)return;if(+m[1]!==calY||+m[2]-1!==calM)return;const k=+m[3];const arr=items[k]=items[k]||[];if(arr.some(x=>x.id===it.id&&x.label===it.label))return;arr.push(it)};
   /* 月历＝牌的履历：每次阶段推进都留一条；截止日与约面时间也摆上。
-     历史记录优先，老数据只有 appliedAt 没历史的也兜住。 */
+     历史记录优先，老数据只有 appliedAt 没历史的也兜住。
+     月历条目用短公司名，括号备注（如主体未披露）只保留在卡片详情，不挤占格子。 */
+  const shortCo=s=>String(s||'').replace(/（[^）]+）/g,'').trim();
   JOBS.forEach(j=>{
-    put(j.raw.deadline,{id:j.id,co:j.co,label:'⏳ 截止',cls:'ddl'});
-    (j.raw.events||[]).forEach(e=>put(e.date,{id:j.id,co:j.co,label:trim((e.time?e.time+' ':'')+(e.label||'事项'),9),cls:'ev'}));
+    put(j.raw.deadline,{id:j.id,co:shortCo(j.co),label:'⏳ 截止',cls:'ddl'});
+    (j.raw.events||[]).forEach(e=>put(e.date,{id:j.id,co:shortCo(j.co),label:trim((e.time?e.time+' ':'')+(e.label||'事项'),9),cls:'ev'}));
     const hist=j.raw.history||[];
-    hist.forEach(h=>{const lb=CAL_LABEL[h.status];if(!lb)return;put(h.at,{id:j.id,co:j.co,label:lb,cls:CAL_CLS[h.status]})});
-    if(!hist.some(h=>h.status==='applied')&&j.raw.appliedAt)put(j.raw.appliedAt,{id:j.id,co:j.co,label:'投出',cls:'ap'});
+    hist.forEach(h=>{const lb=CAL_LABEL[h.status];if(!lb)return;put(h.at,{id:j.id,co:shortCo(j.co),label:lb,cls:CAL_CLS[h.status]})});
+    if(!hist.some(h=>h.status==='applied')&&j.raw.appliedAt)put(j.raw.appliedAt,{id:j.id,co:shortCo(j.co),label:'投出',cls:'ap'});
   });
   /* 同一天同一家公司同一步只出一条，重复的并成「×N」 */
   const dayHTML=its=>{
@@ -715,14 +725,14 @@ function coGroupHTML(list){
   const top=list.slice().sort((a,b)=>rank(a.st)-rank(b.st))[0];
   const rows=list.map(j=>`<div class="pl" onclick="event.stopPropagation();openSheet('${j.id}')"><span class="pc ${j.st==='sent'?'sent':j.st==='fallen'?'fall':''}">${CH[j.st]}</span><span>${esc(j.po||'待定岗位')}</span></div>`).join('');
   const days=top.st==='offer'?'🌕 已转生':top.st==='fallen'?'🥀 落樱':stN(top.st)+(top.days?' · '+top.days+' 天':'');
-  const cls='pcard'+(top.st==='offer'?' off':'')+(top.st==='fallen'?' fall':'');
+  const cls='pcard'+(top.st!=='want'&&top.st!=='fallen'?' pink':'')+(top.st==='offer'?' off':'')+(top.st==='fallen'?' fall':'');
   return `<div class="${cls}" onclick="openSheet('${top.id}')"><div class="top"><span class="stage">${CH[top.st]}</span><span class="seal">${sealOf(top)}</span></div><div class="co">${esc(list[0].co)}</div><div class="po">${rows}</div><div class="ft"><span>${days}</span><span>${esc((top.kw&&top.kw[0])||'')}</span></div></div>`;
 }
 const coN=()=>new Set(JOBS.map(j=>j.co)).size;
 function miniHTML(j){
   const line=j.st==='offer'?'#C9A227':j.st==='fallen'?'#9A9189':'#A83358';
   const days=j.st==='offer'?'🌕 已转生':j.st==='fallen'?'🥀 落樱':stN(j.st)+(j.days?' · '+j.days+'天':'');
-  return `<div class="mini" style="--line:${line}" draggable="true" ondragstart="dragCard(event,'${j.id}')" onclick="openSheet('${j.id}')"><div class="co">${esc(j.co)} · ${esc(j.po)}</div><div class="po">${esc(j.kw.slice(0,2).join(' · '))}</div><div class="meta"><span class="days">${days}</span>${sealOf(j)}</div></div>`;
+  return `<div class="mini${j.st!=='want'&&j.st!=='fallen'?' pink':''}" style="--line:${line}" draggable="true" ondragstart="dragCard(event,'${j.id}')" onclick="openSheet('${j.id}')"><div class="co">${esc(j.co)} · ${esc(j.po)}</div><div class="po">${esc(j.kw.slice(0,2).join(' · '))}</div><div class="meta"><span class="days">${days}</span>${sealOf(j)}</div></div>`;
 }
 function faceSVG(j){
   const ch={want:'存',sent:'投',test:'笔',int:'面',offer:'转',fallen:'落'}[j.st];
@@ -855,8 +865,13 @@ function mergeRadar(input){
   const r=new FileReader();
   r.onload=()=>{
     input.value="";
-    try{
-      const d=JSON.parse(r.result);
+    try{ applyRadarPayload(JSON.parse(r.result)); }
+    catch(e){ toast("文件格式不对，合并失败"); }
+  };
+  r.readAsText(file);
+}
+/* 合并核心：手动选文件、拖拽、今日雷达一键入阵——三条路都走这里，一套去重逻辑。 */
+function applyRadarPayload(d){
       const incoming=Array.isArray(d.newJobs)?d.newJobs:(Array.isArray(d.jobs)?d.jobs:null);
       if(!incoming){toast("这不是雷达增量文件（缺 newJobs 字段）");return}
       const fp=j=>[j.company,j.role,j.city].map(s=>String(s||"").replace(/\s+/g,"").toLowerCase()).join("|");
@@ -865,8 +880,17 @@ function mergeRadar(input){
       const known=new Set(fresh.jobs.map(fp));
       const add=incoming.filter(j=>j&&j.company&&!known.has(fp(j)));
       if(!add.length){toast("没有新牌：雷达报的 "+incoming.length+" 条都已在阵上");return}
-      if(!confirm("发现 "+add.length+" 张新牌（雷达共报 "+incoming.length+" 条，重复的自动跳过）。\n新牌将以「想投」落阵，已有的牌一律不动。合并？"))return;
+      const byHit=add.slice().sort((a,b)=>(Number(b.hitScore)||0)-(Number(a.hitScore)||0));
+      const best=byHit.filter(j=>Number(j.hitScore)).slice(0,3)
+        .map((j,i)=>(i+1)+'. '+(j.company||'')+(j.role?(' · '+j.role):'')+'（命中 '+j.hitScore+'）').join('\n');
+      const nUnk=byHit.filter(j=>String(j.eligibility||'').toLowerCase()==='unknown').length;
+      const msg="发现 "+add.length+" 张新牌（共报 "+incoming.length+" 条，重复自动跳过）。"
+        +(best?("\n\n最值得先投：\n"+best):"")
+        +(nUnk?("\n\n注意：其中 "+nUnk+" 张批次/窗口待核实，投前先确认"):"")
+        +"\n\n新牌以「想投」落阵，已有牌一律不动。合并？";
+      if(!confirm(msg))return;
       const now=new Date().toISOString();
+      const isoDay=s=>{if(!s)return'';const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));return m?`${m[1]}-${m[2]}-${m[3]}`:''};
       add.forEach(j=>{
         const job=Object.assign({},j);
         delete job.radarUrl; delete job.radarScore;
@@ -876,19 +900,63 @@ function mergeRadar(input){
         const cc=chClean(job.channel);
         job.channel=cc.n;
         if(cc.u&&!job.applyUrl)job.applyUrl=cc.u;
-        job.status='pool';
-        job.createdAt=now; job.appliedAt='';
+        /* 合并文件若已标「已投」，尊重原状态、历史与投递日；否则按「想投」落阵 */
+        const origStatus=String(job.status||'').toLowerCase();
+        const isApplied=(origStatus==='applied'||origStatus==='sent'||origStatus==='已投');
+        if(isApplied){
+          job.status='applied';
+          job.history=Array.isArray(job.history)?job.history.map(h=>({status:h.status==='sent'||h.status==='已投'?'applied':h.status,at:h.at||now})):[];
+          if(!job.history.some(h=>h.status==='applied')){
+            job.appliedAt=job.appliedAt?isoDay(job.appliedAt):'';
+            job.history.push({status:'applied',at:job.appliedAt?job.appliedAt+'T12:00:00.000Z':now});
+          }else if(!job.appliedAt){
+            const ah=job.history.filter(h=>h.status==='applied').pop();
+            job.appliedAt=isoDay(ah.at);
+          }else{
+            job.appliedAt=isoDay(job.appliedAt);
+          }
+        }else{
+          job.status='pool';
+          job.appliedAt='';
+          job.history=[{status:'pool',at:now}];
+        }
+        job.createdAt=job.createdAt||now;
         job.notes=job.notes?String(job.notes):'';
+        if(job.source){job.notes=(job.notes?job.notes+'\n':'')+'【信源】'+job.source; delete job.source;}
         job.events=Array.isArray(job.events)?job.events:[];
-        job.history=[{status:'pool',at:now}];
         if(!job.resume)job.resume='';
         fresh.jobs.push(job);
       });
       REAL=fresh; save(); renderAll(); go('board');
       toast("已合并 "+add.length+" 张新牌 ✓");
-    }catch(e){ toast("文件格式不对，合并失败"); }
+}
+/* ═══ 今日雷达：WorkBuddy 每日跑完推到服务器 → 这里读回来，一键入阵 ═══
+   诉求：找工作的事在樱帖里闭环，不用再去翻文件夹、拖 JSON、切窗口。 */
+let RADAR_TODAY=null;
+function radarTodayApi(){
+  const t=(typeof cloudToken==='function')?cloudToken():'';
+  return location.origin+'/api/radar/today'+(t?'?token='+encodeURIComponent(t):'');
+}
+function loadRadarToday(){
+  if(location.protocol==='file:'){ markRadarToday(null); return Promise.resolve(null) }
+  return fetch(radarTodayApi()).then(r=>r.json())
+    .then(d=>{ RADAR_TODAY=d; markRadarToday(d); return d })
+    .catch(()=>{ markRadarToday(null); return null });
+}
+function markRadarToday(d){
+  const b=$('btn-radar-today'); if(!b)return;
+  const n=(d&&Array.isArray(d.newJobs))?d.newJobs.length:0;
+  b.textContent=n?('今日雷达 · '+n):'今日雷达';
+  b.classList.toggle('has-new',n>0);
+  b.title=n?(d.date||'')+' 雷达抓到 '+n+' 个新岗 · 点一下入阵':'今日雷达：服务器上暂时没有新岗位';
+}
+function mergeTodayRadar(){
+  if(DEMO){toast("示例模式 · 不写入真数据");return}
+  const go2=d=>{
+    if(d&&Array.isArray(d.newJobs)&&d.newJobs.length){ applyRadarPayload(d); }
+    else{ toast(location.protocol==='file:'?"本地打开读不到服务器雷达；请从服务器地址打开樱帖":"今日雷达没有新岗位"); }
   };
-  r.readAsText(file);
+  if(RADAR_TODAY){ go2(RADAR_TODAY); } else { loadRadarToday().then(go2); }
 }
 /* 拖拽合并：把雷达 merge JSON 直接拖进牌阵页面即可（内部拖牌走 dataTransfer 文本，不会误触发） */
 function boardDragOver(e){
@@ -1046,6 +1114,7 @@ function renderAll(){JOBS=REAL.jobs.map(vm);renderToday();renderBoard();renderCh
 function init(){
   curId='';
   renderAll();renderPrep();renderRev();sync();
+  loadRadarToday();
   const vp=new URLSearchParams(location.search);
   const v=vp.get('view');
   if(v==='board')go('board');
