@@ -133,16 +133,18 @@ body:not(:has(.page:target)) #p-today{display:block}
 .cal-lgd i{font-style:normal;display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin:0 4px 0 12px}
 .cal-wk,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-wk span{text-align:center;font-size:11px;color:var(--sumi-light);padding-bottom:6px}
-.cal-c{min-height:64px;border:1px solid rgba(44,40,43,.08);border-radius:8px;padding:4px 5px;background:var(--kinari);position:relative}
+.cal-c{min-height:64px;border:1px solid rgba(44,40,43,.08);border-radius:8px;padding:4px 5px;background:var(--kinari);position:relative;transition:outline .15s,border-color .15s,background .15s}
 .cal-c.off{background:transparent;border-color:transparent}
 .cal-c.today{border:1.5px solid var(--shu)}
+.cal-c.cal-drag-over{outline:2px dashed #C9A277;outline-offset:-2px;background:rgba(201,162,39,.08);border-color:#C9A277}
 .cal-d{font-size:11px;color:var(--sumi-light);text-align:right}
 .cal-c.today .cal-d{color:var(--shu-deep);font-weight:500}
 .cal-tag{position:absolute;top:4px;left:5px;font-size:10px;padding:2px 4px;border-radius:5px;line-height:1;white-space:nowrap}
 .cal-tag.holiday{background:var(--shu-soft);color:var(--shu-deep)}
 .cal-tag.rest{background:var(--kin-soft);color:var(--kin-deep)}
 .cal-tag.workday{background:rgba(44,40,43,.08);color:var(--sumi-light)}
-.cal-it{font-size:10.5px;border-radius:6px;padding:1px 6px;margin-top:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-it{font-size:10.5px;border-radius:6px;padding:1px 6px;margin-top:3px;cursor:grab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .15s}
+.cal-it:active{cursor:grabbing;opacity:.7}
 .cal-it.ddl{background:var(--shu-soft);color:var(--shu-deep)}
 .cal-it.ev{background:var(--kin-soft);color:var(--kin-deep)}
 .cal-it.ap{background:#fff;border:1px dashed var(--kin);color:var(--sumi-mid)}
@@ -166,6 +168,14 @@ body:not(:has(.page:target)) #p-today{display:block}
 .mini .days{font-size:10.5px;color:var(--sumi-light)}
 .board.asco{display:block;overflow:visible}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:18px}
+/* 公司视图：已投/未投 分组折叠 */
+.co-sec{margin-bottom:16px}
+.co-sec-hd{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;border-radius:9px;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.15);user-select:none;transition:background .15s}
+.co-sec-hd:hover{background:rgba(201,162,39,.12)}
+.co-sec-arrow{font-size:10px;color:var(--sumi-light);transition:transform .2s;width:12px;text-align:center}
+.co-sec-title{font-size:13px;font-weight:600;color:var(--sumi-mid)}
+.co-sec-cnt{margin-left:auto;font-size:11px;color:var(--sumi-light)}
+.co-sec-body{overflow:hidden;transition:opacity .2s}
 .pcard{position:relative;background:var(--pc-bg,#FBF7EC) url("assets/bg-card-v9-t.svg") no-repeat center / cover;border:2px solid #C9A227;border-radius:13px;padding:16px 15px 13px;aspect-ratio:300/460;display:flex;flex-direction:column;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16);transition:transform .12s}
 .pcard:hover{transform:translateY(-3px)}
 .pcard::before{content:'';position:absolute;inset:6px;border:1px solid #C2416B;opacity:.5;border-radius:8px;pointer-events:none}
@@ -651,6 +661,9 @@ function doUrge(id){mut(id,j=>{j.lastUrgeAt=isoNow()});toast('已记：今天催
 
 /* ═══════════ ⑤ 牌阵 ═══════════ */
 let view='flow';
+/* 公司视图折叠状态：sent=已投出组，want=未投出组 */
+let coCollapse={sent:false,want:false};
+function toggleCoGroup(k){coCollapse[k]=!coCollapse[k];renderBoard()}
 function renderBoard(){
   if(!JOBS.length&&view!=='cal'){$('board').innerHTML='<div class="empty" style="flex:1"><span class="dai">空</span>添了岗位牌就摆上来</div>';return}
   const b=$('board');
@@ -663,11 +676,17 @@ function renderBoard(){
   }else if(view==='cal'){
     renderCal(b);
   }else{
-    const groups=[];
-    JOBS.forEach(j=>{const g=groups.find(x=>x.co===j.co);if(g)g.list.push(j);else groups.push({co:j.co,list:[j]})});
-    b.innerHTML='<div class="pgrid">'+groups.map(g=>coGroupHTML(g.list)).join('')+'</div>';
+    /* 公司视图：先按公司分组，再按「已投/未投」分大组，每组可折叠 */
+    const coGroups=[];
+    JOBS.forEach(j=>{const g=coGroups.find(x=>x.co===j.co);if(g)g.list.push(j);else coGroups.push({co:j.co,list:[j]})});
+    const sentCos=coGroups.filter(g=>g.list.some(j=>j.st==='sent'||j.st==='test'||j.st==='int'||j.st==='offer'||j.st==='fallen'));
+    const wantCos=coGroups.filter(g=>g.list.every(j=>j.st==='want'));
+    const sentN=sentCos.reduce((n,g)=>n+g.list.filter(j=>j.st!=='want').length,0);
+    const wantN=wantCos.reduce((n,g)=>n+g.list.length,0);
+    const grpHTML=(label,n,k,list,collapsed)=>`<div class="co-sec"><div class="co-sec-hd" onclick="toggleCoGroup('${k}')"><span class="co-sec-arrow">${collapsed?'▶':'▼'}</span><span class="co-sec-title">${label}</span><span class="co-sec-cnt">${n} 张${collapsed?'（已收起）':''}</span></div><div class="co-sec-body"${collapsed?' style="display:none"':''}><div class="pgrid">${list.map(g=>coGroupHTML(g.list)).join('')}</div></div></div>`;
+    b.innerHTML=grpHTML('已投出',sentN,'sent',sentCos,coCollapse.sent)+grpHTML('未投（想投）',wantN,'want',wantCos,coCollapse.want);
   }
-  $('bsub').textContent=view==='flow'?'从左到右推进：拖着牌到下一列即可推进阶段，点牌翻档案。':view==='cal'?'阶段推进、截止、约面都会自动摆上历；点条目翻那张牌的档案。':'一家一张牌，牌里是这家所有岗位；点岗位翻档案。';
+  $('bsub').textContent=view==='flow'?'从左到右推进：拖着牌到下一列即可推进阶段，点牌翻档案。':view==='cal'?'阶段推进、截止、约面都会自动摆上历；拖条目到其他日期可改投递日；点条目翻那张牌的档案。':'一家一张牌，按「已投/未投」分组，点组头可收起；点岗位翻档案。';
 }
 /* 月历：截止（剪）/ 事件（约面笔试）/ 投递日 三色条目，周一起始，‹›翻月 */
 let calY,calM;
@@ -694,10 +713,10 @@ function renderCal(b){
     if(!hist.some(h=>h.status==='applied')&&j.raw.appliedAt)put(j.raw.appliedAt,{id:j.id,co:shortCo(j.co),label:'投出',cls:'ap'});
   });
   /* 同一天同一家公司同一步只出一条，重复的并成「×N」 */
-  const dayHTML=its=>{
+  const dayHTML=(its,srcKey)=>{
     const gs=[];
     its.forEach(it=>{const g=gs.find(x=>x.co===it.co&&x.label===it.label&&x.cls===it.cls);if(g){g.n++;g.ids.push(it.id)}else gs.push({co:it.co,label:it.label,cls:it.cls,n:1,ids:[it.id]})});
-    return gs.map(g=>`<div class="cal-it ${g.cls}" title="${esc(g.co)} ${esc(g.label)}" onclick="openSheet('${g.ids[0]}')"><b>${esc(g.co)}</b> ${esc(g.label)}${g.n>1?' ×'+g.n:''}</div>`).join('');
+    return gs.map(g=>`<div class="cal-it ${g.cls}" draggable="true" data-id="${g.ids[0]}" data-cls="${g.cls}" data-date="${srcKey}" data-label="${esc(g.label)}" ondragstart="calDragItem(event,this)" ondragend="this.style.opacity=''" title="${esc(g.co)} ${esc(g.label)}（拖到别的日期＝改这天）" onclick="openSheet('${g.ids[0]}')"><b>${esc(g.co)}</b> ${esc(g.label)}${g.n>1?' ×'+g.n:''}</div>`).join('');
   };
   let cells='';
   const fmt=n=>String(n).padStart(2,'0');
@@ -707,7 +726,7 @@ function renderCal(b){
     const key=`${calY}-${fmt(calM+1)}-${fmt(d)}`;
     const h=HOLIDAYS[key];
     const hTag=h?`<span class="cal-tag ${h.type}" title="${h.type==='workday'?'调休上班':'法定节假日'}">${h.label}</span>`:'';
-    cells+=`<div class="cal-c${isThis&&d===t.getDate()?' today':''}">${hTag}<div class="cal-d">${d}</div>${dayHTML(its)}</div>`;
+    cells+=`<div class="cal-c${isThis&&d===t.getDate()?' today':''}" ondragover="calDragOver(event)" ondragleave="calDragLeave(event)" ondrop="calDropItem(event,'${key}')" data-cal-date="${key}">${hTag}<div class="cal-d">${d}</div>${dayHTML(its,key)}</div>`;
   }
   const n=calY===undefined?'':calY+'年'+(calM+1)+'月';
   b.innerHTML=`<div class="cal" style="flex:1">
@@ -775,10 +794,11 @@ function openSheet(id){
   /* 投递入口：从渠道字段里拆出来的网址（牌面只显示短渠道名，链接收在档案里） */
   const au=String(j.applyUrl||"");
   const auHTML=(au&&au!==proof)?`<div class="sec-t">投递入口</div><div class="next"><a href="${esc(/^https?:\/\//.test(au)?au:'http://'+au)}" target="_blank" rel="noopener" style="color:var(--shu-deep)">${esc(trim(au,52))} ↗</a></div>`:'';
-  $('sheet').innerHTML=`<span class="x" onclick="closeSheet()">✕</span>
+   $('sheet').innerHTML=`<span class="x" onclick="closeSheet()">✕</span>
    <div class="kind">牌 · 档案</div>
    ${faceSVG(j)}
-   <h3>${esc(j.co)} · ${esc(j.po)}</h3>
+   <h3 style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="sv-co" value="${esc(j.co)}" placeholder="公司名" style="flex:1;min-width:120px;border:1.5px solid var(--sumi);border-radius:9px;padding:8px 10px;font-size:16px;font-family:var(--serif);background:#fff;color:var(--sumi)"> <span style="color:var(--sumi-light)">·</span> <input id="sv-po" value="${esc(j.po)}" placeholder="岗位名" style="flex:1;min-width:120px;border:1.5px solid var(--sumi);border-radius:9px;padding:8px 10px;font-size:16px;background:#fff;color:var(--sumi)"></h3>
+   <div style="display:flex;gap:8px;margin-top:6px"><button class="btn btn-s" onclick="saveCoPo('${j.id}')">保存修改</button><span style="font-size:11px;color:var(--sumi-light);line-height:28px">改公司名或岗位名后点保存</span></div>
    <div class="sub2">${stN(j.st)}${j.days?' · '+j.days+' 天':''}${j.raw.verify?' · '+esc(VF[j.raw.verify]||j.raw.verify):''}${j.raw.fit?' · 适配 '+esc(j.raw.fit):''} · 渠道/城市在词条里</div>
    <div class="kw">${j.kw.map(k=>`<span>${esc(k)}</span>`).join('')||'<span>待补</span>'}</div>
    <div class="sec-t">这张牌走过的路</div>
@@ -796,6 +816,13 @@ function openSheet(id){
    <datalist id="dl-resume">${resList.map(r=>`<option value="${esc(r)}">`).join('')}</datalist>
    <input id="sv-proof" placeholder="投递凭证：官网链接 / 邮件底稿（可空）" value="${esc(proof)}" style="width:100%;margin-top:8px;border:1.5px solid var(--sumi);border-radius:9px;padding:9px 12px;font-size:13px;background:#fff">
    <div style="text-align:right;margin-top:6px"><button class="btn btn-s" onclick="saveTri('${j.id}')">存三格</button></div>
+   <div class="sec-t" style="margin-top:10px">状态修改</div>
+   <div style="display:flex;gap:8px;align-items:center">
+     <select id="sv-st" style="flex:1;border:1.5px solid var(--sumi);border-radius:9px;padding:9px 8px;font-size:13px;background:#fff;color:var(--sumi)" onchange="setStatus('${j.id}',this.value)">
+       ${STAGES.map(s=>`<option value="${s.k}"${s.k===j.st?' selected':''}>${CH[s.k]} · ${s.n}</option>`).join('')}
+     </select>
+     <span style="font-size:11px;color:var(--sumi-light)">直接改状态（落樱/推进/回退都行）</span>
+   </div>
    <div class="foot">
      <span style="font-size:11px;color:var(--sumi-light)">${tri?'三格已记，投递前扫一眼就对':'三格还是空的——核验完记一笔，投前不用翻对话'}</span>
      <span style="display:flex;gap:8px;align-items:center">
@@ -811,12 +838,34 @@ function saveTri(id){
   toast('三格已存进牌里 ✓');
   openSheet(id);
 }
+/* 保存公司名/岗位名的修改 */
+function saveCoPo(id){
+  const co=$('sv-co').value.trim();const po=$('sv-po').value.trim();
+  if(!co){toast('公司名不能为空');return}
+  mut(id,o=>{o.company=co;o.role=po||'待定岗位'},true);
+  openSheet(id);toast('已保存 ✓');
+}
 function closeSheet(){$('mask').classList.remove('on')}
 function advance(id){
   const j=JOBS.find(x=>x.id===id);if(!j)return;const nx=NEXT[j.st];if(!nx)return;
   const real=BACK[nx];
   mut(id,o=>{o.status=real;(o.history=o.history||[]).push({status:real,at:isoNow()});if(real==='applied')o.appliedAt=new Date().toISOString().slice(0,10)},true);
   openSheet(id);toast(j.co+' 已推进到「'+stN(nx)+'」✓');
+}
+/* 状态任意跳转：档案弹层里下拉选状态直接改，支持前进/回退/落樱 */
+function setStatus(id,newSt){
+  const j=JOBS.find(x=>x.id===id);if(!j)return;
+  if(j.st===newSt){openSheet(id);return}
+  const real=BACK[newSt]||'pool';
+  mut(id,o=>{
+    const oldReal=o.status;
+    o.status=real;
+    (o.history=o.history||[]).push({status:real,at:isoNow()});
+    if(real==='applied')o.appliedAt=new Date().toISOString().slice(0,10);
+    /* 如果从已投回退到想投，清除 appliedAt */
+    if(newSt==='want'&&oldReal==='applied')o.appliedAt='';
+  },true);
+  openSheet(id);toast(j.co+' 状态已改为「'+stN(newSt)+'」✓');
 }
 /* 拖拽推进：牌阵里拖牌到任意阶段列即可换阶段（写历史记录，与按钮推进同一条写入纪律） */
 function dragCard(e,id){try{e.dataTransfer.setData('text/plain',id)}catch(_){}}
@@ -829,6 +878,47 @@ function dropCard(e,k){
   const real=BACK[k]||'pool';
   mut(id,o=>{o.status=real;(o.history=o.history||[]).push({status:real,at:isoNow()});if(real==='applied')o.appliedAt=new Date().toISOString().slice(0,10)},true);
   toast(j.co+' 已移到「'+stN(k)+'」✓');
+}
+/* ═══════════ 月历拖拽改日期 ═══════════
+   把月历条目从一格拖到另一格 = 只改这一条的日期，不动同月其他记录。
+   条目类型（data-cls）决定改哪个字段：
+     ddl=截止日 → deadline
+     ev =约面/笔试 → events 里同一天那条
+     ap =投出 → appliedAt + history 里 applied 那天
+     pg/win/lose =阶段推进 → history 里对应状态那天
+   拖完自动同步：投出日变了 → 档案里的时间轴、"已投·N天" 一起跟着变。 */
+let _calDrag=null;
+function calDragItem(e,el){
+  _calDrag={id:el.dataset.id,cls:el.dataset.cls,date:el.dataset.date,label:el.dataset.label||''};
+  try{e.dataTransfer.setData('text/plain','cal');e.dataTransfer.effectAllowed='move'}catch(_){}
+  el.style.opacity='.45';
+}
+function calDragOver(e){e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('cal-drag-over')}
+function calDragLeave(e){e.currentTarget.classList.remove('cal-drag-over')}
+/* 阶段条目 cls → 真实 status（用于在 history 里精确定位那一条） */
+const CAL_CLS2ST={ap:'applied',pg:null,win:'offer',lose:'rejected'};
+function calDropItem(e,newDate){
+  e.preventDefault();e.currentTarget.classList.remove('cal-drag-over');
+  if(!_calDrag){return}
+  const {id,cls,date:srcDate,label}=_calDrag;_calDrag=null;
+  if(!id||srcDate===newDate)return;
+  const j=JOBS.find(x=>x.id===id);if(!j)return;
+  const moved=[];
+  mut(id,o=>{
+    const at=iso=>String(iso||'').slice(0,10)===srcDate;
+    if(cls==='ddl'){
+      if(at(o.deadline)){o.deadline=newDate;moved.push('截止日')}
+    }else if(cls==='ev'){
+      (o.events||[]).forEach(ev=>{if(at(ev.date)){ev.date=newDate;moved.push('约面/笔试')}});
+    }else if(cls==='ap'){
+      if(at(o.appliedAt)){o.appliedAt=newDate;moved.push('投出日')}
+      (o.history||[]).forEach(h=>{if(h.status==='applied'&&at(h.at)){h.at=newDate+'T12:00:00.000Z';if(moved.indexOf('投出日')<0)moved.push('投出日')}});
+    }else{ /* pg / win / lose：按 label 精确定位到具体那条状态 */
+      const st=(cls==='win')?'offer':(cls==='lose')?'rejected':(/面试/.test(label)?'interview':'test');
+      (o.history||[]).forEach(h=>{if(h.status===st&&at(h.at)){h.at=newDate+'T12:00:00.000Z';moved.push(CAL_LABEL[st]||'进展')}});
+    }
+  },true);
+  toast(moved.length?`${j.co} · ${moved.join('/')} 已改为 ${newDate.slice(5)} ✓`:`这条记载没找到可改的日期`);
 }
 /* 添牌：旧作战板退役后，樱帖自己接住新增——最小表单，新牌落「想投」列 */
 function openAdd(){
