@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常玉涵 · 作品集 · AI 产品方向</title>
+<meta name="description" content="常玉涵作品集：AI 第二大脑工作台（19+ 模块 / 1500+ 条真实数据）、樱帖求职作战板（在线可点）、慢性病管理平台、线上鲜花销售系统。AI 产品方向。">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 15px; line-height: 1.75; color: #333; background: #fafafa;
+  }
+  img { max-width: 100%; }
+
+  /* ===== 顶部导航 ===== */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f0d4dd;
+  }
+  .nav-inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 56px;
+  }
+  .nav-logo { font-weight: 700; font-size: 16px; letter-spacing: 2px; color: #1a1a1a; text-decoration: none; }
+  .nav-logo em { font-style: normal; color: #c2416b; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a {
+    font-size: 13.5px; color: #555; text-decoration: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .nav-links a:hover { color: #c2416b; background: #fff5f8; }
+  .nav-cta {
+    font-size: 13.5px; color: #fff !important; background: #c2416b; padding: 7px 16px !important; border-radius: 6px;
+  }
+  .nav-cta:hover { background: #a83559 !important; }
+  @media (max-width: 760px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+
+  /* ===== Hero（占满第一屏） ===== */
+  .hero {
+    background: linear-gradient(180deg, #fff5f8 0%, #fafafa 100%);
+    text-align: center; padding: 40px 24px;
+    min-height: calc(100vh - 56px);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero h1 { font-size: 40px; letter-spacing: 8px; color: #1a1a1a; margin-bottom: 10px; }
+  .hero .sub { font-size: 17px; color: #2563eb; font-weight: 600; letter-spacing: 2px; margin-bottom: 20px; }
+  .hero .tagline { font-size: 15.5px; max-width: 640px; margin: 0 auto 12px; color: #1a1a1a; }
+  .hero .tagline b { color: #c2416b; }
+  .chips { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 26px 0 32px; }
+  .chip { background: #fff; border: 1px solid #f0d4dd; border-radius: 8px; padding: 10px 20px; box-shadow: 0 2px 6px rgba(194,65,107,.06); }
+  .chip b { display: block; font-size: 22px; color: #c2416b; line-height: 1.2; }
+  .chip span { font-size: 12px; color: #888; }
+  .hero-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 11px 28px; border-radius: 8px; font-size: 15px; text-decoration: none; font-weight: 600; }
+  .btn-primary { background: #c2416b; color: #fff; }
+  .btn-primary:hover { background: #a83559; }
+  .btn-ghost { background: #fff; color: #c2416b; border: 1.5px solid #c2416b; }
+  .btn-ghost:hover { background: #fff5f8; }
+
+  /* ===== 区块通用 ===== */
+  section.block { max-width: 1080px; margin: 0 auto; padding: 56px 24px 24px; }
+  .sec-head { margin-bottom: 24px; }
+  .sec-kicker { display: inline-block; font-size: 12px; letter-spacing: 2px; color: #c2416b; background: #ffe0ea; padding: 3px 10px; border-radius: 4px; font-weight: 600; margin-bottom: 10px; }
+  .sec-head h2 { font-size: 26px; color: #1a1a1a; letter-spacing: 1px; }
+  .sec-head p { font-size: 14.5px; color: #666; margin-top: 6px; max-width: 760px; }
+
+  /* ===== 杀手锏 ===== */
+  .killer-band { background: #fff5f8; border-top: 1px solid #fce4ec; border-bottom: 1px solid #fce4ec; margin-top: 48px; }
+  .killer-band section.block { padding-bottom: 48px; }
+  .gates { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .gates { grid-template-columns: 1fr; } }
+  .gate { background: #fff; border: 1px solid #f0d4dd; border-left: 4px solid #c2416b; padding: 18px 20px; border-radius: 8px; }
+  .gate-tag { display: inline-block; font-size: 11px; color: #c2416b; background: #ffe0ea; padding: 2px 8px; border-radius: 3px; margin-bottom: 8px; font-weight: 600; letter-spacing: .5px; }
+  .gate-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
+  .gate-desc { font-size: 13.5px; color: #555; }
+
+  /* ===== 横向项目幻灯片 ===== */
+  .proj-wrap { position: relative; max-width: 1080px; margin: 0 auto; padding: 0 0 8px; }
+  .proj-track {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -ms-overflow-style: none;
+    border-radius: 12px;
+  }
+  .proj-track::-webkit-scrollbar { display: none; }
+  .panel {
+    flex: 0 0 100%; scroll-snap-align: center;
+    height: calc(100vh - 56px); min-height: 520px;
+    overflow-y: auto; overscroll-behavior-y: contain;
+    background: #fff; border: 1px solid #eee; border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.05);
+    margin: 0 8px; padding: 34px 38px 28px; position: relative;
+  }
+  @media (max-width: 760px) {
+    .panel { padding: 24px 18px 20px; margin: 0 4px; min-height: 460px; }
+  }
+  .p-num {
+    font-size: 64px; font-weight: 700; color: #ffe0ea; line-height: 1;
+    letter-spacing: 2px; margin-bottom: -18px; user-select: none;
+  }
+  .p-name { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+  .p-role { font-size: 13.5px; color: #2563eb; margin-top: 4px; font-weight: 500; }
+  .p-meta { font-size: 13px; color: #999; }
+  .p-head { padding-bottom: 12px; border-bottom: 2px solid #2563eb; margin-bottom: 20px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  @media (max-width: 640px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: #2563eb; padding: 13px 10px; text-align: center; border-radius: 8px; }
+  .stat b { display: block; font-size: 21px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .stat span { font-size: 11.5px; color: rgba(255,255,255,.88); }
+  .stat.acc { background: #c2416b; }
+
+  .p-brief { font-size: 14.5px; color: #444; margin-bottom: 18px; }
+  .p-brief b { color: #c2416b; }
+  .p-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .p-shots.one { grid-template-columns: 1fr; }
+  .p-shots.four { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  @media (max-width: 640px) {
+    .p-shots { grid-template-columns: 1fr; }
+    .p-shots.four { grid-template-columns: repeat(2, 1fr); }
+  }
+  .p-shots img { width: 100%; height: 200px; object-fit: cover; object-position: top; border-radius: 8px; border: 1px solid #eee; background: #f5f5f5; display: block; }
+  .p-shots.four img { height: 104px; }
+  .p-points { list-style: none; margin-bottom: 22px; }
+  .p-points li { font-size: 13.5px; color: #444; padding-left: 18px; position: relative; margin-bottom: 7px; }
+  .p-points li::before { content: "▸"; position: absolute; left: 0; color: #c2416b; font-weight: 700; }
+  .p-points li b { color: #1a1a1a; }
+  .p-more {
+    display: block; text-align: center; background: #fff5f8; border: 1.5px solid #c2416b; color: #c2416b;
+    padding: 12px 20px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+  }
+  .p-more:hover { background: #ffe0ea; }
+
+  /* 左右箭头 */
+  .slide-btn {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #fff; border: 1.5px solid #c2416b; color: #c2416b;
+    font-size: 18px; cursor: pointer; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .slide-btn:hover { background: #fff5f8; }
+  .slide-btn.prev { left: -10px; }
+  .slide-btn.next { right: -10px; }
+  .slide-btn:disabled { opacity: .25; cursor: default; }
+  @media (max-width: 1150px) { .slide-btn.prev { left: 6px; } .slide-btn.next { right: 6px; } }
+  @media (max-width: 760px) { .slide-btn { display: none; } }
+
+  /* 进度点 */
+  .dots { display: flex; justify-content: center; gap: 10px; padding: 18px 0 4px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 5px; background: #e8cdd8;
+    border: none; cursor: pointer; transition: width .2s, background .2s; padding: 0;
+  }
+  .dot.active { width: 28px; background: #c2416b; }
+  .swipe-hint { text-align: center; font-size: 12px; color: #bbb; margin-top: 2px; }
+
+  /* ===== 弹层：完整项目 ===== */
+  .lb {
+    position: fixed; inset: 0; z-index: 200; background: #fafafa;
+    opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s;
+  }
+  .lb.open { opacity: 1; visibility: visible; }
+  .lb-bar {
+    position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.95); backdrop-filter: blur(8px);
+    border-bottom: 1px solid #f0d4dd; height: 52px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+  }
+  .lb-bar .lb-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .lb-close {
+    background: #fff5f8; border: 1px solid #c2416b; color: #c2416b; font-size: 13.5px; font-weight: 600;
+    padding: 7px 16px; border-radius: 6px; cursor: pointer;
+  }
+  .lb-close:hover { background: #ffe0ea; }
+  .lb-bar .lb-back { min-width: 92px; }
+  .lb-bar .lb-spacer { display: inline-block; width: 92px; }
+  .lb-scroll { overflow-y: auto; height: calc(100vh - 52px); }
+
+  /* 完整内容卡（复用旧样式） */
+  .project-card { max-width: 1080px; margin: 24px auto 40px; background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 40px 44px; box-shadow: 0 4px 16px rgba(0,0,0,.05); }
+  @media (max-width: 760px) { .project-card { padding: 24px 18px; margin: 16px 12px 32px; } }
+  .p-intro { font-size: 14.5px; color: #444; margin-bottom: 24px; }
+  .p-intro b { color: #1a1a1a; }
+  .sub-h3 { font-size: 16px; color: #c2416b; letter-spacing: 1px; margin: 34px 0 16px; font-weight: 600; border-left: 3px solid #c2416b; padding-left: 10px; }
+
+  .highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .highlights { grid-template-columns: 1fr; } }
+  .hl { border: 1px solid #eee; border-radius: 8px; background: #fff; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+  .hl img { width: 100%; height: 210px; object-fit: cover; object-position: top; display: block; background: #f5f5f5; }
+  .hl-body { padding: 14px 16px 16px; }
+  .hl-name { font-size: 14.5px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+  .hl-tag { display: inline-block; font-size: 11px; color: #c2416b; background: #ffe0ea; padding: 2px 8px; border-radius: 3px; margin-left: 8px; font-weight: 500; vertical-align: 2px; }
+  .hl-desc { font-size: 13px; color: #555; }
+  .hl-desc b { color: #c2416b; }
+
+  .modwall { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 760px) { .modwall { grid-template-columns: repeat(2, 1fr); } }
+  .modwall figure { margin: 0; background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.04); display: flex; flex-direction: column; }
+  .modwall .mw-pic { flex: 1; min-height: 160px; display: flex; align-items: center; justify-content: center; background: #fafafa; padding: 8px; }
+  .modwall .mw-pic img { max-width: 100%; max-height: 200px; object-fit: contain; }
+  .modwall figcaption { padding: 8px 12px 10px; border-top: 1px solid #f5eef2; }
+  .modwall figcaption b { display: block; font-size: 13.5px; color: #1a1a1a; }
+  .modwall figcaption span { font-size: 11.5px; color: #667; display: block; text-align: right; margin-top: 2px; }
+
+  .depth { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .depth { grid-template-columns: 1fr; } }
+  .depth figure { margin: 0; background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.04); display: flex; flex-direction: column; }
+  .depth .dp-pic { flex: 1; min-height: 200px; display: flex; align-items: center; justify-content: center; background: #fafafa; padding: 12px; }
+  .depth .dp-pic img { max-width: 100%; max-height: 320px; object-fit: contain; }
+  .depth figcaption { padding: 8px 12px 10px; border-top: 1px solid #f5eef2; }
+  .depth figcaption b { display: block; font-size: 13.5px; color: #1a1a1a; }
+  .depth figcaption span { font-size: 11.5px; color: #667; display: block; text-align: right; margin-top: 2px; }
+
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+  @media (max-width: 760px) { .pair { grid-template-columns: 1fr; } }
+  .pair figure { margin: 0; background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,.04); }
+  .pair img { width: 100%; border-radius: 4px; display: block; background: #fafafa; }
+  .pair figcaption { font-size: 12.5px; color: #555; margin-top: 8px; }
+  .pair figcaption b { color: #1a1a1a; display: block; font-size: 13.5px; margin-bottom: 2px; }
+
+  .uiwide { margin: 0 0 22px; background: #fff; border: 1px solid #ececf2; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.04); }
+  .uiwide img { width: 100%; display: block; }
+  .uiwide figcaption { padding: 10px 14px; border-top: 1px solid #f5eef2; }
+  .uiwide figcaption b { font-size: 13.5px; color: #1a1a1a; margin-right: 10px; }
+  .uiwide figcaption span { font-size: 11.5px; color: #667; }
+
+  .tech { list-style: none; }
+  .tech li { font-size: 14px; color: #444; padding-left: 20px; position: relative; margin-bottom: 10px; }
+  .tech li::before { content: "▸"; position: absolute; left: 0; color: #2563eb; font-weight: 700; }
+  .tech li b { color: #1a1a1a; }
+
+  /* ===== 关于 / 联系 ===== */
+  .about-band { background: #fff; border-top: 1px solid #fce4ec; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-card { background: #fff5f8; border: 1px solid #fce4ec; border-radius: 10px; padding: 24px 26px; }
+  .about-card h3 { font-size: 16px; color: #c2416b; margin-bottom: 10px; }
+  .about-card p { font-size: 14px; color: #444; }
+  .contact-card { display: block; background: #fff; border: 1.5px solid #f0d4dd; border-radius: 10px; padding: 22px 26px; text-decoration: none; transition: box-shadow .15s; }
+  .contact-card:hover { box-shadow: 0 4px 14px rgba(194,65,107,.15); }
+  .contact-card .cc-label { font-size: 12px; letter-spacing: 2px; color: #999; margin-bottom: 4px; }
+  .contact-card .cc-value { font-size: 17px; color: #1a1a1a; font-weight: 600; }
+  .contact-card .cc-hint { font-size: 12.5px; color: #c2416b; margin-top: 4px; }
+
+  footer { text-align: center; padding: 28px 24px 36px; font-size: 12px; color: #999; }
+
+  /* ===== 打印 / PDF =====================================================
+     线上版是「横向滑块 + 点开看完整项目」的交互形态，PDF 里这两件事都不成立：
+     滑动没了、点开也没了。所以 PDF 走一套独立排版：
+       封面页（含项目一览 + 联系方式 + 二维码）
+       → 四个项目全部展开，一项一页起
+       → 技术栈 & 开发方式收尾页
+     屏幕上看不到的「打印专用」内容统一用 .print-only 包起来。
+     ===================================================================== */
+  .print-only { display: none; }
+
+  @media print {
+    @page { size: A4; margin: 12mm 12mm 13mm; }
+
+    /* ---------- 屏幕专用元素：打印时全部隐藏 ---------- */
+    nav, footer, .hero-btns, .slide-btn, .dots, .swipe-hint,
+    #projects, .p-more, .lb-bar, .cc-hint, .screen-only { display: none !important; }
+    .print-only { display: block !important; }
+    .print-only.po-flex { display: flex !important; }
+    .print-only.po-grid { display: grid !important; }
+
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    html, body { background: #fff !important; }
+    body { font-size: 10pt; line-height: 1.6; }
+    img { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- 第 1 页 · 封面（内容整体居中，不留大片底部空白） ---------- */
+    .hero {
+      min-height: 234mm;
+      padding: 0 4mm;
+      background: none;
+      display: flex; flex-direction: column; justify-content: center;
+      break-after: page; page-break-after: always;
+    }
+    .hero h1 { font-size: 26pt; letter-spacing: 12px; margin-bottom: 3mm; }
+    .hero .sub { font-size: 12pt; letter-spacing: 3px; margin-bottom: 6mm; }
+    .hero .tagline { font-size: 10.5pt; max-width: 152mm; margin: 0 auto 8mm; text-wrap: balance; }
+    .chips { gap: 5mm; margin: 0 0 10mm; }
+    .chip { padding: 2.4mm 5mm; box-shadow: none; }
+    .chip b { font-size: 16pt; }
+    .chip span { font-size: 7.5pt; }
+
+    .po-cv-h { font-size: 8.5pt; letter-spacing: 3px; color: #c2416b; margin-bottom: 3mm; }
+    .po-cv-list { list-style: none; text-align: left; max-width: 160mm; margin: 0 auto 9mm; }
+    .po-cv-list li { display: flex; align-items: baseline; gap: 4mm; padding: 2.4mm 0; border-bottom: 1px dashed #f0d4dd; }
+    .po-cv-list li:last-child { border-bottom: none; }
+    .po-cv-list b { font-size: 10pt; color: #1a1a1a; white-space: nowrap; }
+    .po-cv-list span { font-size: 9pt; color: #666; }
+
+    .po-cv-foot { display: flex; align-items: center; justify-content: center; gap: 12mm; }
+    .po-cv-contact { text-align: left; font-size: 10pt; color: #333; }
+    .po-cv-contact div { margin-bottom: 2mm; }
+    .po-cv-contact .k { display: inline-block; width: 22mm; color: #999; font-size: 8.5pt; letter-spacing: 1px; }
+    .po-qr { display: flex; align-items: center; gap: 4mm; }
+    .po-qr img { width: 26mm; height: 26mm; }
+    .po-qr i { font-style: normal; font-size: 8.5pt; color: #666; line-height: 1.55; }
+    .po-qr i b { display: block; font-size: 9.5pt; color: #c2416b; margin-bottom: 1mm; }
+
+    /* ---------- 项目页 · 每个弹层变成正常文档流的一整段 ---------- */
+    .lb {
+      position: static !important; inset: auto !important;
+      opacity: 1 !important; visibility: visible !important;
+      background: #fff !important;
+      break-before: page; page-break-before: always;
+    }
+    #lb1 { break-before: auto; page-break-before: auto; }
+    .lb-scroll { overflow: visible !important; height: auto !important; }
+    .project-card {
+      max-width: 100% !important; margin: 0 !important; padding: 0 !important;
+      border: none !important; box-shadow: none !important; border-radius: 0 !important;
+    }
+    .po-head { margin-bottom: 1mm; }
+    .po-head .p-num { font-size: 44px; margin-bottom: -13px; }
+    .p-head { padding-bottom: 2.4mm; margin-bottom: 4.5mm; }
+    .p-name { font-size: 15pt; }
+    .p-role { font-size: 9.5pt; }
+    .p-meta { font-size: 8.5pt; }
+
+    /* ---------- 卡片内部：调字号 / 防空断裂 ---------- */
+    /* 打印视口只有约 703px，会被「max-width:760px」的手机断点误判成手机 —— 显式锁死列数 */
+    .stats { grid-template-columns: repeat(4, 1fr) !important; }
+    .gates { grid-template-columns: 1fr 1fr !important; }
+    .highlights { grid-template-columns: 1fr 1fr !important; }
+    .modwall { grid-template-columns: repeat(3, 1fr) !important; }
+    .depth { grid-template-columns: 1fr 1fr !important; }
+    .about-grid { grid-template-columns: 1fr 1fr !important; }
+
+    .sub-h3 { font-size: 11pt; margin: 6mm 0 3mm; break-after: avoid; page-break-after: avoid; }
+    .stats { gap: 2.5mm; margin-bottom: 4mm; break-inside: avoid; }
+    .stat { padding: 2.4mm 1.5mm; }
+    .stat b { font-size: 14pt; }
+    .stat span { font-size: 7.5pt; }
+    .p-intro { font-size: 10pt; margin-bottom: 3.6mm; break-inside: avoid; text-wrap: pretty; }
+    .gates { gap: 3mm; }
+    .gate { padding: 2.8mm 3.6mm; break-inside: avoid; }
+    .gate-title { font-size: 10pt; }
+    .gate-desc { font-size: 9pt; }
+    .highlights { gap: 4mm; }
+    .hl { break-inside: avoid; }
+    .hl img { height: 226px; }
+    .hl-body { padding: 3.2mm 4mm 3.6mm; }
+    .hl-name { font-size: 10pt; }
+    .hl-desc { font-size: 8.8pt; }
+    /* 模块墙：线上是「缩略图居中留白」，打印改成铺满裁切，不然像一排空白框 */
+    .modwall figure, .depth figure, .pair figure, .uiwide { break-inside: avoid; }
+    .modwall .mw-pic { min-height: 0; padding: 0; }
+    .modwall .mw-pic img { width: 100%; height: 136px; max-height: none; object-fit: cover; object-position: top; }
+    .modwall figcaption { padding: 2mm 3mm 2.4mm; }
+    .modwall figcaption b { font-size: 9.5pt; }
+    .modwall figcaption span { font-size: 8pt; }
+    /* 图表：Chrome 打印时对 flex/grid 里的百分比 max-width 会算错容器宽度，图会缩成一小块。
+       改成块级 + 显式尺寸（width:100%/height 固定），不依赖百分比上限，尺寸才可控。 */
+    .depth { gap: 4mm; }
+    .depth figure { display: block; }
+    .depth .dp-pic { display: block; flex: none; min-height: 0; padding: 3mm; }
+    .depth .dp-pic img { display: block; width: 100%; height: auto; max-width: none; max-height: none; object-fit: fill; }
+    .depth figcaption { padding: 2mm 3mm 2.4mm; }
+    .depth figcaption b { font-size: 9.5pt; }
+    .depth figcaption span { font-size: 8pt; }
+    /* ER 图 / 时序图信息密度高：单栏 + 固定高度，保证够大又不把整页挤爆 */
+    .pair { grid-template-columns: 1fr !important; gap: 2.5mm; margin-bottom: 2mm; }
+    .pair figure { display: block; padding: 2.5mm; }
+    .pair img { display: block; margin: 0 auto; width: auto; height: 54mm; max-width: none; max-height: none; }
+    .pair figcaption { padding: 1.6mm 2mm 2mm; font-size: 9pt; }
+    .pair figcaption b { font-size: 9.5pt; }
+    .uiwide { margin-bottom: 5mm; }
+    .uiwide img { display: block; width: 100%; height: auto; }
+    .uiwide figcaption b { font-size: 9.5pt; }
+    .uiwide figcaption span { font-size: 8pt; }
+    .tech li { font-size: 9.5pt; margin-bottom: 2mm; break-inside: avoid; }
+
+    /* ---------- 樱帖专用：把「按钮」换成能扫码的静态链接 ---------- */
+    .po-live {
+      align-items: center; gap: 7mm;
+      border: 1px solid #f0d4dd; background: #fff5f8;
+      border-radius: 4mm; padding: 4mm 5mm; margin-bottom: 5mm;
+    }
+    .po-live-txt { font-size: 9.5pt; color: #333; }
+    .po-live-txt .row { margin-bottom: 1.6mm; }
+    .po-live-txt .k { display: inline-block; width: 20mm; color: #999; font-size: 8.5pt; letter-spacing: 1px; }
+    .po-live-txt .tip { display: block; margin-top: 2mm; font-size: 8.5pt; color: #c2416b; }
+
+    /* ---------- 收尾页 · 技术栈 & 开发方式（同样居中，不留半页空） ---------- */
+    .about-band {
+      display: flex !important; flex-direction: column; justify-content: center;
+      min-height: 234mm; background: #fff !important; border: none !important;
+      break-before: page; page-break-before: always;
+    }
+    .about-band section.block { max-width: 100% !important; padding: 0 !important; }
+    .about-band .sec-head { text-align: center; margin-bottom: 8mm; }
+    .about-band .sec-head h2 { font-size: 16pt; }
+    .about-card { padding: 5mm 6mm; break-inside: avoid; }
+    .about-card h3 { font-size: 11pt; }
+    .about-card p { font-size: 9.5pt; }
+    .po-end { text-align: center; margin-top: 9mm; font-size: 9pt; color: #999; letter-spacing: 2px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .lb { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#top">常玉涵 <em>·</em> 作品集</a>
+    <div class="nav-links">
+      <a data-slide="0">① 工作台</a>
+      <a data-slide="1">② 樱帖</a>
+      <a data-slide="2">③ 慢病平台</a>
+      <a data-slide="3">④ 鲜花系统</a>
+      <a href="#contact" class="nav-cta">联系我</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <h1>常 玉 涵</h1>
+  <div class="sub">作品集 · AI 产品方向</div>
+  <p class="tagline"><b>把生活拆成 19 个可分析模块，连续记录 13 周。</b><br>不是因为想做功能，是因为用了 AI 之后不放心让它自己跑——所以我给内容管线加了 4 道过滤。</p>
+  <div class="chips">
+    <div class="chip"><b>19+</b><span>功能模块</span></div>
+    <div class="chip"><b>1500+</b><span>真实数据条</span></div>
+    <div class="chip"><b>3 条</b><span>自动化工作流</span></div>
+    <div class="chip"><b>17 版</b><span>迭代版本</span></div>
+  </div>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="#projects">看四个项目</a>
+    <a class="btn btn-ghost" href="#contact">联系方式</a>
+  </div>
+
+  <!-- 打印专用封面：线上靠滑动和点开，PDF 里改成「一页看全 + 扫码进在线版」 -->
+  <div class="print-only po-cover">
+    <div class="po-cv-h">四 个 项 目 · 一 句 话</div>
+    <ul class="po-cv-list">
+      <li><b>01 · AI 第二大脑工作台</b><span>19+ 模块 / 1500+ 条真实数据 / 连续记录 13 周 / 17 版迭代</span></li>
+      <li><b>02 · 樱帖 · 求职作战板</b><span>中国校招 6 态状态机 / 单文件 0 依赖 / 在线可交互</span></li>
+      <li><b>03 · 慢性病管理平台</b><span>SpringBoot 毕设 / 12 模块 / 3000 万+ 条数据 / 接口 800→400ms</span></li>
+      <li><b>04 · 线上鲜花销售系统</b><span>产品方案设计（课设）/ 3 条核心链路时序图 / 商家端 + 管理员端 UI</span></li>
+    </ul>
+    <div class="po-cv-foot">
+      <div class="po-cv-contact">
+        <div><span class="k">邮箱</span>1507465455@qq.com</div>
+        <div><span class="k">在线作品集</span>http://101.43.110.207/</div>
+        <div><span class="k">方向</span>AI 产品 / 体验设计 / 前端</div>
+      </div>
+      <div class="po-qr">
+        <img src="assets/qr-portfolio.png" alt="在线作品集二维码">
+        <i><b>扫码看在线版</b>本 PDF 是静态版；<br>线上可滑动切换、可点开完整项目。</i>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ====== 项目横滑区 ====== -->
+<section class="block" id="projects" style="padding-bottom:8px;">
+  <div class="sec-head">
+    <span class="sec-kicker">项目</span>
+    <h2>项目经历</h2>
+  </div>
+
+  <div class="proj-wrap">
+    <button class="slide-btn prev" id="btnPrev" aria-label="上一个项目">←</button>
+    <button class="slide-btn next" id="btnNext" aria-label="下一个项目">→</button>
+
+    <div class="proj-track" id="track">
+
+      <!-- 面板 1 -->
+      <div class="panel">
+        <div class="p-num">01</div>
+        <div class="p-head">
+          <div class="p-name">AI 第二大脑工作台</div>
+          <div class="p-role">个人旗舰项目 · AI 产品设计 &amp; 全栈开发 · 2026.07 – 至今</div>
+          <div class="p-meta">13 周 / 17 版迭代</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>19+</b><span>功能模块</span></div>
+          <div class="stat"><b>1500+</b><span>真实数据条</span></div>
+          <div class="stat"><b>3 条</b><span>自动化工作流</span></div>
+          <div class="stat acc"><b>17 版</b><span>迭代版本</span></div>
+        </div>
+        <p class="p-brief">一个把「自我调试」做成产品的系统：<b>记录 → 抽离 → 定位 → 修复 → 迭代</b>。产品直觉不是假设出来的，是从 1500+ 条真实行为记录里长出来的。</p>
+        <div class="p-shots four">
+          <img loading="lazy" src="assets/shot-home.png" alt="产品全貌">
+          <img loading="lazy" src="assets/shot-timeline.png" alt="时间轴">
+          <img loading="lazy" src="assets/shot-aidaily.png" alt="AI 日报">
+          <img loading="lazy" src="assets/shot-absorption.png" alt="认知吸收卡">
+        </div>
+        <ul class="p-points">
+          <li><b>4 道内容过滤闸门</b>——防 AI 幻觉与自我坍缩，跑通 13 周的机制</li>
+          <li><b>粘贴即落库</b>——时间轴记录摩擦压到零，每天真实在用</li>
+          <li><b>token 预算 + 3 级模型降级链</b>——LLM 不黑盒跑，成本可控</li>
+        </ul>
+        <button class="p-more" data-lb="lb1">查看完整项目 →</button>
+      </div>
+
+      <!-- 面板 2 · 樱帖 -->
+      <div class="panel">
+        <div class="p-num">02</div>
+        <div class="p-head">
+          <div class="p-name">樱帖 · 求职作战板（Offer Tracker）</div>
+          <div class="p-role">独立产品 · 需求定义 / 视觉设计 / 前端开发 · 2026.09</div>
+          <div class="p-meta">单文件 · 零依赖 · 在线可点</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>6 态</b><span>校招状态机</span></div>
+          <div class="stat"><b>0 依赖</b><span>单文件离线可用</span></div>
+          <div class="stat"><b>22 道</b><span>面试题库种子</span></div>
+          <div class="stat acc"><b>9 版</b><span>牌背视觉迭代</span></div>
+        </div>
+        <p class="p-brief">把求职追踪做成「花札牌阵」：每家公司是一张牌，拖拽推进、撕牌删除、月历看 DDL。市面竞品全是欧美流程——测评 DDL、内推、届别窗口都没有，我把默认状态机按<b>中国校招</b>重做。</p>
+        <div class="p-shots four">
+          <img loading="lazy" src="assets/shot-sakura-today.png" alt="今日帖">
+          <img loading="lazy" src="assets/shot-sakura-kanban.png" alt="牌阵">
+          <img loading="lazy" src="assets/shot-sakura-quiz.png" alt="试炼 · 刷题库">
+          <img loading="lazy" src="assets/shot-sakura-overview.png" alt="三视图总览">
+        </div>
+        <ul class="p-points">
+          <li><b>中国校招状态机</b>——竞品（Jobsync / THRIVE）缺测评 DDL、内推、网申窗口；默认流程本土化，社招 / 考公一处配置切换</li>
+          <li><b>卡牌化交互</b>——拖拽推进阶段、撕牌删除、雷达 JSON 拖入合并（指纹去重），操作全部可视化</li>
+          <li><b>单文件工程</b>——0 依赖、离线可用、BYO Key（AI 题解 / 打招呼语），数据不出浏览器</li>
+        </ul>
+        <button class="p-more" data-lb="lb4">查看完整项目 →</button>
+      </div>
+
+      <!-- 面板 3 -->
+      <div class="panel">
+        <div class="p-num">03</div>
+        <div class="p-head">
+          <div class="p-name">基于 SpringBoot 的慢性病管理平台</div>
+          <div class="p-role">系统架构 &amp; 后端开发 · 毕业设计 · 2025.12 – 2026.03</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>12</b><span>核心模块</span></div>
+          <div class="stat"><b>3000 万+</b><span>条数据</span></div>
+          <div class="stat acc"><b>800→400ms</b><span>接口响应</span></div>
+          <div class="stat"><b>+40%</b><span>异常识别</span></div>
+        </div>
+        <p class="p-brief">12 个核心模块、3000 万+ 条数据、混合存储 + ETL 数据管线 + 性能优化 + 压测保障。展示的是<b>「想清楚 + 做出来」</b>的双引擎能力。</p>
+        <div class="p-shots one">
+          <img loading="lazy" src="assets/diag-chronic-arch.svg" alt="系统架构图" style="object-fit:contain;background:#fff;">
+        </div>
+        <ul class="p-points">
+          <li><b>混合存储决策</b>——MySQL 存结构化，MongoDB 存时序健康数据</li>
+          <li><b>接口响应 800ms → 400ms</b>——复合索引 + 分页 + Redis 缓存</li>
+          <li><b>JMeter 500 并发压测</b>稳定通过，异常识别准确率 +40%</li>
+        </ul>
+        <button class="p-more" data-lb="lb2">查看完整项目 →</button>
+      </div>
+
+      <!-- 面板 4 -->
+      <div class="panel">
+        <div class="p-num">04</div>
+        <div class="p-head">
+          <div class="p-name">线上鲜花销售系统（团队课程设计）</div>
+          <div class="p-role">团队协作 · 文档撰写 + 管理员/商家端 UI 设计 + 核心链路时序图 · 2025 春</div>
+        </div>
+        <div class="stats">
+          <div class="stat acc"><b>3 条</b><span>核心链路时序图</span></div>
+          <div class="stat"><b>5 份</b><span>全链路文档</span></div>
+          <div class="stat"><b>多角色</b><span>用户/商家/管理员</span></div>
+          <div class="stat"><b>5 种</b><span>设计模式应用</span></div>
+        </div>
+        <p class="p-brief">三人团队完成全链路设计（需求分析 → UML 详细设计 → 原型开发 → 测试）。我负责<b>文档撰写 + 管理员端与商家端 UI 设计 + 核心链路时序图</b>。</p>
+        <div class="p-shots one">
+          <img loading="lazy" src="assets/ui-flower-3up.png" alt="商家端首页 · 管理员首页 · 数据中心" style="object-fit:contain;background:#fff;">
+        </div>
+        <ul class="p-points">
+          <li><b>一个流程三个视角</b>——用户购买 / 商家处理 / 数据推荐三条时序图</li>
+          <li><b>UI 覆盖核心页面</b>——经营看板、商品 / 订单管理、审批工作台</li>
+          <li><b>5 种设计模式</b>——单例、工厂、适配器、观察者、策略</li>
+        </ul>
+        <button class="p-more" data-lb="lb3">查看完整项目 →</button>
+      </div>
+
+    </div>
+
+    <div class="dots" id="dots" role="tablist" aria-label="项目切换">
+      <button class="dot active" data-idx="0" aria-label="项目一"></button>
+      <button class="dot" data-idx="1" aria-label="项目二"></button>
+      <button class="dot" data-idx="2" aria-label="项目三"></button>
+      <button class="dot" data-idx="3" aria-label="项目四"></button>
+    </div>
+    <div class="swipe-hint">← 左右滑动切换项目 · 点「查看完整项目」看全部细节 →</div>
+  </div>
+</section>
+
+<!-- ====== 弹层 1：工作台完整版 ====== -->
+<div class="lb" id="lb1" role="dialog" aria-modal="true" aria-label="项目一完整内容">
+  <div class="lb-bar"><button class="lb-close lb-back" data-close>← 返回</button><span class="lb-title">01 · AI 第二大脑工作台</span><span class="lb-spacer"></span></div>
+  <div class="lb-scroll">
+    <div class="project-card">
+      <div class="print-only po-head">
+        <div class="p-num">01</div>
+        <div class="p-head">
+          <div class="p-name">AI 第二大脑工作台</div>
+          <div class="p-role">个人旗舰项目 · AI 产品设计 &amp; 全栈开发 · 2026.07 – 至今</div>
+          <div class="p-meta">13 周 / 17 版迭代 · 以下为完整项目内容</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>19+</b><span>功能模块</span></div>
+        <div class="stat"><b>1500+</b><span>真实数据条</span></div>
+        <div class="stat"><b>3 条</b><span>自动化工作流</span></div>
+        <div class="stat acc"><b>17 版</b><span>迭代版本</span></div>
+      </div>
+      <p class="p-intro">一个把「自我调试」做成产品的系统：<b>记录 → 抽离 → 定位 → 修复 → 迭代</b>。产品直觉不是假设出来的，是从 1500+ 条真实行为记录里长出来的。<b>核心方法论：面对 AI，要有自己的判断</b>——所以我给内容管线加了 4 道过滤。</p>
+      <h3 class="sub-h3">核心方法论 · 4 道内容过滤闸门</h3>
+      <div class="gates" style="margin-bottom:26px;">
+        <div class="gate">
+          <span class="gate-tag">闸门 1</span>
+          <div class="gate-title">素材黑名单</div>
+          <div class="gate-desc">剔除 AI 合成类素材源，不让 AI 喂养 AI。</div>
+        </div>
+        <div class="gate">
+          <span class="gate-tag">闸门 2</span>
+          <div class="gate-title">水位线 T</div>
+          <div class="gate-desc">只消化上一周期之后的新内容，不重复捕获陈旧信息。</div>
+        </div>
+        <div class="gate">
+          <span class="gate-tag">闸门 3</span>
+          <div class="gate-title">信息四分类</div>
+          <div class="gate-desc">强制分类：事实 / 数据 / 观点 / 推断，置信度透明。</div>
+        </div>
+        <div class="gate">
+          <span class="gate-tag">闸门 4</span>
+          <div class="gate-title">dry-run 演习</div>
+          <div class="gate-desc">推送前用历史周跑一遍验证稳定性，发现退化立即停推。</div>
+        </div>
+      </div>
+      <h3 class="sub-h3">4 个亮点场景 · 不拼功能数量，每一张都在讲产品判断</h3>
+      <div class="highlights">
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-home.png" alt="产品全貌">
+          <div class="hl-body">
+            <div class="hl-name">① 全貌 · 19 模块在一个 SPA<span class="hl-tag">产品入口</span></div>
+            <div class="hl-desc">左侧导航 + 主区切换，本地 IndexedDB + 云端多端同步。<b>设计判断：</b>19 个模块不是想到一个加一个，是按「我怎么理解生活」切出来的——分组本身就是个产品决策。</div>
+          </div>
+        </div>
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-timeline.png" alt="时间轴">
+          <div class="hl-body">
+            <div class="hl-name">② 时间轴 · 粘贴即落库<span class="hl-tag">每日最常用</span></div>
+            <div class="hl-desc">一行文本直接落到对应小时，无表单无选择器。<b>设计判断：</b>记录摩擦越低越好，不该让工具本身成为负担。</div>
+          </div>
+        </div>
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-aidaily.png" alt="AI 日报">
+          <div class="hl-body">
+            <div class="hl-name">③ AI 日报 · 自动推送 + 成本可控<span class="hl-tag">每日 20:05</span></div>
+            <div class="hl-desc">token 用量实时监控 + 模型降级链（3 级 fallback）。<b>设计判断：</b>LLM 不能黑盒跑，必须有 token 预算 + 模型切换 + 失败告警。</div>
+          </div>
+        </div>
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-absorption.png" alt="认知吸收卡">
+          <div class="hl-body">
+            <div class="hl-name">④ 认知吸收卡 · 4 道闸门的实际生效处<span class="hl-tag">核心差异化</span></div>
+            <div class="hl-desc">GitHub 周榜 → AI 消化 → 认知吸收卡。前面 4 道闸门就是这个卡片的实际生效位置——不是嘴上的方法论，是跑通了 13 周的机制。</div>
+          </div>
+        </div>
+      </div>
+      <h3 class="sub-h3">更多模块真实界面 · 每个模块背后都有产品判断</h3>
+      <div class="modwall">
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-timeline.png" alt="时间轴"></div><figcaption><b>时间轴</b><span>粘贴即落库 · 记录摩擦压到零</span></figcaption></figure>
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-thoughts.png" alt="随想"></div><figcaption><b>随想</b><span>每条想法都带 gid · 可检索不丢失</span></figcaption></figure>
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-learn.png" alt="认知吸收卡"></div><figcaption><b>认知吸收卡</b><span>周报 → 4 道闸门 → 认知沉淀</span></figcaption></figure>
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-aidaily.png" alt="AI 日报"></div><figcaption><b>AI 日报</b><span>token 监控 · 3 级模型降级链</span></figcaption></figure>
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-absorption.png" alt="认知消化"></div><figcaption><b>认知消化</b><span>防 AI 自我坍缩 · 闸门生效处</span></figcaption></figure>
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-drinks.png" alt="饮品管理"></div><figcaption><b>饮品管理</b><span>身体仪表盘 · 生活数据同管道</span></figcaption></figure>
+        <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-dance.png" alt="跳舞记录"></div><figcaption><b>跳舞记录</b><span>唯一运动锚点 · 节奏曲线可回看</span></figcaption></figure>
+      </div>
+      <h3 class="sub-h3">思考深度 · 架构与数据流</h3>
+      <div class="depth">
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/diag-framework.png" alt="系统性搭建框架"></div><figcaption><b>系统性搭建框架</b><span>模块划分即产品建模 · 依赖清晰</span></figcaption></figure>
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/diag-pipeline.png" alt="AI 合成管线"></div><figcaption><b>AI 合成管线</b><span>周榜 → 认知卡 · 4 道闸门贯穿其中</span></figcaption></figure>
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/diag-matrix.png" alt="模块价值矩阵"></div><figcaption><b>模块价值矩阵</b><span>用频率 × 价值排优先级，不做功能堆砌</span></figcaption></figure>
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/diag-skill-agent.png" alt="概念梳理"></div><figcaption><b>概念梳理</b><span>Skill 与 Agent 的差异 · 工具与自主的边界</span></figcaption></figure>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 弹层 4：樱帖完整版（DOM 顺序 = 面板 02，打印时排在第二位） ====== -->
+<div class="lb" id="lb4" role="dialog" aria-modal="true" aria-label="樱帖完整内容">
+  <div class="lb-bar"><button class="lb-close lb-back" data-close>← 返回</button><span class="lb-title">02 · 樱帖 · 求职作战板（Offer Tracker）</span><span class="lb-spacer"></span></div>
+  <div class="lb-scroll">
+    <div class="project-card">
+      <div class="print-only po-head">
+        <div class="p-num">02</div>
+        <div class="p-head">
+          <div class="p-name">樱帖 · 求职作战板（Offer Tracker）</div>
+          <div class="p-role">独立产品 · 需求定义 / 视觉设计 / 前端开发 · 2026.09</div>
+          <div class="p-meta">单文件 · 零依赖 · 以下为完整项目内容</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>6 态</b><span>校招状态机</span></div>
+        <div class="stat"><b>0 依赖</b><span>单文件离线可用</span></div>
+        <div class="stat"><b>22 道</b><span>面试题库种子</span></div>
+        <div class="stat acc"><b>9 版</b><span>牌背视觉迭代</span></div>
+      </div>
+      <p class="p-intro">求职时投递状态散落在日历（测评 DDL）、邮箱（投递记录）、聊天记录（HR 进度）、备忘录（面试复盘）里，全乱。市面求职追踪器（Jobsync、THRIVE 等）大多是欧美流程：没有测评笔试、没有内推、没有网申 DDL、没有届别窗口——而这几样恰恰是<b>中国校招的主干</b>。所以我把默认状态机做成中国校招，社招 / 考公用户一处配置即可切换。</p>
+      <div class="screen-only" style="text-align:center;margin-bottom:26px;">
+        <a class="btn btn-primary" href="https://whaleof.github.io/offer-tracker/" target="_blank" rel="noopener">▶ 在线体验（GitHub Pages）</a>
+        <a class="btn btn-ghost" href="https://github.com/whaleof/offer-tracker" target="_blank" rel="noopener" style="margin-left:10px;">查看源码仓库</a>
+      </div>
+      <!-- 打印专用：PDF 点不动，改成地址 + 二维码 -->
+      <div class="print-only po-flex po-live">
+        <div class="po-qr">
+          <img src="assets/qr-offer-tracker.png" alt="樱帖在线体验二维码">
+          <i><b>扫码直接上手玩</b>拖拽推进阶段 /<br>翻牌看完整档案 / 刷题库。</i>
+        </div>
+        <div class="po-live-txt">
+          <div class="row"><span class="k">在线体验</span>https://whaleof.github.io/offer-tracker/</div>
+          <div class="row"><span class="k">源码仓库</span>https://github.com/whaleof/offer-tracker</div>
+          <span class="tip">PDF 里这两个链接点不动——扫码，或在浏览器里粘贴地址，就是可交互的完整版本。</span>
+        </div>
+      </div>
+      <h3 class="sub-h3">三个视图 · 一份档案 · 产品判断藏在默认值里</h3>
+      <div class="highlights">
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-sakura-today.png" alt="今日帖">
+          <div class="hl-body">
+            <div class="hl-name">① 今日帖 · 该投的 / 该催的 / 该备战的<span class="hl-tag">每日首页</span></div>
+            <div class="hl-desc">打开第一屏只回答一个问题：「今天该干什么」。每条带行动按钮（投了 / 催一下 / 去备战），右侧投递总览 + 近 7 天新增。<b>设计判断：</b>追踪器的价值不是记录全，是「此刻该做什么」够明确。</div>
+          </div>
+        </div>
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-sakura-kanban.png" alt="牌阵">
+          <div class="hl-body">
+            <div class="hl-name">② 牌阵 · 六态流转 + 拖拽推进<span class="hl-tag">核心交互</span></div>
+            <div class="hl-desc">想投 → 已投 → 笔试 → 面试 → 已转生 → 淬殒。拖一张牌到下一列即推进，自动写历史记录；流程 / 公司 / 月历三种视角切换。点开一张牌即翻档案：公司 / 岗位 / 城市 / 渠道 / 薪资 / 简历版本 / 届别核验 / 适配度 / 下一步动作，DDL 倒计时超时自动标「需跟进」。<b>设计判断：</b>求职本身够焦虑了，界面要做的是把它变成「可摆弄的牌」。</div>
+          </div>
+        </div>
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-sakura-quiz.png" alt="试炼">
+          <div class="hl-body">
+            <div class="hl-name">③ 试炼 · 面试复盘长成题库<span class="hl-tag">闭环设计</span></div>
+            <div class="hl-desc">每轮面试记下「被问倒的题」，自动汇成按公司筛选的刷题库；被问倒的题可让 AI 生成答题思路（要点式 + 面试官为什么问）。<b>设计判断：</b>失败也要变成资产，复盘不是写完就死的笔记。</div>
+          </div>
+        </div>
+        <div class="hl">
+          <img loading="lazy" src="assets/shot-sakura-overview.png" alt="三视图总览" style="object-fit:contain;background:#fafafa;">
+          <div class="hl-body">
+            <div class="hl-name">④ 三视图一屏看 · 单文件能扛多少<span class="hl-tag">工程取舍</span></div>
+            <div class="hl-desc">今日帖 / 牌阵 / 试炼三个视图、六态状态机、月历与法定节假日标注，全部装进<b>一个 HTML 文件</b>：0 构建、0 依赖、离线双击可用，GitHub Pages 直接发布。<b>设计判断：</b>工具不能比它解决的问题还重。</div>
+          </div>
+        </div>
+      </div>
+      <h3 class="sub-h3">设计过程 · 从需求定义到视觉定稿</h3>
+      <ul class="tech">
+        <li><b>需求定义一页纸：</b>先写清问题、用户、边界与「不做什么」，再动手——避免边做边漂移。</li>
+        <li><b>信息架构页面地图：</b>今日帖 / 牌阵 / 试炼三页职责划分，页面地图先行，不堆功能。</li>
+        <li><b>花札（HANAFUDA）考据 + 视觉规范 v1：</b>牌面隐喻、术语（添牌 / 撕牌 / 牌阵 / 转生）与视觉一致；牌背从风格样品 v3-v5 到候选 v6-v9 共 9 版迭代。</li>
+        <li><b>竞品拆解：</b>Jobsync / THRIVE 等欧美流程追踪器的缺失项（测评 DDL、内推、网申窗口、届别）即差异化清单。</li>
+      </ul>
+      <h3 class="sub-h3">工程取舍</h3>
+      <ul class="tech">
+        <li><b>单文件 HTML：</b>0 构建、0 依赖、离线双击可用；GitHub Pages 直接发布，换电脑靠导出 / 导入搬家。</li>
+        <li><b>数据自主：</b>数据存浏览器本地，JSON 备份 / 迁移 + CSV 导出分析；<b>BYO Key</b>——AI 功能自带 Key，只存浏览器 localStorage，不进仓库、不经过任何服务器。</li>
+        <li><b>演示模式：</b>一键载入虚构数据先看效果，可一键清空，降低试用门槛。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 弹层 2：慢病平台完整版（DOM 顺序 = 面板 03） ====== -->
+<div class="lb" id="lb2" role="dialog" aria-modal="true" aria-label="项目三完整内容">
+  <div class="lb-bar"><button class="lb-close lb-back" data-close>← 返回</button><span class="lb-title">03 · 基于 SpringBoot 的慢性病管理平台</span><span class="lb-spacer"></span></div>
+  <div class="lb-scroll">
+    <div class="project-card">
+      <div class="print-only po-head">
+        <div class="p-num">03</div>
+        <div class="p-head">
+          <div class="p-name">基于 SpringBoot 的慢性病管理平台</div>
+          <div class="p-role">系统架构 &amp; 后端开发 · 毕业设计 · 2025.12 – 2026.03</div>
+          <div class="p-meta">以下为完整项目内容</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>12</b><span>核心模块</span></div>
+        <div class="stat"><b>3000 万+</b><span>条数据</span></div>
+        <div class="stat acc"><b>800→400ms</b><span>接口响应</span></div>
+        <div class="stat"><b>+40%</b><span>异常识别</span></div>
+      </div>
+      <p class="p-intro">12 个核心模块、3000 万+ 条数据、混合存储 + ETL 数据管线 + 性能优化 + 压测保障。展示的是<b>「想清楚 + 做出来」</b>的双引擎能力。</p>
+      <div class="pair">
+        <figure>
+          <img loading="lazy" src="assets/diag-chronic-arch.svg" alt="系统架构图">
+          <figcaption><b>系统整体架构</b>分层存储：MySQL 存结构化数据 + MongoDB 存时序健康数据，配 Redis 缓存加速。</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="assets/diag-chronic-er.svg" alt="ER 图">
+          <figcaption><b>ER 图</b>9 个核心实体的属性关系设计，按访问模式拆分布局。</figcaption>
+        </figure>
+      </div>
+      <ul class="tech">
+        <li><b>混合存储决策：</b>基于数据类型与访问模式分层——MySQL 存结构化，MongoDB 存时序健康数据，兼顾查询效率与存储合理性。</li>
+        <li><b>ETL 数据管线：</b>采集 → 清洗 → 转换 → 校验，3000 万+ 条数据通过约束与事务保障一致性。</li>
+        <li><b>性能优化：</b>复合索引 + 分页 + Redis 缓存，接口响应 <b>800ms → 400ms</b>。</li>
+        <li><b>质量保障：</b>统计分析模块 + 阈值告警体系，异常数据识别准确率 <b>+40%</b>；JMeter <b>500 并发</b>压测稳定通过。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 弹层 3：鲜花系统完整版（DOM 顺序 = 面板 04） ====== -->
+<div class="lb" id="lb3" role="dialog" aria-modal="true" aria-label="项目四完整内容">
+  <div class="lb-bar"><button class="lb-close lb-back" data-close>← 返回</button><span class="lb-title">04 · 线上鲜花销售系统</span><span class="lb-spacer"></span></div>
+  <div class="lb-scroll">
+    <div class="project-card">
+      <div class="print-only po-head">
+        <div class="p-num">04</div>
+        <div class="p-head">
+          <div class="p-name">线上鲜花销售系统（团队课程设计）</div>
+          <div class="p-role">团队协作 · 文档撰写 + 管理员/商家端 UI 设计 + 核心链路时序图 · 2025 春</div>
+          <div class="p-meta">以下为完整项目内容</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat acc"><b>3 条</b><span>核心链路时序图</span></div>
+        <div class="stat"><b>5 份</b><span>全链路文档</span></div>
+        <div class="stat"><b>多角色</b><span>用户/商家/管理员</span></div>
+        <div class="stat"><b>5 种</b><span>设计模式应用</span></div>
+      </div>
+      <p class="p-intro">三人团队完成线上鲜花销售系统全链路设计（需求分析 → UML 详细设计 → 原型开发 → 测试）。我负责<b>文档撰写 + 管理员端与商家端 UI 设计 + 核心链路时序图</b>。</p>
+      <h3 class="sub-h3">核心链路时序图 · 一个流程，三个视角</h3>
+      <div class="depth">
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/seq-flower-user.png" alt="用户购买鲜花时序图"></div><figcaption><b>用户购买鲜花</b><span>浏览 → 加购 → 结算 → 支付 · 用户视角</span></figcaption></figure>
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/seq-flower-merchant.png" alt="商家处理订单时序图"></div><figcaption><b>商家处理订单</b><span>接单 → 查库存 → 处理订单 · 商家视角</span></figcaption></figure>
+        <figure><div class="dp-pic"><img loading="lazy" src="assets/seq-flower-reco.png" alt="个性化推荐时序图"></div><figcaption><b>个性化推荐</b><span>行为 → 偏好标签 → 匹配 → 推荐 · 数据视角</span></figcaption></figure>
+      </div>
+      <h3 class="sub-h3">UI 设计 · 管理员端与商家端（Axure 原型）</h3>
+      <figure class="uiwide">
+        <img loading="lazy" src="assets/ui-flower-3up.png" alt="商家端首页 · 管理员首页 · 数据中心">
+        <figcaption><b>商家端首页 · 管理员首页 · 数据中心</b><span>经营数据一屏直达 / 三区导航八大入口 / 访问量·支付·转化多维度分析</span></figcaption>
+      </figure>
+      <ul class="tech">
+        <li><b>多视角设计：</b>同一套系统，从用户购买、商家处理、数据推荐三条链路出发画流程；每条时序图都对应一类真实操作链路。</li>
+        <li><b>数据视角：</b>个性化推荐时序图覆盖用户行为采集 → 偏好标签计算 → 商品特征匹配 → 推荐列表生成与存储。</li>
+        <li><b>UI 设计：</b>管理员端与商家端原型覆盖经营数据看板、商品 / 订单管理、审批工作台等核心页面，交互说明同步写入设计文档。</li>
+        <li><b>5 种设计模式：</b>单例（订单管理器）、工厂（鲜花商品创建）、适配器（多平台支付对接）、观察者（订单状态通知）、策略（推荐算法可替换）。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 关于 & 联系（放在项目弹层之后：打印时作为收尾页） ====== -->
+<div class="about-band" id="contact">
+  <section class="block" style="padding-bottom:48px;">
+    <div class="sec-head">
+      <span class="sec-kicker">关于我 &amp; 联系方式</span>
+      <h2>技术栈 &amp; 开发方式</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>技术栈</h3>
+        <p>JavaScript（vanilla SPA）· Python（Flask）· MySQL · MongoDB · Redis · IndexedDB · RESTful API · Cloudflared · Notion API · GitHub API · AI Agent 协作（Claude / GLM）</p>
+      </div>
+      <div class="about-card">
+        <h3>开发方式</h3>
+        <p>Vibe Coding（AI 协作开发 + Pre-mortem 反向检查 + 每周迭代复盘）· 真实 1500+ 条数据沉淀 · 所有功能每天真实在用。面试邀约可现场演示工作台。</p>
+      </div>
+    </div>
+    <div class="about-grid screen-only" style="margin-top:20px;">
+      <a class="contact-card" href="mailto:1507465455@qq.com">
+        <div class="cc-label">邮箱 EMAIL</div>
+        <div class="cc-value">1507465455@qq.com</div>
+        <div class="cc-hint">点击直接发邮件 →</div>
+      </a>
+      <div class="contact-card">
+        <div class="cc-label">微信 WECHAT</div>
+        <div class="cc-value" id="wechat-id">（待填你的微信号）</div>
+        <div class="cc-hint">加微信请备注「作品集」</div>
+      </div>
+    </div>
+    <!-- 打印专用：微信未填 → PDF 里换成可直接打开的在线作品集 -->
+    <div class="about-grid print-only po-grid" style="margin-top:20px;">
+      <div class="contact-card">
+        <div class="cc-label">邮箱 EMAIL</div>
+        <div class="cc-value">1507465455@qq.com</div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-label">在线作品集 PORTFOLIO</div>
+        <div class="cc-value">http://101.43.110.207/</div>
+      </div>
+    </div>
+    <div class="print-only po-end">常玉涵 · 作品集 · AI 产品方向 · 2026</div>
+  </section>
+</div>
+
+<footer>常玉涵 · 作品集 · AI 产品方向 · 2026</footer>
+
+<script>
+  (function () {
+    var track = document.getElementById('track');
+    var btnPrev = document.getElementById('btnPrev');
+    var btnNext = document.getElementById('btnNext');
+    var dots = document.querySelectorAll('.dot');
+
+    function panelWidth() { return track.clientWidth + 16; }
+    function idx() { return Math.round(track.scrollLeft / panelWidth()); }
+    function go(i) {
+      i = Math.max(0, Math.min(3, i));
+      track.scrollTo({ left: i * panelWidth(), behavior: 'smooth' });
+    }
+    btnPrev.addEventListener('click', function () { go(idx() - 1); });
+    btnNext.addEventListener('click', function () { go(idx() + 1); });
+    dots.forEach(function (d) {
+      d.addEventListener('click', function () { go(parseInt(d.dataset.idx, 10)); });
+    });
+    track.addEventListener('scroll', function () {
+      var i = idx();
+      dots.forEach(function (d, j) { d.classList.toggle('active', j === i); });
+      btnPrev.disabled = i <= 0;
+      btnNext.disabled = i >= 3;
+    });
+    btnPrev.disabled = true;
+
+    /* 鼠标滚轮翻页：面板内能纵向滚时先滚纵向，到边界后翻页 */
+    var wheelLock = false;
+    track.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; /* 触摸板横滑交给原生 */
+      var panel = e.target.closest('.panel');
+      if (!panel) return;
+      var canScrollY = panel.scrollHeight > panel.clientHeight + 2;
+      if (canScrollY) {
+        var atTop = panel.scrollTop <= 0;
+        var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 2;
+        if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return; /* 面板内正常纵向滚 */
+      }
+      e.preventDefault();
+      if (wheelLock || Math.abs(e.deltaY) < 15) return;
+      wheelLock = true;
+      go(idx() + (e.deltaY > 0 ? 1 : -1));
+      setTimeout(function () { wheelLock = false; }, 450);
+    }, { passive: false });
+
+    /* 导航点击 → 滑到对应面板 */
+    document.querySelectorAll('.nav-links a[data-slide]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(function () { go(parseInt(a.dataset.slide, 10)); }, 250);
+      });
+    });
+
+    /* 键盘方向键（仅在项目区可见时） */
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      if (document.querySelector('.lb.open')) return;
+      var r = document.getElementById('projects').getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) go(idx() + (e.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    /* 弹层开关 */
+    document.querySelectorAll('.p-more').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.getElementById(b.dataset.lb).classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    document.querySelectorAll('.lb-close').forEach(function (b) {
+      b.addEventListener('click', function () {
+        b.closest('.lb').classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var open = document.querySelector('.lb.open');
+        if (open) { open.classList.remove('open'); document.body.style.overflow = ''; }
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
