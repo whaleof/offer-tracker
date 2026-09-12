@@ -398,7 +398,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 </section>
 
 <div class="footnote">樱帖 · 求职作战板 · 数据存在你自己的浏览器，换电脑用「作战板 › 导出 / 导入」搬家
-<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button></span></div>
+<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button><button class="btn btn-ghost" onclick="setCloudToken()">令牌</button></span></div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
 <div class="mask" id="mask-add" onclick="if(event.target===this)this.classList.remove('on')">
@@ -1221,12 +1221,19 @@ function init(){
 /* ═══════════ ⑧ 云端自动备份（只在 101.43 服务器版生效，GitHub 版静默跳过） ═══════════ */
 const CLOUD_ON=/101\.43\.110\.207/.test(location.hostname);
 const CLOUD_API=location.origin+'/api/backup?name=offer-tracker';
-const _tkB64='M2E0YTcxMDVlOGFkNjkyMjEyM2QzNmYzOTllNGNkY2U=';
-const cloudToken=()=>{try{const s=localStorage.getItem('sb_api_token');if(s)return s}catch(e){}return atob(_tkB64).split('').reverse().join('')};
+const cloudToken=()=>{try{return (localStorage.getItem('sb_api_token')||'').trim()}catch(e){return ''}};
+const cloudReady=()=>CLOUD_ON&&!!cloudToken();
+function setCloudToken(){
+  const t=prompt('粘贴你的云端访问令牌（只保存在本机浏览器，不会写进代码）\n留空则关闭云端备份','');
+  if(t===null)return;
+  try{localStorage.setItem('sb_api_token',t.trim())}catch(e){return toast('本机保存失败')}
+  toast(t.trim()?'令牌已保存到本机 ✓':'已清除令牌');
+  setCloud(cloudReady()?'☁ 云端备份已开':'☁ 未设置令牌');
+}
 let _clT;
 function setCloud(t){const el=$('cloud-st');if(el)el.textContent=t}
 function cloudPush(){
-  if(!CLOUD_ON||DEMO)return;
+  if(!cloudReady()||DEMO)return;
   clearTimeout(_clT);
   _clT=setTimeout(()=>{
     fetch(CLOUD_API+'&token='+encodeURIComponent(cloudToken()),
@@ -1239,6 +1246,7 @@ function cloudPush(){
 function cloudPullRaw(){return fetch(CLOUD_API+'&token='+encodeURIComponent(cloudToken())+'&raw=1').then(r=>r.json())}
 function cloudRestore(){
   if(!CLOUD_ON){toast('云端备份在服务器版（101.43…）打开时才生效');return}
+  if(!cloudToken()){setCloudToken();return}
   cloudPullRaw().then(j=>{
     const d=j&&j.data&&j.data.data;
     if(!j.ok||!d||!Array.isArray(d.jobs))return toast('云端还没有备份');
@@ -1248,8 +1256,9 @@ function cloudRestore(){
 }
 boot();
 if(CLOUD_ON){
-  $('cloud-btns').style.display='inline';setCloud('☁ 云端备份已开');
-  if(!DEMO&&!REAL.jobs.length){
+  $('cloud-btns').style.display='inline';
+  setCloud(cloudReady()?'☁ 云端备份已开':'☁ 未设置令牌');
+  if(cloudReady()&&!DEMO&&!REAL.jobs.length){
     cloudPullRaw().then(j=>{ const d=j&&j.data&&j.data.data;
       if(j.ok&&d&&Array.isArray(d.jobs)&&d.jobs.length){REAL=d;save();renderAll();toast('已从云端恢复 '+REAL.jobs.length+' 张牌 ✓')} }).catch(()=>{});
   }
