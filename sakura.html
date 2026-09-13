@@ -407,7 +407,7 @@ body:not(:has(.page:target)) #p-today{display:block}
   <div class="trial-row">
     <div class="bigcard bc-a"><h3>备战资料</h3><p>选公司 → 备考清单＋资料包手记</p><button class="go" onclick="pick('prep')">选公司备战 ›</button></div>
     <div class="bigcard bc-b"><h3>面试复盘</h3><p>面完记被问啥/卡哪，AI 帮你盘下一轮</p><button class="go" onclick="pick('rev')"><span id="rev-n">0</span> 次复盘 · ＋记一笔 ›</button></div>
-    <div class="bigcard bc-c"><h3>刷题库</h3><p>22 道种子题＋被问倒的自动收集＋AI 答题思路</p><button class="go" onclick="pick('flash')">刷卡模式 ›</button></div>
+    <div class="bigcard bc-c"><h3>刷题库</h3><p>通用题＋贴面经收真题＋被问倒的自动收集</p><button class="go" onclick="pick('flash')">刷卡模式 ›</button></div>
   </div>
 
   <div class="workbench">
@@ -456,6 +456,7 @@ body:not(:has(.page:target)) #p-today{display:block}
       </div>
       <div class="ai-bar" onclick="event.stopPropagation()">
         <button class="btn btn-p" id="ai-btn" onclick="aiThink()">✨ AI 答题思路</button>
+        <button class="btn btn-s" onclick="openJing()" title="把牛客/小红书上的面经原文贴进来，AI 抽出真题收进这家公司的题库">📥 贴面经收题</button>
         <span class="ai-st" id="ai-st"></span>
       </div>
       <div class="ai-out" id="ai-out" style="display:none"></div>
@@ -588,6 +589,24 @@ body:not(:has(.page:target)) #p-today{display:block}
     <button class="btn btn-p" onclick="saveAiKey()">保存</button>
   </div>
   <div class="imp-tip">调用说明：浏览器直连 api.deepseek.com 的 deepseek-chat 模型，生成一条答题思路约 200 字，费用不到 1 分钱；同一道题的结果会缓存在本机，重复看不再花钱。想清掉就留空保存。</div>
+</div></div>
+
+<!-- ============ 面经收题（贴原文 → AI 抽真题 → 勾选入库） ============ -->
+<div class="mask" id="mask-jing" onclick="if(event.target===this)closeJing()"><div class="sheet" style="width:560px">
+  <span class="x" onclick="closeJing()">✕</span>
+  <div class="kind">题库 · 面经收题</div>
+  <h3>贴面经原文，拆成真题</h3>
+  <div class="sub2">去牛客 / 小红书搜「公司名 岗位 面经」，把原文复制贴到下面。AI <b>只抽原文里真实出现的题，不编题</b>；抽完你勾选确认才入库。</div>
+  <textarea class="imp-ta" id="jing-ta" style="min-height:150px;margin-top:12px" placeholder="粘贴面经原文…
+
+例：『一面先自我介绍，然后问了数据下跌怎么排查，
+还追问了项目的 ROI 怎么算，反问环节问了培养机制……』"></textarea>
+  <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap">
+    <button class="btn btn-p" id="jing-btn" onclick="jingParse()">✨ 拆题（约 3-8 秒）</button>
+    <span class="imp-tip">收给：<b id="jing-co" style="color:var(--shu-deep)">通用</b> · 一篇约 1-2 分钱</span>
+  </div>
+  <div id="jing-list" style="margin-top:10px"></div>
+  <div style="text-align:right;margin-top:8px"><button class="btn btn-p" id="jing-go" onclick="jingSave()" style="display:none">收进题库</button></div>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -1644,9 +1663,10 @@ function saveWrong(b){try{localStorage.setItem(WRONG_KEY,JSON.stringify(b))}catc
 function curCoName(){const j=JOBS.find(x=>x.id===curId);return j?j.co:"通用"}
 function loadDeck(){
   const wrong=wrongBank(),mine=wrong.filter(w=>w.co===curCoName());
-  deck=QBANK_SEED.concat(mine.map(w=>({c:"被问倒",q:w.q,a:w.a})));
+  deck=QBANK_SEED.concat(mine.map(w=>({c:w.cat||"被问倒",q:w.q,a:w.a})));
   di=0;showCard();
-  $('wrongn').textContent=wrong.length?('题库里收着 '+wrong.length+' 道被问倒的题'):'';
+  const nM=mine.length;
+  $('wrongn').textContent=wrong.length?('你的题库共 '+wrong.length+' 道（这家公司 '+nM+' 道）'):'';
 }
 function showCard(){
   const fc=$('fc');fc.classList.remove('open');
@@ -1755,11 +1775,81 @@ function copyAi(el){
   const txt=$('ai-out').innerText.replace(/^✨ AI 思路[^\n]*\n/,'').replace(/复制$/,'').trim();
   try{navigator.clipboard.writeText(txt);toast('已复制 ✓')}catch(e){toast('复制失败，手动选中的吧')}
 }
+
+/* ---- 面经收题（9.14）：贴牛客/小红书面经原文 → AI 只抽原文里真实的题 → 勾选入库 ----
+   题源是你自己找的真实面经，AI 只做抽取和要点整理，明令禁止编题；入库走题库（WRONG_KEY），
+   带 cat:'面经' 标记，只属于当前选中的公司。 */
+let JING=null,jingBusy=false;
+function openJing(){
+  if(DEMO){toast('示例模式 · 不写入真数据');return}
+  $('jing-co').textContent=curCoName();
+  $('jing-ta').value='';$('jing-list').innerHTML='';$('jing-go').style.display='none';
+  $('mask-jing').classList.add('on');
+  setTimeout(()=>$('jing-ta').focus(),60);
+}
+function closeJing(){$('mask-jing').classList.remove('on')}
+function jingParse(){
+  const txt=$('jing-ta').value.trim();
+  if(txt.length<30){toast('原文太短了——多贴一点上下文，AI 才抽得准');return}
+  if(jingBusy)return;
+  if(!aiKey()){openAiKey();toast('先填一次 DeepSeek 密钥（只存本机，一篇约 1-2 分钱）');return}
+  jingBusy=true;
+  const btn=$('jing-btn');
+  btn.disabled=true;btn.textContent='✨ 正在拆…';
+  fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+aiKey()},
+    body:JSON.stringify({model:'deepseek-chat',temperature:0.2,max_tokens:2000,messages:[
+      {role:'system',content:'你是题库整理员。从面经/笔试原文里抽取面试官真实问到的题和笔试题。铁律：只抽原文里真实出现的题，绝不自己编题、不改题意，题目尽量保留原文表述。每题配一句参考答题要点（没把握就给空字符串）。只输出 JSON 数组，格式：[{"q":"题目原文","a":"参考要点"}]，不要输出任何其它文字或代码块标记。'},
+      {role:'user',content:'公司：'+curCoName()+'\n面经原文：\n'+txt}
+    ]})})
+  .then(r=>r.json().then(j=>{if(!r.ok){throw new Error(r.status+'|'+((j&&j.error&&j.error.message)||''))}return j}))
+  .then(j=>{
+    const raw=String(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||'').trim()
+      .replace(/^```(json)?/i,'').replace(/```$/,'').trim();
+    let arr=null;try{arr=JSON.parse(raw)}catch(e){}
+    if(!Array.isArray(arr)){toast('AI 没按格式返回，再点一次拆题试试');jingReset();return}
+    const qs=arr.filter(x=>x&&String(x.q||'').trim());
+    if(!qs.length){toast('没抽出题——这篇可能不是面经，换篇原文试试');jingReset();return}
+    const co=curCoName();
+    const have=new Set(wrongBank().filter(w=>w.co===co).map(w=>w.q));
+    JING=qs.map(x=>{const q=String(x.q).trim();return{q,a:String(x.a||'').trim(),keep:!have.has(q)}});
+    renderJing();
+  })
+  .catch(e=>{
+    jingReset();
+    const msg=String(e.message||e);
+    if(msg.indexOf('401')===0)toast('密钥无效——检查或换一个');
+    else if(msg.indexOf('402')===0)toast('DeepSeek 余额不足——去 platform.deepseek.com 充值');
+    else if(msg.indexOf('429')===0)toast('请求太频繁，歇几秒再点');
+    else toast('AI 调用失败：'+trim(msg,60));
+  });
+}
+function jingReset(){jingBusy=false;const b=$('jing-btn');b.disabled=false;b.textContent='✨ 拆题（约 3-8 秒）'}
+function renderJing(){
+  $('jing-list').innerHTML=JING.map((x,i)=>`<label class="ck${x.keep?'':' done'}"${x.keep?'':' style="opacity:.55"'}><input type="checkbox" ${x.keep?'checked':''} onchange="JING[${i}].keep=this.checked;this.closest('.ck').classList.toggle('done',!this.checked)"><span>${esc(x.q)}${x.a?'<span class="ck-tip" style="display:block;padding-left:0">'+esc(x.a)+'</span>':''}</span></label>`).join('')
+    ||'<div class="rev">（这篇的题都已在题库里）</div>';
+  const n=JING.filter(x=>x.keep).length;
+  $('jing-go').style.display=n?'':'none';
+  $('jing-go').textContent='收进题库 '+n+' 道';
+  jingReset();
+}
+function jingSave(){
+  if(!JING)return;
+  const co=curCoName();
+  const add=JING.filter(x=>x.keep).map(x=>({q:x.q,a:x.a,co,at:isoNow(),cat:'面经'}));
+  if(!add.length){closeJing();return}
+  const b=wrongBank().filter(w=>!(w.co===co&&add.some(x=>x.q===w.q)));
+  saveWrong(b.concat(add));
+  closeJing();
+  loadDeck();
+  toast('已收 '+add.length+' 道「'+co+'」面经题 ✓ 刷这家公司时会出现');
+}
 /* 键盘习惯：Esc 关掉任何开着的弹层；添牌表单里回车＝直接落牌；密钥框回车＝保存 */
 function bindShortcuts(){
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
-      ['mask','mask-add','mask-guide','mask-import','mask-merge','mask-flow','mask-ai'].forEach(id=>{const m=$(id);if(m)m.classList.remove('on')});
+      ['mask','mask-add','mask-guide','mask-import','mask-merge','mask-flow','mask-ai','mask-jing'].forEach(id=>{const m=$(id);if(m)m.classList.remove('on')});
     }
   });
   ['nf-co','nf-po','nf-city','nf-ch','nf-resume'].forEach(i=>{
