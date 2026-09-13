@@ -60,6 +60,10 @@ def main():
             title = str(cd.get('title') or '').strip()
             if not cid or len(content) < min_len:
                 continue
+            # 牛客全文搜索相关性很松，硬过滤：公司名要么在标题里，要么正文出现 ≥3 次
+            co = t.get('co', '')
+            if co and (co not in title) and content.count(co) < 3:
+                continue
             if cid in seen:
                 continue
             entity = ((data.get('extraInfo') or {}).get('entityID_var')) or cid
