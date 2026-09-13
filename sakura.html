@@ -292,11 +292,18 @@ body:not(:has(.page:target)) #p-today{display:block}
 /* 底部数据按钮：从纯文字链升级成小白圆片，看得见才用得上 */
 .footnote .fbtn{background:#fff;border:1.5px solid rgba(44,40,43,.22);border-radius:999px;padding:3px 13px;font-size:11px;color:var(--sumi-mid);cursor:pointer;margin-left:4px}
 .footnote .fbtn:hover{border-color:var(--shu);color:var(--shu-deep)}
-.topbar .tools{margin-left:auto;display:flex;gap:14px;font-size:12.5px;color:var(--sumi-light);align-items:baseline}
-.topbar .tools span{cursor:pointer}
-.topbar .tools span:hover{color:var(--shu)}
+/* 顶栏工具：胶囊按钮——之前是 12.5px 纯文字，命中区只有 25px 宽，用户点不到（「摁不动」的根因） */
+.topbar .tools{margin-left:auto;display:flex;gap:8px;align-items:center}
+.topbar .tools span{cursor:pointer;font-size:11.5px;color:var(--sumi-mid);background:#fff;border:1.5px solid rgba(44,40,43,.22);border-radius:999px;padding:3px 13px;line-height:1.5;white-space:nowrap}
+.topbar .tools span:hover{border-color:var(--shu);color:var(--shu-deep)}
 /* 牌阵图例：术语大白话 */
 .bd-legend{font-size:11px;color:var(--sumi-light);margin-top:2px}
+/* ---- AI 答题思路（BYO DeepSeek 密钥，9.14） ---- */
+.ai-bar{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.ai-st{font-size:11px;color:var(--sumi-light);line-height:1.6}
+.ai-st a{color:var(--shu);cursor:pointer}
+.ai-out{margin-top:12px;background:#fffdf5;border:1px dashed var(--kin);border-left:3px solid var(--shu);border-radius:10px;padding:12px 16px;font-size:12.5px;color:var(--sumi);line-height:1.9}
+.ai-tag{font-size:11px;color:var(--shu-deep);margin-bottom:6px;font-family:var(--serif)}
 </style>
 </head>
 <body>
@@ -308,7 +315,7 @@ body:not(:has(.page:target)) #p-today{display:block}
     <a href="#p-board" data-p="board">牌阵</a>
     <a href="#p-trial" data-p="trial">试炼</a>
   </nav>
-  <div class="tools"><span onclick="openFlow()" title="校招 / 社招流程切换">流程</span><span id="bell" onclick="toggleNotify()" style="display:none" title="到点的要紧事弹系统通知">🔔 提醒</span><span onclick="openGuide()" title="新手引导 · 术语小词典">? 帮助</span></div>
+  <div class="tools"><span id="flow-chip" onclick="openFlow()" title="你的求职流程是校招还是社招？点开一键切换，只改牌阵的列和推进路径，牌的数据不动">校招流程</span><span id="bell" onclick="toggleNotify()" style="display:none" title="到点的要紧事（该催/面试/截止）弹系统通知，每天最多一次">🔔 提醒</span><span onclick="openGuide()" title="新手引导 · 三步上手 · 术语小词典">帮助</span></div>
 </div>
 <div class="goldline"></div>
 
@@ -377,8 +384,8 @@ body:not(:has(.page:target)) #p-today{display:block}
       <h2 id="bt">每张牌走到哪一步了</h2>
     </div>
     <div class="board-actions board-actions-primary">
-      <button class="btn-chip btn-merge" id="btn-radar-today" onclick="mergeTodayRadar()" title="今日雷达">今日雷达</button>
-      <button class="btn-chip btn-merge" onclick="openMerge()" title="把雷达脚本产出的 JSON 合并进来（同指纹去重）">合并雷达</button>
+      <button class="btn-chip btn-merge" id="btn-radar-today" onclick="mergeTodayRadar()" style="display:none" title="服务器上的雷达今天抓到的新岗位，点一下入阵（仅服务器版有）">今日新岗</button>
+      <button class="btn-chip btn-merge" onclick="openMerge()" title="把雷达脚本（radar.py）跑出来的 JSON 文件合并进来，同指纹去重">导入雷达</button>
       <button class="btn-chip btn-merge" onclick="openImport()" title="从 Excel / CSV 表格批量导入已投记录">导入表格</button>
       <button class="btn-chip btn-add" onclick="openAdd()">落牌</button>
     </div>
@@ -397,7 +404,7 @@ body:not(:has(.page:target)) #p-today{display:block}
   <div class="trial-row">
     <div class="bigcard bc-a"><h3>备战资料</h3><p>选公司 → 备考清单＋资料包手记</p><button class="go" onclick="pick('prep')">选公司备战 ›</button></div>
     <div class="bigcard bc-b"><h3>面试复盘</h3><p>面完记：被问啥 / 卡哪 / 下轮改啥</p><button class="go" onclick="pick('rev')"><span id="rev-n">0</span> 次复盘 · ＋记一笔 ›</button></div>
-    <div class="bigcard bc-c"><h3>刷题库</h3><p>22 道种子题＋被问倒的自动收集</p><button class="go" onclick="pick('flash')">刷卡模式 ›</button></div>
+    <div class="bigcard bc-c"><h3>刷题库</h3><p>22 道种子题＋被问倒的自动收集＋AI 答题思路</p><button class="go" onclick="pick('flash')">刷卡模式 ›</button></div>
   </div>
 
   <div class="workbench">
@@ -439,6 +446,11 @@ body:not(:has(.page:target)) #p-today{display:block}
         <button class="btn btn-p" onclick="next(-1)">被问倒了 · 收进题库</button>
         <div class="wrongn" id="wrongn"></div>
       </div>
+      <div class="ai-bar" onclick="event.stopPropagation()">
+        <button class="btn btn-p" id="ai-btn" onclick="aiThink()">✨ AI 答题思路</button>
+        <span class="ai-st" id="ai-st"></span>
+      </div>
+      <div class="ai-out" id="ai-out" style="display:none"></div>
     </div>
   </div>
 </section>
@@ -523,12 +535,12 @@ body:not(:has(.page:target)) #p-today{display:block}
 <div class="mask" id="mask-merge" onclick="if(event.target===this)closeMerge()"><div class="sheet">
   <span class="x" onclick="closeMerge()">✕</span>
   <div class="kind">牌 · 雷达来路</div>
-  <h3>合并雷达 JSON</h3>
+  <h3>导入雷达 JSON</h3>
   <div class="sub2">雷达 JSON 由仓库里的 <b>radar.py</b> 脚本生成（读求职画像 → 联网搜岗 → 打分排序）。会跑 Python 就用它；不会跑也完全不耽误用。</div>
   <div class="gd-steps">
     <div class="gd-step"><b>方式一 · 拖进来</b><p>把 merge JSON 文件直接拖到牌阵页面上。</p></div>
     <div class="gd-step"><b>方式二 · 选文件</b><p>点下面按钮选 JSON 文件（增量合并，同指纹去重，只加不动）。</p></div>
-    <div class="gd-step"><b>方式三 · 今日雷达</b><p>部署在服务器上时，每天雷达跑完点「今日雷达」一键入阵。</p></div>
+    <div class="gd-step"><b>方式三 · 今日新岗</b><p>部署在服务器上时，每天雷达跑完，「今日新岗」按钮会亮起来，一键入阵。</p></div>
     <div class="gd-step"><b>不跑脚本？</b><p>用「导入表格」把 Excel / 备忘录里的岗位贴进来，效果一样。</p></div>
   </div>
   <div class="gd-actions">
@@ -548,6 +560,19 @@ body:not(:has(.page:target)) #p-today{display:block}
     <div class="gd-step" style="cursor:pointer" onclick="setFlow('pro')"><b>💼 社招精简</b><p>想投 → 已投 → 面试 → 已转生（＋落樱），没有笔试列</p></div>
   </div>
   <div class="imp-tip">考公等特殊流程暂未内置，可切「社招精简」后将就着用，或在代码顶部 STAGE_DEFS 里改列名。</div>
+</div></div>
+
+<!-- ============ AI 密钥（BYO DeepSeek，只存本机） ============ -->
+<div class="mask" id="mask-ai" onclick="if(event.target===this)closeAiKey()"><div class="sheet">
+  <span class="x" onclick="closeAiKey()">✕</span>
+  <div class="kind">试炼 · AI 密钥</div>
+  <h3>接入你自己的 DeepSeek</h3>
+  <div class="sub2">密钥只保存在本机浏览器（localStorage），不上传任何服务器、不写进代码仓库。没有的话：到 <b>platform.deepseek.com</b> 注册 → 充值 10 块钱 → 「API keys」里创建一个，能用非常久。</div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <input id="ai-key-input" type="password" placeholder="sk-…" style="flex:1;border:1.5px solid var(--sumi);border-radius:9px;padding:10px 12px;font-size:13px;background:#fff">
+    <button class="btn btn-p" onclick="saveAiKey()">保存</button>
+  </div>
+  <div class="imp-tip">调用说明：浏览器直连 api.deepseek.com 的 deepseek-chat 模型，生成一条答题思路约 200 字，费用不到 1 分钱；同一道题的结果会缓存在本机，重复看不再花钱。想清掉就留空保存。</div>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -581,8 +606,9 @@ function checkGuide(){
 function syncBell(){
   const b=$('bell');if(!b)return;
   if(!('Notification' in window)||DEMO){b.style.display='none';return}
-  b.style.display='';
-  b.textContent=Notification.permission==='denied'?'🔔 提醒·被拦':'🔔 提醒';
+  const ok=Notification.permission==='granted';
+  b.style.display=ok?'none':'';
+  if(!ok)b.textContent=Notification.permission==='denied'?'🔔 提醒·被拦':'🔔 提醒';
 }
 function toggleNotify(){
   if(!('Notification' in window)){toast('这个浏览器不支持系统通知（试试 Chrome / Edge）');return}
@@ -698,6 +724,7 @@ function rebuildFlow(){
   STAGES=vis.map(k=>({k,n:STAGE_DEFS[k].n}));
   NEXT={};BACK={};
   vis.forEach((k,i)=>{if(i<vis.length-1&&k!=='offer'&&k!=='fallen')NEXT[k]=vis[i+1];if(k!=='want')BACK[k]=REAL_STATUS[k]});
+  const fc=$('flow-chip');if(fc)fc.textContent=FLOW==='pro'?'社招流程':'校招流程';
 }
 function loadFlow(){try{FLOW=localStorage.getItem('sakura-flow')==='pro'?'pro':'campus'}catch(e){}rebuildFlow()}
 function setFlow(f){if(DEMO){toast('示例模式 · 不写入真数据');return}FLOW=f;try{localStorage.setItem('sakura-flow',f)}catch(e){};rebuildFlow();renderAll();closeFlow();toast(f==='pro'?'已切到社招精简流程（无笔试列）✓':'已切到校招全流程 ✓')}
@@ -848,7 +875,7 @@ function renderToday(){
   $('hero-n').textContent=cnt('offer')+' / '+JOBS.length;
   $('hero-fill').style.width=(JOBS.length?Math.round(cnt('offer')/JOBS.length*100):0)+'%';
   const fresh=JOBS.filter(j=>since(j.raw.createdAt)<=7);
-  $('radar-box').innerHTML=fresh.length?`<b>近 7 天新牌</b> · ${fresh.length} 条<br>`+fresh.slice(0,4).map(j=>esc(j.co)+' · '+esc(j.po)).join('<br>'):(JOBS.length?'<b>近 7 天</b> · 没有新牌，该补补雷达了':'<b>近 7 天新牌</b><br>雷达抓到新岗后，在牌阵点「合并雷达」导入');
+  $('radar-box').innerHTML=fresh.length?`<b>近 7 天新牌</b> · ${fresh.length} 条<br>`+fresh.slice(0,4).map(j=>esc(j.co)+' · '+esc(j.po)).join('<br>'):(JOBS.length?'<b>近 7 天</b> · 没有新牌，该补补雷达了':'<b>近 7 天新牌</b><br>有雷达 JSON 或 Excel 表格，在牌阵点「导入雷达 / 导入表格」就能批量进来');
 }
 function doSent(id){mut(id,j=>{j.status='applied';j.appliedAt=new Date().toISOString().slice(0,10);(j.history=j.history||[]).push({status:'applied',at:isoNow()})},true);toast('已记为「已投」✓ 7 天没音它会来提醒你催')}
 function doUrge(id){mut(id,j=>{j.lastUrgeAt=isoNow()});toast('已记：今天催过了 ✓')}
@@ -1232,15 +1259,17 @@ function loadRadarToday(){
 function markRadarToday(d){
   const b=$('btn-radar-today'); if(!b)return;
   const n=(d&&Array.isArray(d.newJobs))?d.newJobs.length:0;
-  b.textContent=n?('今日雷达 · '+n):'今日雷达';
+  /* 按钮默认藏起来：只有服务器上真有新牌时才出现——GitHub Pages / 本地打开的用户少一个没用的死按钮 */
+  b.style.display=n?'':'none';
+  b.textContent='今日新岗 · '+n;
   b.classList.toggle('has-new',n>0);
-  b.title=n?(d.date||'')+' 雷达抓到 '+n+' 个新岗 · 点一下入阵':'今日雷达：服务器上暂时没有新岗位';
+  b.title=n?(d.date||'')+' 雷达抓到 '+n+' 个新岗 · 点一下入阵':'今日新岗：服务器上暂时没有新岗位';
 }
 function mergeTodayRadar(){
   if(DEMO){toast("示例模式 · 不写入真数据");return}
   const go2=d=>{
     if(d&&Array.isArray(d.newJobs)&&d.newJobs.length){ applyRadarPayload(d); }
-    else{ toast(location.protocol==='file:'?"本地打开读不到服务器雷达；请从服务器地址打开樱帖":"今日雷达没有新岗位"); }
+    else{ toast(location.protocol==='file:'?"本地打开读不到服务器雷达；请从服务器地址打开樱帖":"服务器上今天没有新岗位"); }
   };
   if(RADAR_TODAY){ go2(RADAR_TODAY); } else { loadRadarToday().then(go2); }
 }
@@ -1552,6 +1581,7 @@ function loadDeck(){
 }
 function showCard(){
   const fc=$('fc');fc.classList.remove('open');
+  const ao=$('ai-out');if(ao)ao.style.display='none';
   if(!deck.length){$('fc-q').textContent='先选一家公司，再开始刷卡';$('fc-a').textContent='';$('fc-i').textContent='0 / 0';$('fc-co').textContent='通用题库';return}
   $('fc-i').textContent=(di+1)+' / '+deck.length;
   $('fc-q').textContent=deck[di].q;
@@ -1580,6 +1610,83 @@ function pick(which){
   if(!PREVIEW)window.scrollTo({top:$('wb-t').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
 }
 
+/* ═══ AI 答题思路（9.14）：BYO DeepSeek 密钥，浏览器直连 api.deepseek.com ═══
+   密钥只存本机 localStorage；同一道题+同一家公司的思路缓存在本机，重复看不计费。
+   没有服务器、没有中转——纯前端调用（DeepSeek API 允许浏览器跨域）。 */
+const AI_KEY_LS='sakura-ai-key',AI_CACHE_LS='sakura-ai-cache-v1';
+const aiKey=()=>{try{return (localStorage.getItem(AI_KEY_LS)||'').trim()}catch(e){return''}};
+function openAiKey(){
+  if(DEMO){toast('示例模式 · 不写入真数据');return}
+  $('ai-key-input').value=aiKey();
+  $('mask-ai').classList.add('on');
+  setTimeout(()=>$('ai-key-input').focus(),60);
+}
+function closeAiKey(){$('mask-ai').classList.remove('on')}
+function saveAiKey(){
+  const v=$('ai-key-input').value.trim();
+  try{localStorage.setItem(AI_KEY_LS,v)}catch(e){return toast('本机保存失败')}
+  closeAiKey();aiSyncSt();
+  toast(v?'密钥已存到本机 ✓ 现在点「AI 答题思路」就能用':'已清除密钥');
+}
+function aiSyncSt(){
+  const el=$('ai-st');if(!el)return;
+  el.innerHTML=aiKey()
+    ?'✨ DeepSeek 已连上 · 一条思路不到 1 分钱 · 同题缓存不重复计费 · <a onclick="openAiKey()">换密钥</a>'
+    :'用你自己的 DeepSeek 密钥（只存本机）· 一条思路不到 1 分钱 · <a onclick="openAiKey()">设置密钥</a>';
+}
+function aiCacheGet(){try{return JSON.parse(localStorage.getItem(AI_CACHE_LS)||'{}')}catch(e){return{}}}
+let aiBusy=false;
+function aiThink(){
+  if(DEMO){toast('示例模式 · 不调用 AI');return}
+  if(aiBusy)return;
+  if(!deck.length){toast('先刷卡，有题了再问 AI');return}
+  const card=deck[di];
+  const ck=card.q+'||'+curCoName();
+  const cached=aiCacheGet()[ck];
+  if(cached){showAi(cached,true);return}
+  if(!aiKey()){openAiKey();toast('先填一次 DeepSeek 密钥（只存本机，一条思路不到 1 分钱）');return}
+  aiBusy=true;
+  const btn=$('ai-btn'),out=$('ai-out');
+  btn.disabled=true;btn.textContent='✨ 正在结合你的岗位想思路…';
+  out.style.display='';out.innerHTML='<span style="color:var(--sumi-light)">AI 正在想…（约 3-10 秒，别点别的）</span>';
+  fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+aiKey()},
+    body:JSON.stringify({model:'deepseek-chat',temperature:0.6,max_tokens:700,messages:[
+      {role:'system',content:'你是资深面试教练，帮中国求职者准备面试。对给出的面试题输出「答题思路」，格式固定三段：①破题：这道题在考什么（一行）②作答框架：3-4 步，每步一行，句子短到能直接照着说 ③亮点收尾：一句能让面试官记住的话。全文不超过 230 字，不要开场白客套话，不要 markdown 符号，用 ①②③ 分行。'},
+      {role:'user',content:'面试题：'+card.q+'\n参考答法：'+card.a+'\n我在准备的公司/岗位：'+curCoName()+'\n请给答题思路。'}
+    ]})})
+  .then(r=>r.json().then(j=>{if(!r.ok){const m=j&&j.error&&j.error.message;throw new Error(r.status+'|'+(m||''))}return j}))
+  .then(j=>{
+    const txt=String(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||'').trim()||'（AI 返回了空内容，再试一次）';
+    const cache=aiCacheGet();cache[ck]=txt;
+    try{localStorage.setItem(AI_CACHE_LS,JSON.stringify(cache))}catch(e){}
+    showAi(txt,false);
+  })
+  .catch(e=>{
+    aiBusy=false;btn.disabled=false;btn.textContent='✨ AI 答题思路';
+    out.style.display='none';
+    const msg=String(e.message||e);
+    if(msg.indexOf('401')===0)toast('密钥无效——检查有没有复制全，或去 platform.deepseek.com 重新生成一个');
+    else if(msg.indexOf('402')===0)toast('DeepSeek 余额不足——去 platform.deepseek.com 充值（10 块能用很久）');
+    else if(msg.indexOf('429')===0)toast('请求太频繁，歇几秒再点');
+    else toast('AI 调用失败：'+trim(msg,60));
+  });
+}
+function showAi(txt,cached){
+  const out=$('ai-out');
+  out.style.display='';
+  out.innerHTML='<div class="ai-tag">'+(cached?'✨ AI 思路 · 本机缓存，不重复计费':'✨ AI 思路 · DeepSeek 生成')+'</div><div>'+esc(txt).replace(/\n/g,'<br>')+'</div>'
+    +'<div style="margin-top:8px;text-align:right"><span class="btn btn-ghost" style="font-size:11px" onclick="copyAi(this)">复制</span></div>';
+  const btn=$('ai-btn');
+  btn.disabled=false;btn.textContent='✨ AI 答题思路';
+  aiBusy=false;
+}
+function copyAi(el){
+  const txt=$('ai-out').innerText.replace(/^✨ AI 思路[^\n]*\n/,'').replace(/复制$/,'').trim();
+  try{navigator.clipboard.writeText(txt);toast('已复制 ✓')}catch(e){toast('复制失败，手动选中的吧')}
+}
+
 /* ═══════════ ⑦ 导航 & 启动 ═══════════ */
 function sync(){
   const p=location.hash.replace(/^#p-/,'')||'today';
@@ -1601,7 +1708,7 @@ function init(){
   renderAll();renderPrep();renderRev();sync();
   bindCkAdd();
   loadRadarToday();
-  checkGuide();syncBell();checkNotify(false);exportHint();
+  checkGuide();syncBell();checkNotify(false);exportHint();aiSyncSt();
   const vp=new URLSearchParams(location.search);
   const v=vp.get('view');
   if(v==='board')go('board');
