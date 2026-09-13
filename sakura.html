@@ -410,7 +410,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 </section>
 
 <div class="footnote">樱帖 · 求职作战板 · 数据存在你自己的浏览器，清缓存或换设备前请先自行备份
-<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button><button class="btn btn-ghost" onclick="setCloudToken()">令牌</button></span></div>
+<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button><button class="btn btn-ghost" onclick="setCloudToken()">令牌</button></span><span style="margin-left:10px"><button class="btn btn-ghost" onclick="exportData()">导出备份</button><button class="btn btn-ghost" onclick="importBackup()">导入备份</button></span></div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
 <div class="mask" id="mask-add" onclick="if(event.target===this)this.classList.remove('on')">
@@ -1302,6 +1302,67 @@ function cloudRestore(){
     if(!confirm('用云端备份（'+d.jobs.length+' 张牌，'+(j.data.savedAt||'').slice(0,10)+' 存的）覆盖本机数据？'))return;
     REAL=d;save();renderAll();toast('已从云端恢复 ✓');
   }).catch(()=>toast('云端读取失败'));
+}
+/* ── 数据自主：文件级备份（导出/导入）。导出＝牌+题库全量 JSON，不含云端令牌；
+   导入支持 覆盖式（整包替换）与 增量式（公司+岗位+城市 指纹只加不动，与合并雷达同一纪律）。 ── */
+function exportData(){
+  if(DEMO){toast("示例模式 · 没有真数据可导出");return}
+  try{
+    const payload={app:"sakura-backup",ver:1,exportedAt:new Date().toISOString(),
+      data:{jobs:REAL.jobs,wrongBank:wrongBank()}};
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
+    a.download="樱帖备份-"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast("已导出 "+REAL.jobs.length+" 张牌 + "+payload.data.wrongBank.length+" 道题 ✓");
+  }catch(e){toast("导出失败："+e.message)}
+}
+function importBackup(){
+  if(DEMO){toast("示例模式 · 不写入真数据");return}
+  const inp=document.createElement("input");
+  inp.type="file";inp.accept=".json,application/json";
+  inp.onchange=()=>{
+    const file=inp.files&&inp.files[0];if(!file)return;
+    const r=new FileReader();
+    r.onload=()=>{try{applyBackupPayload(JSON.parse(r.result))}catch(e){toast("文件不是合法 JSON，导入失败")}};
+    r.readAsText(file);
+  };
+  inp.click();
+}
+function applyBackupPayload(o){
+  /* 兼容三种文件：① exportData 的 {app:"sakura-backup",data:{…}} ② 裸 {jobs:[…]} ③ 云端原始备份 {data:{savedAt,data:{…}}} */
+  let jobs=null,wrong=null,savedAt="";
+  if(o&&o.app==="sakura-backup"&&o.data&&Array.isArray(o.data.jobs)){jobs=o.data.jobs;wrong=Array.isArray(o.data.wrongBank)?o.data.wrongBank:null;savedAt=o.exportedAt||""}
+  else if(o&&Array.isArray(o.jobs)){jobs=o.jobs}
+  else if(o&&o.data&&o.data.data&&Array.isArray(o.data.data.jobs)){jobs=o.data.data.jobs;savedAt=o.data.savedAt||""}
+  if(!jobs){toast("这不是樱帖备份文件（找不到牌数据）");return}
+  const when=savedAt?String(savedAt).slice(0,10):"未知日期";
+  if(confirm("覆盖式导入：用备份（"+jobs.length+" 张牌 · "+when+" 存的）替换本机全部数据？\n\n确定＝覆盖 · 取消＝改用增量合并"))return doReplace(jobs,wrong);
+  const fp=j=>[j.company,j.role,j.city].map(s=>String(s||"").replace(/\s+/g,"").toLowerCase()).join("|");
+  let fresh=REAL;
+  try{const d=JSON.parse(localStorage.getItem(LS_KEY)||"null");if(d&&Array.isArray(d.jobs))fresh=d}catch(e){}
+  const known=new Set(fresh.jobs.map(fp));
+  const add=jobs.filter(j=>j&&j.company&&!known.has(fp(j)));
+  const wOld=wrongBank();
+  const wNew=(wrong||[]).filter(w=>w&&w.q&&!wOld.some(x=>x.q===w.q));
+  if(!add.length&&!wNew.length){toast("没有可合并的内容：备份里的牌都已在阵上");return}
+  if(!confirm("增量合并：新加 "+add.length+" 张牌 + "+wNew.length+" 道题，已有牌一律不动。合并？"))return;
+  add.forEach(j=>{const c=Object.assign({},j);delete c.radarUrl;delete c.radarScore;
+    c.id=c.id||("real-"+Date.now()+"-"+Math.random().toString(36).slice(2,6));
+    if(!c.role)c.role="待定岗位";fresh.jobs.push(c)});
+  REAL=fresh;
+  if(wNew.length)saveWrong(wOld.concat(wNew));
+  save();renderAll();
+  toast("已增量合并 "+add.length+" 张牌 + "+wNew.length+" 道题 ✓");
+}
+function doReplace(jobs,wrong){
+  const fresh={jobs:jobs.map(j=>{const c=Object.assign({},j);
+    c.id=c.id||("real-"+Date.now()+"-"+Math.random().toString(36).slice(2,6));return c})};
+  REAL=fresh;
+  if(wrong)saveWrong(wrong);
+  save();renderAll();
+  toast("已覆盖导入 "+fresh.jobs.length+" 张牌"+(wrong?" + "+wrong.length+" 道题":"")+" ✓");
 }
 boot();
 if(CLOUD_ON){
