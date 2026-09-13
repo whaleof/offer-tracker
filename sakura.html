@@ -7,8 +7,8 @@
 <style>
 /* ============ 设计系统 · 樱帖定款（9.8 冻结） ============
    色板五笔：樱粉#C2416B / 金#C9A227 / 纸#FBF7EC / 墨#2C282B / 深红#A83358
-   v2.0（9/9）：接真数据——与 index.html（旧作战板）同源共读 localStorage「job-tracker-v1」，
-   樱帖 = 同一份数据的樱花皮；投递/推进/复盘/备考实时互通，不复制不分裂。
+   v2.0（9/9）：接真数据——沿用数据键 localStorage「job-tracker-v1」，
+   旧作战板（列表式 UI）已于 9/9 退役，樱帖是唯一入口；电脑上存量的 job-tracker-v1 可直接被读到。
    写入纪律：只改已知字段、保留其余字段原样；阶段推进才更新 updatedAt（避免干扰旧版「无进展」统计）。
 ======================================================== */
 :root{
@@ -249,9 +249,17 @@ body:not(:has(.page:target)) #p-today{display:block}
 .revform.on{display:block}
 .revform textarea{width:100%;border:1.5px solid rgba(44,40,43,.35);border-radius:10px;padding:9px 12px;font-family:var(--sans);font-size:12.5px;min-height:64px;background:var(--kinari)}
 .wrongn{font-size:11px;color:var(--shu-deep)}
-.ck{display:flex;align-items:flex-start;gap:9px;padding:7px 2px;font-size:12.5px;color:var(--sumi-mid);cursor:pointer}
+.ck{display:flex;align-items:flex-start;gap:9px;padding:7px 2px;font-size:12.5px;color:var(--sumi-mid);cursor:pointer;position:relative}
 .ck input{margin-top:3px;accent-color:var(--shu)}
 .ck.done span{text-decoration:line-through;color:var(--sumi-light)}
+.ck-del{margin-left:auto;padding:0 6px;color:var(--sumi-light);font-size:14px;opacity:0;transition:opacity .15s;cursor:pointer;line-height:1.4}
+.ck:hover .ck-del{opacity:1}
+.ck-del:hover{color:var(--shu-deep)}
+.ck-tip{font-size:11.5px;color:var(--sumi-light);padding:2px 2px 6px}
+.ck-add{display:flex;gap:8px;margin-bottom:8px}
+.ck-add input{flex:1;border:1.5px solid rgba(44,40,43,.35);border-radius:10px;padding:9px 12px;font-family:var(--sans);font-size:12.5px;background:var(--kinari)}
+.ck-add input:focus{outline:none;border-color:var(--shu)}
+.ck-add .btn:disabled{opacity:.4;cursor:not-allowed}
 .prep-ta{width:100%;border:1.5px solid rgba(44,40,43,.35);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:12.5px;min-height:110px;background:var(--kinari);line-height:1.7}
 .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:var(--sumi);color:var(--kinari);font-size:12.5px;border-radius:999px;padding:9px 22px;opacity:0;transition:.3s;z-index:99;pointer-events:none}
 .toast.on{opacity:1}
@@ -363,6 +371,10 @@ body:not(:has(.page:target)) #p-today{display:block}
     <div class="chips" id="co-chips"></div>
     <div id="wb-prep">
       <div class="sec-t">备考清单</div>
+      <div class="ck-add" id="ck-add">
+        <input id="ck-input" type="text" placeholder="加一项，如「自我介绍 1 分钟」「Python 装饰器」「项目难点」…" maxlength="60">
+        <button class="btn btn-p" id="ck-add-btn" onclick="addCk()" disabled>＋添加</button>
+      </div>
       <div id="ck-list"></div>
       <div class="sec-t">备战资料包 · 手记</div>
       <textarea class="prep-ta" id="prep-ta" placeholder="这家公司的备战手记：重点业务、JD 关键词、要讲的项目、要避的坑…"></textarea>
@@ -397,7 +409,7 @@ body:not(:has(.page:target)) #p-today{display:block}
   </div>
 </section>
 
-<div class="footnote">樱帖 · 求职作战板 · 数据存在你自己的浏览器，换电脑用「作战板 › 导出 / 导入」搬家
+<div class="footnote">樱帖 · 求职作战板 · 数据存在你自己的浏览器，清缓存或换设备前请先自行备份
 <span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button><button class="btn btn-ghost" onclick="setCloudToken()">令牌</button></span></div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
@@ -1095,10 +1107,46 @@ function renderPrep(){
   $('prep-ta').disabled=false;
   $('prep-ta').value=j.raw.prep||"";
   const cks=j.raw.checks||[];
-  $('ck-list').innerHTML=cks.length?cks.map((c,i)=>`<label class="ck${c.done?' done':''}"><input type="checkbox" ${c.done?'checked':''} onchange="toggleCk(${i})"><span>${esc(c.t)}</span></label>`).join(''):'<div style="font-size:12px;color:var(--sumi-light);padding:4px 2px">还没有清单——在作战板里生成备考清单后，这里会同步显示</div>';
+  const tip=cks.length?`<div class="ck-tip">共 ${cks.length} 项 · 已勾 ${cks.filter(c=>c.done).length}</div>`:'<div class="ck-tip">用上面输入框加一项 · 回车即保存</div>';
+  $('ck-list').innerHTML=tip+cks.map((c,i)=>`<label class="ck${c.done?' done':''}"><input type="checkbox" ${c.done?'checked':''} onchange="toggleCk(${i})"><span>${esc(c.t)}</span><span class="ck-del" onclick="delCk(${i})" title="删除这一项">×</span></label>`).join('');
 }
 function toggleCk(i){mut(curId,j=>{const ck=(j.checks=j.checks||[]);ck[i].done=!ck[i].done});renderPrep()}
 function savePrep(){const v=$('prep-ta').value;if(!DEMO&&!curId)return;mut(curId,j=>{j.prep=$('prep-ta').value});toast('资料包已存进牌里 ✓')}
+
+/* ---- 备考清单：加 / 删 ---- */
+function addCk(){
+  const inp=$('ck-input');
+  const t=(inp.value||'').trim();
+  if(!t){inp.focus();return}
+  const cur=curId||(JOBS[0]&&JOBS[0].id);
+  if(!cur)return;
+  mut(cur,j=>{
+    const ck=(j.checks=j.checks||[]);
+    if(ck.some(c=>c.t===t)){toast('已存在 · 没重复加');return}
+    ck.push({t,done:false});
+  });
+  inp.value='';
+  syncCkAdd();
+  renderPrep();
+}
+function delCk(i){
+  if(!confirm('删掉这一项？'))return;
+  mut(curId,j=>{const ck=(j.checks=j.checks||[]);ck.splice(i,1);if(!ck.length)delete j.checks});
+  renderPrep();
+}
+function syncCkAdd(){
+  const inp=$('ck-input');const btn=$('ck-add-btn');if(!inp||!btn)return;
+  const t=(inp.value||'').trim();
+  btn.disabled=!t;
+}
+function ckAddKey(e){if(e.key==='Enter'){e.preventDefault();addCk()}}
+function bindCkAdd(){
+  const inp=$('ck-input');const btn=$('ck-add-btn');if(!inp||inp.dataset.bound)return;
+  inp.addEventListener('input',syncCkAdd);
+  inp.addEventListener('keydown',ckAddKey);
+  btn.addEventListener('keydown',ckAddKey);
+  inp.dataset.bound='1';
+}
 
 /* ---- 面试复盘（写进岗位的 reviews） ---- */
 function allRevs(){
@@ -1204,6 +1252,7 @@ function renderAll(){JOBS=REAL.jobs.map(vm);renderToday();renderBoard();renderCh
 function init(){
   curId='';
   renderAll();renderPrep();renderRev();sync();
+  bindCkAdd();
   loadRadarToday();
   const vp=new URLSearchParams(location.search);
   const v=vp.get('view');

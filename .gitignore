@@ -12,7 +12,7 @@ my-data*.json
 index.backup-*.html
 
 # 本地临时产物
-preview/out/
+preview/
 素材图/预览*.png
 
 # 个人投递材料（含简历与投递指引，绝不入库）

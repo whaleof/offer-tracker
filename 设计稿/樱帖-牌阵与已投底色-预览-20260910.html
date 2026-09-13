@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 改造预览 v2（樱粉真显版 + 牌阵新思路）· 20260910</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-deep:#854F0B; --kin-soft:#EDE0C0;
+  --serif:"Songti SC","Noto Serif SC","SimSun",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:var(--sans);font-size:14px;line-height:1.7;padding:28px clamp(16px,4vw,56px) 80px}
+h1,h2,h3,.serif{font-family:var(--serif);font-weight:500}
+h1{font-size:22px;letter-spacing:1px}
+.sub{font-size:12.5px;color:var(--sumi-light);margin:4px 0 8px}
+.goldline{height:1px;background:var(--kin);opacity:.5;margin:10px 0 26px}
+.qblock{margin-bottom:52px}
+.qtag{display:inline-block;font-family:var(--serif);font-size:13px;color:#fff;background:var(--shu);border-radius:999px;padding:3px 14px;margin-bottom:6px}
+.qtitle{font-size:17px;margin-bottom:2px}
+.qdesc{font-size:12.5px;color:var(--sumi-mid);margin-bottom:16px;max-width:820px}
+.opts{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.opt{flex:1;min-width:320px}
+.opt-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.opt-h .badge{font-family:var(--serif);width:26px;height:26px;border-radius:50%;border:1.5px solid var(--kin);color:var(--kin-deep);display:flex;align-items:center;justify-content:center;background:#fff;font-size:14px;flex:none}
+.opt-h b{font-size:14.5px;font-weight:500}
+.opt-h .rec{font-size:10.5px;color:#fff;background:var(--kin);border-radius:999px;padding:1px 8px}
+.opt-h .rec2{font-size:10.5px;color:var(--kin-deep);background:var(--kin-soft);border-radius:999px;padding:1px 8px}
+.opt-note{font-size:11.5px;color:var(--sumi-mid);margin-top:8px}
+.demo{background:#fff;border:1.5px solid rgba(44,40,43,.18);border-radius:14px;padding:16px}
+.legend{display:flex;gap:14px;font-size:11px;color:var(--sumi-light);margin-bottom:12px;flex-wrap:wrap}
+.legend i{font-style:normal;display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid rgba(44,40,43,.25);vertical-align:-1px;margin-right:5px}
+
+/* ---- 牌 mock：底色真显版（透明底星图 + 可染色） ---- */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:16px}
+.pcard{position:relative;background:var(--pc-bg,#FBF7EC) url("../assets/bg-card-v9-t.svg") no-repeat center / cover;border:2px solid #C9A227;border-radius:13px;padding:14px 13px 11px;aspect-ratio:300/440;display:flex;flex-direction:column;cursor:pointer;box-shadow:3px 3px 0 rgba(44,40,43,.16)}
+.pcard::before{content:'';position:absolute;inset:6px;border:1px solid #C2416B;opacity:.5;border-radius:8px;pointer-events:none}
+.pcard .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pcard .stage{font-family:var(--serif);width:28px;height:28px;border-radius:50%;border:1.4px solid #C9A227;color:#854F0B;display:flex;align-items:center;justify-content:center;font-size:14px;background:#fff}
+.pcard .co{font-family:var(--serif);font-size:16px;line-height:1.35;margin-bottom:4px}
+.pcard .po{font-size:11px;color:var(--sumi-mid);line-height:1.5;margin-bottom:8px}
+.pcard .ft{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;font-size:10.5px;color:var(--sumi-light)}
+.pink{--pc-bg:#F6E0E7}
+
+/* ---- 方案A/C：矮牌 ---- */
+.pgrid.short{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.pcard.short{aspect-ratio:auto;min-height:118px;padding:11px 12px 9px}
+.pcard.short .co{font-size:14.5px}
+.pcard.short .po{font-size:10.5px;margin-bottom:4px}
+.wide-demo{background:#fff;border:1.5px solid rgba(44,40,43,.18);border-radius:14px;padding:16px;max-width:none}
+.wide-cap{font-size:11px;color:var(--sumi-light);margin-bottom:10px}
+.pgrid.wide{grid-template-columns:repeat(7,1fr);gap:10px}
+.pgrid.wide .pcard{min-height:0}
+
+/* ---- 方案B：行牌 ---- */
+.rows{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:9px}
+.rowc{display:flex;align-items:center;gap:10px;background:var(--rc-bg,#FBF7EC);border:1.5px solid var(--rc-bd,#C9A227);border-radius:11px;padding:9px 12px;cursor:pointer;box-shadow:2px 2px 0 rgba(44,40,43,.14)}
+.rowc.pink{--rc-bg:#F6E0E7}
+.rowc .st{font-family:var(--serif);width:24px;height:24px;border-radius:50%;border:1.3px solid #C9A227;color:#854F0B;display:flex;align-items:center;justify-content:center;font-size:12px;background:#fff;flex:none}
+.rowc .tx{min-width:0;flex:1}
+.rowc .tx b{display:block;font-family:var(--serif);font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rowc .tx span{display:block;font-size:10.5px;color:var(--sumi-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rowc .days{font-size:10.5px;color:var(--sumi-light);flex:none}
+.cmp{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.cmp .lab{font-size:11px;color:var(--sumi-light);width:52px;flex:none}
+
+.pick{margin-top:18px;padding:12px 16px;border:1.5px dashed var(--kin);border-radius:12px;background:#fffdf5;font-size:12.5px;color:var(--sumi-mid)}
+.pick b{color:var(--kin-deep);font-weight:500}
+</style>
+</head>
+<body>
+
+<h1>✿ 樱帖 · 改造预览 v2</h1>
+<div class="sub">2026-09-10 晚 · 修复：①樱粉这次是真的透出来了（原因是星图底 SVG 自带一层不透明米底，把染色全盖住了，已做透明底版本）②牌阵方案作废重出，不再按状态切</div>
+<div class="goldline"></div>
+
+<!-- ============ 问题一 ============ -->
+<div class="qblock">
+  <span class="qtag">问题一 · 已投牌染樱粉</span>
+  <div class="qtitle">这次樱粉是真的</div>
+  <div class="qdesc">规则：一家公司牌的状态取最高阶段——只要投过（已投/笔试/面试）就染樱粉底；还停在「想投」的保持米纸。金边、星图、月亮印、花纹全都不动，只是纸染了色。</div>
+  <div class="demo">
+    <div class="legend"><span><i style="background:#FBF7EC"></i>想投 · 米纸（不变）</span><span><i style="background:#F6E0E7"></i>已投往后 · 樱粉底</span></div>
+    <div class="pgrid">
+      <div class="pcard pink"><div class="top"><span class="stage">投</span><svg class="seal" width="19" height="19" viewBox="0 0 20 20"><path d="M12 2.5 a8 8 0 1 0 5 14 a7 7 0 1 1 -5 -14" fill="#A83358"/></svg></div><div class="co">腾讯</div><div class="po">投 AI 产品经理培训生<br>投 AI 产品经理（2027 校招）</div><div class="ft"><span>已投 · 5 天</span><span>官网</span></div></div>
+      <div class="pcard pink"><div class="top"><span class="stage">投</span><svg class="seal" width="19" height="19" viewBox="0 0 20 20"><path d="M12 2.5 a8 8 0 1 0 5 14 a7 7 0 1 1 -5 -14" fill="#A83358"/></svg></div><div class="co">DeepSeek</div><div class="po">投 AI 产品经理</div><div class="ft"><span>已投 · 2 天</span><span>Moka/BOSS</span></div></div>
+      <div class="pcard"><div class="top"><span class="stage">存</span><svg class="seal" width="19" height="19" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#A83358" stroke-width="1.6"/><circle cx="14" cy="6" r="1.6" fill="#A83358"/></svg></div><div class="co">网易雷火</div><div class="po">存 游戏 AI 产品（27届）</div><div class="ft"><span>想投 · 3 天</span><span>内推</span></div></div>
+      <div class="pcard"><div class="top"><span class="stage">存</span><svg class="seal" width="19" height="19" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#A83358" stroke-width="1.6"/><circle cx="14" cy="6" r="1.6" fill="#A83358"/></svg></div><div class="co">阿里巴巴</div><div class="po">存 AI 产品经理 / 前端开发工程师</div><div class="ft"><span>想投</span><span>校招官网</span></div></div>
+    </div>
+  </div>
+  <div class="pick">💬 你之前已经说过「樱粉可以」——这版就是最终效果。觉得色深色浅不合适也直说，色号一改就行。确认后我就把本体（sakura.html）改成这样并推云端。</div>
+</div>
+
+<!-- ============ 问题二 ============ -->
+<div class="qblock">
+  <span class="qtag">问题二 · 重出</span>
+  <div class="qtitle">你说得对：13 张全是「想投」，分区和筛选都治不了</div>
+  <div class="qdesc">所以这次不分类了，思路换成：<b>让每张牌变矮、一屏多装几张</b>。现在牌是固定 300:460 的长条（内容就两三行字，下面全空着），这才是要滑半天的根源。</div>
+
+  <div class="opts">
+    <div class="opt">
+      <div class="opt-h"><span class="badge">A</span><b>矮牌 · 高度随内容收</b><span class="rec">推荐 · 保留大牌样式</span></div>
+      <div class="demo">
+        <div class="wide-cap">同一家公司，只是不再撑到固定高度——内容多高牌就多高，大约砍掉 60% 高度：</div>
+        <div class="pgrid short">
+          <div class="pcard short pink"><div class="top"><span class="stage">投</span></div><div class="co">腾讯</div><div class="po">AI 产品经理培训生 · 2 岗</div><div class="ft"><span>已投 · 5 天</span></div></div>
+          <div class="pcard short pink"><div class="top"><span class="stage">投</span></div><div class="co">DeepSeek</div><div class="po">AI 产品经理</div><div class="ft"><span>已投 · 2 天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">网易雷火</div><div class="po">游戏 AI 产品（27届）</div><div class="ft"><span>想投 · 3 天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">字节跳动</div><div class="po">AI 产品经理 / 前端</div><div class="ft"><span>想投 · 2 天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">西湖心辰</div><div class="po">AI Native PM</div><div class="ft"><span>想投 · 2 天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">云深处科技</div><div class="po">产品助理</div><div class="ft"><span>想投 · 1 天</span></div></div>
+        </div>
+      </div>
+      <div class="opt-note">金边、星图、樱粉全保留，只是牌从「竖长条」变「小方片」。一屏能看 8-10 家，24 家大约两屏收工。</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><span class="badge">B</span><b>行牌 · 一行一家（原丙讲清楚版）</b><span class="rec2">最密 · 但没有大牌感</span></div>
+      <div class="demo">
+        <div class="cmp"><span class="lab">现在→</span><div class="pcard" style="width:86px;aspect-ratio:auto;min-height:96px;transform:scale(.9);transform-origin:left center"><div class="top"><span class="stage" style="width:20px;height:20px;font-size:11px">存</span></div><div class="co" style="font-size:11px">网易雷火</div><div class="ft" style="padding-top:2px"><span style="font-size:8px">想投·3天</span></div></div><span class="lab" style="width:auto">变成→</span><div class="rowc" style="flex:1"><span class="st">存</span><span class="tx"><b>网易雷火</b><span>游戏 AI 产品（27届）· 内推</span></span><span class="days">想投 3 天</span></div></div>
+        <div class="rows">
+          <div class="rowc pink"><span class="st">投</span><span class="tx"><b>腾讯</b><span>AI 产品经理培训生 · 2 岗 · 官网</span></span><span class="days">已投 5 天</span></div>
+          <div class="rowc pink"><span class="st">投</span><span class="tx"><b>DeepSeek</b><span>AI 产品经理 · Moka/BOSS</span></span><span class="days">已投 2 天</span></div>
+          <div class="rowc pink"><span class="st">投</span><span class="tx"><b>MiniMax</b><span>AI 产品经理 Mcode · 官网</span></span><span class="days">已投 2 天</span></div>
+          <div class="rowc"><span class="st">存</span><span class="tx"><b>字节跳动</b><span>AI 产品经理 / 前端开发 · 官网</span></span><span class="days">想投 2 天</span></div>
+          <div class="rowc"><span class="st">存</span><span class="tx"><b>西湖心辰</b><span>AI Native PM · 校招/BOSS直聘</span></span><span class="days">想投 2 天</span></div>
+          <div class="rowc"><span class="st">存</span><span class="tx"><b>云深处科技</b><span>产品助理 · 2027全球校招</span></span><span class="days">想投 1 天</span></div>
+        </div>
+      </div>
+      <div class="opt-note">一行一家的「名单条」，不是卡片——就是像表格里的一行，点整行翻档案。24 家一屏多就能看完。代价：牌的仪式感、星图、花纹都没了，变成一份清单。</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-h"><span class="badge">C</span><b>矮牌 + 放宽牌阵（A 的加强版）</b><span class="rec2">可叠加</span></div>
+      <div class="demo wide-demo">
+        <div class="wide-cap">牌阵页面现在锁 1080px 宽（5 列）。放宽到 1400px 后能摆 7 列，配合矮牌——24 家从 5 大行压到 2 行：</div>
+        <div class="pgrid wide short">
+          <div class="pcard short pink"><div class="top"><span class="stage">投</span></div><div class="co">腾讯</div><div class="ft"><span>已投·5天</span></div></div>
+          <div class="pcard short pink"><div class="top"><span class="stage">投</span></div><div class="co">DeepSeek</div><div class="ft"><span>已投·2天</span></div></div>
+          <div class="pcard short pink"><div class="top"><span class="stage">投</span></div><div class="co">MiniMax</div><div class="ft"><span>已投·2天</span></div></div>
+          <div class="pcard short pink"><div class="top"><span class="stage">投</span></div><div class="co">小红书</div><div class="ft"><span>已投</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">网易雷火</div><div class="ft"><span>想投·3天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">字节跳动</div><div class="ft"><span>想投·2天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">西湖心辰</div><div class="ft"><span>想投·2天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">云深处</div><div class="ft"><span>想投·1天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">群核科技</div><div class="ft"><span>想投·2天</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">睿琪软件</div><div class="ft"><span>想投</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">宇树科技</div><div class="ft"><span>想投</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">涂鸦智能</div><div class="ft"><span>想投</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">实在智能</div><div class="ft"><span>想投</span></div></div>
+          <div class="pcard short"><div class="top"><span class="stage">存</span></div><div class="co">波形智能</div><div class="ft"><span>想投</span></div></div>
+        </div>
+      </div>
+      <div class="opt-note">矮牌是「牌变矮」，这个是「桌子也变宽」——两个叠一起，24 家基本一屏半内看完。牌子再小一点，但星图和樱粉还在。</div>
+    </div>
+  </div>
+
+  <div class="pick">💬 <b>怎么选：</b>回 A / B / C（C = A + 放宽，选 C 就不用选 A）。我的推荐是 <b>C</b>：不动牌的样式、不砍仪式感，纯靠「变矮 + 变宽」把滑动距离砍掉一大半；如果你其实更想要「一份清爽的名单」而不是牌桌，那就 B。</div>
+</div>
+
+<!-- ============ 问题三 ============ -->
+<div class="qblock">
+  <span class="qtag">问题三</span>
+  <div class="qtitle">今日帖「没什么用」——先不动，理由上轮说过</div>
+  <div class="qdesc" style="max-width:760px">它正处在最没用的阶段：已投少、没到 7 天催办线、没面试进来，每天只能翻来覆去看同一批「该投」。等你投递铺开、试炼玩几天，有真实体感了再决定要不要改成「有事才值得点开」的轻量版。今天不碰它。</div>
+</div>
+
+</body>
+</html>
