@@ -6,8 +6,11 @@
 set -e
 cd "$(dirname "$0")"
 
+# Git Bash (MSYS) 会把 /opt/... 这样的参数改写成 Windows 路径，必须关掉
+export MSYS_NO_PATHCONV=1
+export MSYS2_ARG_CONV_EXCL="*"
+
 CLOUD_DIR="G:/_06_项目代码/工作台/workspace/cloud"
-REMOTE="/opt/workbuddy/workspace/offer-tracker/sakura.html"
 PAGES="https://whaleof.github.io/offer-tracker/sakura.html"
 SRV="http://101.43.110.207:9090/sakura.html"
 NOTE="${1:-樱帖更新}"
@@ -30,13 +33,14 @@ echo "  ✓ GitHub 已推（Pages 约 1-2 分钟后生效）"
 
 echo "── 4/5 部署云端 101.43（先备份旧版）"
 MD5_LOCAL=$(md5sum sakura.html | cut -d' ' -f1)
-python - "$MD5_LOCAL" "$REMOTE" <<'EOF'
+python - "$MD5_LOCAL" <<'EOF'
 import sys, os
 sys.path.insert(0, r"G:\_06_项目代码\工作台\workspace\cloud")
 from _cloud_ssh import run, put
-md5_local, remote = sys.argv[1], sys.argv[2]
-o, _, _ = run(f"cp {remote} {remote}.bak-deploy-$(date +%m%d-%H%M) && echo backed-up")
-print("  旧版备份:", o.strip())
+md5_local = sys.argv[1]
+remote = "/opt/workbuddy/workspace/offer-tracker/sakura.html"
+o, e, c = run(f"cp {remote} {remote}.bak-deploy-$(date +%m%d-%H%M) && echo backed-up")
+print("  旧版备份:", (o or e).strip()[:60])
 put("sakura.html", remote)
 o, _, _ = run(f"md5sum {remote}")
 md5_remote = o.split()[0] if o.strip() else ""
