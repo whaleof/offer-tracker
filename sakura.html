@@ -266,6 +266,37 @@ body:not(:has(.page:target)) #p-today{display:block}
 .footnote{max-width:1080px;margin:0 auto 40px;padding:0 40px;font-size:11px;color:var(--sumi-light)}
 .empty-tip{max-width:1080px;margin:0 auto 16px;padding:10px 18px;border:1px dashed var(--kin);border-radius:12px;background:#fffdf5;font-size:12.5px;color:var(--sumi-mid);text-align:center}
 .empty-tip a{color:var(--shu);cursor:pointer}
+
+/* ---- 新用户引导 / 帮助（9.13） ---- */
+.gd-steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.gd-step{background:#fff;border:1.5px solid rgba(44,40,43,.15);border-radius:12px;padding:12px 14px}
+.gd-step b{font-family:var(--serif);font-weight:500;font-size:13.5px;color:var(--shu-deep)}
+.gd-step p{font-size:12px;color:var(--sumi-mid);margin-top:3px;line-height:1.6}
+.gd-dict{background:var(--kin-soft);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--kin-deep);line-height:1.9}
+.gd-dict b{font-weight:500}
+.gd-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.gd-safe{margin-top:12px;font-size:11.5px;color:var(--sumi-light);background:var(--kami);border-radius:10px;padding:8px 14px;line-height:1.8}
+
+/* ---- 导入表格（9.13） ---- */
+.imp-ta{width:100%;min-height:110px;border:1.5px solid rgba(44,40,43,.35);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:12.5px;background:#fff;line-height:1.6;resize:vertical}
+.imp-ta:focus{outline:none;border-color:var(--shu)}
+.imp-tip{font-size:11.5px;color:var(--sumi-light);margin-top:6px;line-height:1.7}
+.imp-map{margin-top:12px;display:none}
+.imp-map.on{display:block}
+.imp-map table{width:100%;border-collapse:collapse;font-size:12px}
+.imp-map th{font-weight:500;color:var(--sumi-light);text-align:left;padding:4px 6px;border-bottom:1px solid rgba(44,40,43,.15)}
+.imp-map td{padding:5px 6px;border-bottom:1px solid rgba(44,40,43,.08);vertical-align:middle}
+.imp-map select{border:1.5px solid rgba(44,40,43,.3);border-radius:8px;padding:4px 6px;font-size:12px;background:#fff;color:var(--sumi);max-width:110px}
+.imp-map .sample{color:var(--sumi-mid);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-prev{margin-top:10px;background:var(--kinari);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--sumi-mid);line-height:1.8;max-height:130px;overflow:auto}
+/* 底部数据按钮：从纯文字链升级成小白圆片，看得见才用得上 */
+.footnote .fbtn{background:#fff;border:1.5px solid rgba(44,40,43,.22);border-radius:999px;padding:3px 13px;font-size:11px;color:var(--sumi-mid);cursor:pointer;margin-left:4px}
+.footnote .fbtn:hover{border-color:var(--shu);color:var(--shu-deep)}
+.topbar .tools{margin-left:auto;display:flex;gap:14px;font-size:12.5px;color:var(--sumi-light);align-items:baseline}
+.topbar .tools span{cursor:pointer}
+.topbar .tools span:hover{color:var(--shu)}
+/* 牌阵图例：术语大白话 */
+.bd-legend{font-size:11px;color:var(--sumi-light);margin-top:2px}
 </style>
 </head>
 <body>
@@ -277,12 +308,13 @@ body:not(:has(.page:target)) #p-today{display:block}
     <a href="#p-board" data-p="board">牌阵</a>
     <a href="#p-trial" data-p="trial">试炼</a>
   </nav>
+  <div class="tools"><span onclick="openFlow()" title="校招 / 社招流程切换">流程</span><span id="bell" onclick="toggleNotify()" style="display:none" title="到点的要紧事弹系统通知">🔔 提醒</span><span onclick="openGuide()" title="新手引导 · 术语小词典">? 帮助</span></div>
 </div>
 <div class="goldline"></div>
 
 <!-- ============ 今日帖 ============ -->
 <section class="page" id="p-today">
-  <div class="empty-tip" id="empty-state" style="display:none">牌桌还是空的——<a onclick="openAdd()">＋ 先添一张牌</a>，或 <a onclick="location='?demo=1'">先用示例牌看看样子</a></div>
+  <div class="empty-tip" id="empty-state" style="display:none">牌桌还是空的——<a onclick="openAdd()">＋ 先添一张牌</a> · <a onclick="openImport()">📥 从 Excel/表格导入</a> · 或 <a onclick="location='?demo=1'">先用示例牌看看样子</a></div>
 
   <div class="hero">
     <svg class="hero-bg" width="230" height="230" viewBox="0 0 240 240">
@@ -300,7 +332,7 @@ body:not(:has(.page:target)) #p-today{display:block}
     <div>
       <div class="hero-date"><svg width="15" height="15" viewBox="0 0 20 20"><path d="M10 1 Q11.2 7.6 19 10 Q11.2 12.4 10 19 Q8.8 12.4 1 10 Q8.8 7.6 10 1 Z" fill="#C9A227"/></svg><span id="hero-date"></span></div>
       <div class="hero-say" id="hero-say"></div>
-      <div class="hero-bar"><span>转生</span><span class="hb"><i id="hero-fill" style="width:0%"></i></span><span id="hero-n"></span></div>
+      <div class="hero-bar"><span title="转生＝拿到 Offer，取樱花落尽化新生的意思">转生</span><span class="hb"><i id="hero-fill" style="width:0%"></i></span><span id="hero-n"></span></div>
     </div>
     <div class="moons">
       <svg class="m" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#C9A227" stroke-width="1.6"/><circle cx="14" cy="6" r="1.6" fill="#C9A227"/></svg><span class="ln"></span>
@@ -346,7 +378,8 @@ body:not(:has(.page:target)) #p-today{display:block}
     </div>
     <div class="board-actions board-actions-primary">
       <button class="btn-chip btn-merge" id="btn-radar-today" onclick="mergeTodayRadar()" title="今日雷达">今日雷达</button>
-      <button class="btn-chip btn-merge" onclick="openMerge()">合并雷达</button>
+      <button class="btn-chip btn-merge" onclick="openMerge()" title="把雷达脚本产出的 JSON 合并进来（同指纹去重）">合并雷达</button>
+      <button class="btn-chip btn-merge" onclick="openImport()" title="从 Excel / CSV 表格批量导入已投记录">导入表格</button>
       <button class="btn-chip btn-add" onclick="openAdd()">落牌</button>
     </div>
   </div>
@@ -354,6 +387,7 @@ body:not(:has(.page:target)) #p-today{display:block}
     <div class="viewtoggle" id="vt"><span class="on btn-chip" data-v="flow" title="横看流程">流程</span><span class="btn-chip" data-v="co" title="纵看公司">公司</span><span class="btn-chip" data-v="cal" title="看月历">月历</span></div>
     <div class="board-sub" id="bsub">从左到右推进，点牌翻档案、可以直接推进阶段。</div>
   </div>
+  <div class="bd-legend">小词典：转生＝拿到 Offer · 落樱＝这条没走通（被拒/终止）· 撕牌＝删除 · 该催＝投出 7 天没回音</div>
   <div class="board" id="board"></div>
   <div class="board-drop" id="board-drop">把雷达 merge 文件拖到这里也能合并（同指纹去重，只加不动）</div>
 </section>
@@ -409,8 +443,7 @@ body:not(:has(.page:target)) #p-today{display:block}
   </div>
 </section>
 
-<div class="footnote">樱帖 · 求职作战板 · 数据存在你自己的浏览器，清缓存或换设备前请先自行备份
-<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="btn btn-ghost" onclick="cloudPush()">立即备份</button><button class="btn btn-ghost" onclick="cloudRestore()">恢复云端</button><button class="btn btn-ghost" onclick="setCloudToken()">令牌</button></span><span style="margin-left:10px"><button class="btn btn-ghost" onclick="exportData()">导出备份</button><button class="btn btn-ghost" onclick="importBackup()">导入备份</button></span></div>
+<div class="footnote">🔒 牌和数据只存在你自己的浏览器，清缓存或换设备前请先导出备份<span id="cloud-st" style="margin-left:10px"></span><span id="cloud-btns" style="display:none"><button class="fbtn" onclick="cloudPush()">立即备份</button><button class="fbtn" onclick="cloudRestore()">恢复云端</button><button class="fbtn" onclick="setCloudToken()">令牌</button></span><span style="margin-left:10px"><button class="fbtn" onclick="exportData()" title="下载一份 JSON 到本地，建议每周存一次">导出备份</button><button class="fbtn" onclick="importBackup()" title="把之前导出的 JSON 备份恢复回来">导入备份</button></span></div>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
 <div class="mask" id="mask-add" onclick="if(event.target===this)this.classList.remove('on')">
@@ -440,6 +473,83 @@ body:not(:has(.page:target)) #p-today{display:block}
   </div>
 </div>
 <input type="file" id="merge-file" accept=".json,application/json" style="display:none" onchange="mergeRadar(this)">
+<input type="file" id="imp-file" accept=".csv,.tsv,.txt,text/csv,text/plain" style="display:none" onchange="impReadFile(this)">
+
+<!-- ============ 新手引导（首次打开自动弹，之后点右上「? 帮助」再看） ============ -->
+<div class="mask" id="mask-guide" onclick="if(event.target===this)closeGuide()"><div class="sheet">
+  <span class="x" onclick="closeGuide()">✕</span>
+  <div class="kind">樱帖 · 新手上路</div>
+  <h3>一张牌，就是一个投递岗位</h3>
+  <div class="sub2">牌往前挪一格，求职就往前走一步。三件事就够用：</div>
+  <div class="gd-steps">
+    <div class="gd-step"><b>① 落牌（存岗位）</b><p>牌阵右上角「落牌」，填公司岗位即可，其他都可以空着以后补。</p></div>
+    <div class="gd-step"><b>② 推进</b><p>投出去点「投了」；之后拖着牌到下一列（已投→笔试→面试→转生）就是进度。</p></div>
+    <div class="gd-step"><b>③ 今日帖</b><p>打开首页就能看到：今天该投谁、该催谁（投出 7 天没音讯自动上榜）、面试约在哪天。</p></div>
+    <div class="gd-step"><b>④ 导入旧记录</b><p>已经用 Excel/表格记了投递？牌阵右上角「导入表格」粘贴或选文件，一次全进来。</p></div>
+  </div>
+  <div class="gd-dict"><b>术语小词典</b>｜<b>转生</b>＝拿到 Offer｜<b>落樱</b>＝这条没走通（被拒/流程终止）｜<b>撕牌</b>＝删除｜<b>该催</b>＝投出 7 天没回音</div>
+  <div class="gd-safe">🔒 数据只存在你自己浏览器的本地存储里，不上传任何服务器。页面最底部有「<b>导出备份</b>」按钮，建议每周导一次 JSON——换电脑、清缓存前也先导一份。</div>
+  <div class="gd-actions">
+    <button class="btn btn-p" onclick="closeGuide();openImport()">📥 从表格导入</button>
+    <button class="btn btn-s" onclick="closeGuide();openAdd()">＋ 先添一张牌</button>
+    <button class="btn btn-s" onclick="location='?demo=1'">👀 先看示例牌桌</button>
+    <button class="btn btn-ghost" onclick="closeGuide()">直接开始 ›</button>
+  </div>
+</div></div>
+
+<!-- ============ 导入表格（Excel 粘贴 / CSV 文件 → 列映射 → 去重合并） ============ -->
+<div class="mask" id="mask-import" onclick="if(event.target===this)closeImport()"><div class="sheet" style="width:640px">
+  <span class="x" onclick="closeImport()">✕</span>
+  <div class="kind">牌 · 批量落</div>
+  <h3>导入表格里的投递记录</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+    <textarea class="imp-ta" id="imp-ta" placeholder="直接从 Excel 里选中区域 Ctrl+C，到这里 Ctrl+V 粘贴即可；也支持 CSV 文本。
+
+例：
+公司	岗位	城市	状态	投递日期
+腾讯	AI 产品经理	深圳	已投	2026-09-01"></textarea>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="impParse()">解析预览</button>
+      <button class="btn btn-s" onclick="$('imp-file').click()">选 CSV 文件…</button>
+      <span class="imp-tip">Excel 请直接复制粘贴（最稳）；CSV 文件也可以，.xlsx 请先在 Excel 里另存为 CSV。</span>
+    </div>
+    <div class="imp-map" id="imp-map"></div>
+    <div class="imp-prev" id="imp-prev" style="display:none"></div>
+    <div style="text-align:right"><button class="btn btn-p" id="imp-go" onclick="impApply()" style="display:none">全部落牌</button></div>
+  </div>
+</div></div>
+
+<!-- ============ 合并雷达说明（原来点了就开文件框，新用户会懵） ============ -->
+<div class="mask" id="mask-merge" onclick="if(event.target===this)closeMerge()"><div class="sheet">
+  <span class="x" onclick="closeMerge()">✕</span>
+  <div class="kind">牌 · 雷达来路</div>
+  <h3>合并雷达 JSON</h3>
+  <div class="sub2">雷达 JSON 由仓库里的 <b>radar.py</b> 脚本生成（读求职画像 → 联网搜岗 → 打分排序）。会跑 Python 就用它；不会跑也完全不耽误用。</div>
+  <div class="gd-steps">
+    <div class="gd-step"><b>方式一 · 拖进来</b><p>把 merge JSON 文件直接拖到牌阵页面上。</p></div>
+    <div class="gd-step"><b>方式二 · 选文件</b><p>点下面按钮选 JSON 文件（增量合并，同指纹去重，只加不动）。</p></div>
+    <div class="gd-step"><b>方式三 · 今日雷达</b><p>部署在服务器上时，每天雷达跑完点「今日雷达」一键入阵。</p></div>
+    <div class="gd-step"><b>不跑脚本？</b><p>用「导入表格」把 Excel / 备忘录里的岗位贴进来，效果一样。</p></div>
+  </div>
+  <div class="gd-actions">
+    <button class="btn btn-p" onclick="$('merge-file').click()">选择 JSON 文件…</button>
+    <button class="btn btn-s" onclick="closeMerge();openImport()">改用导入表格</button>
+  </div>
+</div></div>
+
+<!-- ============ 流程预设（校招 / 社招一键切换，不动数据） ============ -->
+<div class="mask" id="mask-flow" onclick="if(event.target===this)closeFlow()"><div class="sheet">
+  <span class="x" onclick="closeFlow()">✕</span>
+  <div class="kind">牌阵 · 流程预设</div>
+  <h3>你的求职流程是哪一种？</h3>
+  <div class="sub2">切换只影响牌阵的列和推进路径，牌的数据原样保留，随时可切回来。</div>
+  <div class="gd-steps" style="grid-template-columns:1fr 1fr">
+    <div class="gd-step" style="cursor:pointer" onclick="setFlow('campus')"><b>🎓 校招全流程</b><p>想投 → 已投 → 笔试 → 面试 → 已转生（＋落樱）</p></div>
+    <div class="gd-step" style="cursor:pointer" onclick="setFlow('pro')"><b>💼 社招精简</b><p>想投 → 已投 → 面试 → 已转生（＋落樱），没有笔试列</p></div>
+  </div>
+  <div class="imp-tip">考公等特殊流程暂未内置，可切「社招精简」后将就着用，或在代码顶部 STAGE_DEFS 里改列名。</div>
+</div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -453,9 +563,65 @@ let REAL={jobs:[]};
 function boot(){
   $("hero-date").textContent=cnDate()+(DEMO&&!PREVIEW?" · 示例模式":"");
   const fb=$("flashbg"); if(fb) fb.src=PAIBEI;
+  loadFlow();
   if(DEMO){ loadDemo(); return; }
   try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||"null"); if(d&&Array.isArray(d.jobs)) REAL=d; }catch(e){}
   init();
+}
+/* ── 新手引导：首次打开自动弹一次，之后点右上「? 帮助」随时再看（9.13） ── */
+function openGuide(){$('mask-guide').classList.add('on')}
+function closeGuide(){$('mask-guide').classList.remove('on');try{localStorage.setItem('sakura-onboarded','1')}catch(e){}}
+function checkGuide(){
+  if(DEMO||PREVIEW)return;
+  let seen='';try{seen=localStorage.getItem('sakura-onboarded')||''}catch(e){}
+  if(!seen)openGuide();
+}
+/* ── 到点提醒：该催 / 今天面试 / 3 天内截止 —— 用浏览器系统通知，不花钱不依赖服务器（9.13） ──
+   每天最多弹一次（同一天反复打开不轰炸）；权限被拒时铃铛显示「被拦」提示去设置里开。 */
+function syncBell(){
+  const b=$('bell');if(!b)return;
+  if(!('Notification' in window)||DEMO){b.style.display='none';return}
+  b.style.display='';
+  b.textContent=Notification.permission==='denied'?'🔔 提醒·被拦':'🔔 提醒';
+}
+function toggleNotify(){
+  if(!('Notification' in window)){toast('这个浏览器不支持系统通知（试试 Chrome / Edge）');return}
+  if(Notification.permission==='granted'){toast('提醒已开着 ✓ 今天有要紧事会弹通知');checkNotify(true);return}
+  Notification.requestPermission().then(p=>{
+    syncBell();
+    if(p==='granted'){toast('提醒已开启 ✓');checkNotify(true)}
+    else toast('通知权限被拦了——点地址栏左侧的锁图标可重新允许');
+  });
+}
+function dlDays(iso){const s=String(iso||'');if(!/^\d{4}-\d{2}-\d{2}/.test(s))return null;const d=new Date(s.slice(0,10)+'T00:00:00');return isNaN(d)?null:Math.round((d-today0())/864e5)}
+function dueList(){
+  const out=[],today=new Date().toISOString().slice(0,10);
+  JOBS.forEach(j=>{
+    if(j.st==='sent'&&j.days>=7)out.push('该催：'+j.co+' · '+j.po+'（已投 '+j.days+' 天）');
+    (j.raw.events||[]).forEach(e=>{if(e.date===today)out.push('今天'+(e.time||'')+'：'+j.co+' '+(e.label||'事项'))});
+    const dd=dlDays(j.raw.deadline);
+    if(dd!==null&&dd>=0&&dd<=3)out.push((dd===0?'今天':dd+' 天后')+'截止：'+j.co+' · '+j.po);
+  });
+  return out;
+}
+function checkNotify(force){
+  if(!('Notification' in window)||Notification.permission!=='granted'||DEMO)return;
+  const today=new Date().toISOString().slice(0,10);
+  let last='';try{last=localStorage.getItem('sakura-notified')||''}catch(e){}
+  if(!force&&last===today)return;
+  const items=dueList();if(!items.length)return;
+  try{localStorage.setItem('sakura-notified',today)}catch(e){}
+  try{new Notification('樱帖 · 今天有 '+items.length+' 件要紧事',{body:items.slice(0,4).join('\n')+(items.length>4?'\n…… 其余进樱帖看':'')})}catch(e){}
+}
+/* ── 导出提醒：牌攒到 5 张还没导出过时，温一句（只提一次） ── */
+function exportHint(){
+  if(DEMO||PREVIEW)return;
+  try{
+    if(REAL.jobs.length>=5&&!localStorage.getItem('sakura-last-export')&&!localStorage.getItem('sakura-export-hint')){
+      localStorage.setItem('sakura-export-hint','1');
+      setTimeout(()=>toast('牌不少啦——数据只存在本机浏览器，建议先到页面底部「导出备份」存一份 JSON'),1600);
+    }
+  }catch(e){}
 }
 /* 空列专用迷你牌背：按 90px 横槽重画（星环缩小、细线、小月章），不再裁大牌背 */
 const MINI_BACK=`<svg viewBox='0 0 300 158' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid slice'>
@@ -518,11 +684,27 @@ function mut(id,fn,touch){
 }
 
 /* ═══════════ ② 字段映射：真数据 → 樱帖牌 ═══════════ */
-const STAGES=[{k:'want',n:'想投'},{k:'sent',n:'已投'},{k:'test',n:'笔试'},{k:'int',n:'面试'},{k:'offer',n:'已转生'},{k:'fallen',n:'落樱'}];
-const NEXT={want:'sent',sent:'test',test:'int',int:'offer'};
-const BACK={sent:'applied',test:'test',int:'interview',offer:'offer',fallen:'rejected'};
+/* ═══ 阶段体系 · 可切换预设（9.13） ═══
+   底层真实状态（pool/applied/test/interview/offer/rejected）不变，只换显示的列与推进路径：
+   campus=校招全流程（含笔试），pro=社招精简（无笔试）。切换存 localStorage，牌的数据原样保留。
+   数据里若存有 test 状态而当前预设无笔试列，toStage 会把它折到「面试」显示，切回校招即复原。 */
+const STAGE_DEFS={want:{n:'想投'},sent:{n:'已投'},test:{n:'笔试'},int:{n:'面试'},offer:{n:'已转生'},fallen:{n:'落樱'}};
+const REAL_STATUS={want:'pool',sent:'applied',test:'test',int:'interview',offer:'offer',fallen:'rejected'};
 const SAKURA_STAGE={pool:'want',applied:'sent',test:'test',interview:'int',offer:'offer',rejected:'fallen'};
-const stN=k=>STAGES.find(s=>s.k===k).n;
+let FLOW='campus';
+let STAGES=[],NEXT={},BACK={};
+function rebuildFlow(){
+  const vis=FLOW==='pro'?['want','sent','int','offer','fallen']:['want','sent','test','int','offer','fallen'];
+  STAGES=vis.map(k=>({k,n:STAGE_DEFS[k].n}));
+  NEXT={};BACK={};
+  vis.forEach((k,i)=>{if(i<vis.length-1&&k!=='offer'&&k!=='fallen')NEXT[k]=vis[i+1];if(k!=='want')BACK[k]=REAL_STATUS[k]});
+}
+function loadFlow(){try{FLOW=localStorage.getItem('sakura-flow')==='pro'?'pro':'campus'}catch(e){}rebuildFlow()}
+function setFlow(f){if(DEMO){toast('示例模式 · 不写入真数据');return}FLOW=f;try{localStorage.setItem('sakura-flow',f)}catch(e){};rebuildFlow();renderAll();closeFlow();toast(f==='pro'?'已切到社招精简流程（无笔试列）✓':'已切到校招全流程 ✓')}
+function openFlow(){if(DEMO){toast('示例模式 · 不写入真数据');return}$('mask-flow').classList.add('on')}
+function closeFlow(){$('mask-flow').classList.remove('on')}
+function toStage(real){let s=SAKURA_STAGE[real]||(STAGES.some(x=>x.k===real)?real:'want');if(!STAGES.some(x=>x.k===s))s=s==='test'?'int':'want';return s}
+const stN=k=>{const s=STAGES.find(x=>x.k===k);return s?s.n:(STAGE_DEFS[k]?STAGE_DEFS[k].n:String(k))};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const today0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
@@ -612,7 +794,7 @@ const HOLIDAYS={
   '2026-10-10':{type:'workday',label:'班'}
 };
 function vm(j){
-  const st=SAKURA_STAGE[j.status]||(STAGES.some(s=>s.k===j.status)?j.status:'want');
+  const st=toStage(j.status);
   const appliedIso=j.appliedAt||stageAt(j,'applied');
   let days=0;
   if(st==='sent')days=since(appliedIso||j.updatedAt);
@@ -960,8 +1142,10 @@ function addCard(){
    从旧作战板原样迁回——旧板退役后这是雷达 JSON 的唯一入口。 */
 function openMerge(){
   if(DEMO){toast("示例模式 · 不写入真数据");return}
-  $('merge-file').click();
+  /* 9.13：不再点了就弹文件框——先讲清楚 JSON 从哪来，不会跑脚本的用户给「导入表格」的出路 */
+  $('mask-merge').classList.add('on');
 }
+function closeMerge(){$('mask-merge').classList.remove('on')}
 function mergeRadar(input){
   const file=input.files[0]; if(!file) return;
   const r=new FileReader();
@@ -1087,6 +1271,169 @@ function delCard(id){
   fresh.jobs=fresh.jobs.filter(x=>x.id!==id);
   REAL=fresh;save();closeSheet();renderAll();
   toast('已撕掉一张牌 ✓');
+}
+
+/* ═══ 导入表格（9.13）：把 Excel / 备忘录里已记的投递批量搬进樱帖 ═══
+   三步：粘贴（Excel 直接 Ctrl+V 得到 TSV）或选 CSV 文件 → 自动识别列对应（可手改）→ 同指纹去重后落牌。
+   与合并雷达同一纪律：只加新牌，绝不动已有牌。 */
+const IMP_FIELDS=[
+ {k:'',n:'— 跳过 —'},
+ {k:'company',n:'公司（必填）',re:/公司|单位|企业|company/i},
+ {k:'role',n:'岗位',re:/岗位|职位|职务|position|role|title/i},
+ {k:'city',n:'城市',re:/城市|地点|city|工作地/i},
+ {k:'channel',n:'渠道',re:/渠道|来源|平台|channel|site|网申/i},
+ {k:'status',n:'状态',re:/状态|进度|阶段|status/i},
+ {k:'date',n:'投递日期',re:/日期|投递日|时间|date/i},
+ {k:'next',n:'下一步',re:/下一步|待办|next|action/i},
+ {k:'notes',n:'备注',re:/备注|笔记|note|描述|desc|记录/i},
+ {k:'resume',n:'简历版本',re:/简历|resume|cv/i},
+ {k:'salary',n:'薪资',re:/薪资|工资|待遇|salary|薪/i},
+ {k:'url',n:'链接',re:/链接|网址|url|link/i}
+];
+let IMP=null;
+function openImport(){if(DEMO){toast('示例模式 · 不写入真数据');return}$('mask-import').classList.add('on');setTimeout(()=>$('imp-ta').focus(),60)}
+function closeImport(){$('mask-import').classList.remove('on')}
+function impReadFile(input){
+  const f=input.files&&input.files[0];input.value='';if(!f)return;
+  if(/\.xlsx?$/i.test(f.name)){toast('.xlsx 请先在 Excel 里另存为 CSV，或直接复制粘贴过来');return}
+  const r=new FileReader();
+  r.onload=()=>{$('imp-ta').value=r.result;impParse()};
+  r.readAsText(f);
+}
+function impDetectDelim(lines){
+  let best='\t',bn=-1;
+  ['\t',',',';'].forEach(d=>{let n=0;lines.slice(0,6).forEach(l=>{n+=l.split(d).length-1});if(n>bn){bn=n;best=d}});
+  return best;
+}
+/* 支持引号包裹的 CSV 单行拆分（单元格里有逗号/tab 不散架） */
+function impSplit(line,delim){
+  const out=[];let cur='',q=false;
+  for(let i=0;i<line.length;i++){const c=line[i];
+    if(q){if(c==='"'){if(line[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+    else if(c==='"')q=true;
+    else if(c===delim){out.push(cur);cur=''}
+    else cur+=c;
+  }
+  out.push(cur);
+  return out.map(s=>s.trim());
+}
+function impParse(){
+  const text=$('imp-ta').value;
+  if(!text.trim()){toast('先粘贴表格内容，或选一个 CSV 文件');return}
+  const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim()!=='');
+  const delim=impDetectDelim(lines);
+  const rows=lines.map(l=>impSplit(l,delim));
+  const width=Math.max.apply(null,rows.map(r=>r.length));
+  rows.forEach(r=>{while(r.length<width)r.push('')});
+  const firstRow=rows[0].join('|');
+  const hasHeader=rows.length>1&&IMP_FIELDS.some(f=>f.re&&f.re.test(firstRow));
+  const map=[];
+  for(let c=0;c<width;c++){
+    let fi=0;
+    if(hasHeader){const hit=IMP_FIELDS.findIndex(f=>f.re&&f.re.test(rows[0][c]));if(hit>0)fi=hit}
+    map.push(fi);
+  }
+  if(!map.some(m=>IMP_FIELDS[m].k==='company')){
+    const ci=IMP_FIELDS.findIndex(f=>f.k==='company');
+    const probe=rows[hasHeader?1:0]||[];
+    for(let c=0;c<width;c++){if((probe[c]||'').trim()){map[c]=ci;break}}
+  }
+  IMP={rows,map,hasHeader,pending:[]};
+  impRenderMap();
+}
+function impRenderMap(){
+  const {rows,map,hasHeader}=IMP;
+  const body=hasHeader?rows.slice(1):rows;
+  let html='<div class="sec-t">列对应 · 自动认的，认错就在下拉里改</div><table><tr><th>列</th><th>内容示例</th><th>是什么</th></tr>';
+  for(let c=0;c<rows[0].length;c++){
+    const sample=body.slice(0,3).map(r=>trim(r[c],18)).filter(Boolean).join(' / ')||'（空）';
+    const opts=IMP_FIELDS.map((f,i)=>`<option value="${i}"${i===map[c]?' selected':''}>${f.n}</option>`).join('');
+    html+=`<tr><td>第 ${c+1} 列${hasHeader?'<br><span style="color:var(--sumi-light)">'+esc(trim(rows[0][c],10))+'</span>':''}</td><td class="sample">${esc(sample)}</td><td><select onchange="impSetCol(${c},this.value)">${opts}</select></td></tr>`;
+  }
+  html+='</table>';
+  $('imp-map').innerHTML=html;$('imp-map').classList.add('on');
+  impPreview();
+}
+function impSetCol(c,v){if(IMP){IMP.map[c]=+v;impPreview()}}
+/* 状态列各种写法 → 樱帖真实状态；认不出就当「想投」 */
+function impNormStatus(v){
+  const s=String(v||'').trim().toLowerCase();
+  if(!s)return'';
+  if(/offer|录用|转生|接收|accept/.test(s))return'offer';
+  if(/reject|拒|挂|落樱|感谢信|终止|凉|没过/.test(s))return'rejected';
+  if(/笔试|test/.test(s))return'test';
+  if(/面试|interview/.test(s))return'interview';
+  if(/已投|投递|投出|投了|applied|sent|已申/.test(s))return'applied';
+  if(/想投|待投|准备投|收藏|pool|存/.test(s))return'pool';
+  return'';
+}
+function impNormDate(v){
+  const s=String(v||'').trim();if(!s)return'';
+  const pad=n=>String(n).padStart(2,'0');
+  let m=s.match(/^(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})/);
+  if(m)return m[1]+'-'+pad(m[2])+'-'+pad(m[3]);
+  m=s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{1,2})+$/);
+  if(m){const y=+m[1]<100?2000+ +m[1]:+m[1];return y+'-'+pad(m[2])+'-'+pad(m[3])}
+  m=s.match(/^(\d{1,2})[-/.月](\d{1,2})日?$/);
+  if(m){return new Date().getFullYear()+'-'+pad(m[1])+'-'+pad(m[2])}
+  const d=new Date(s);
+  return isNaN(d)?'':d.toISOString().slice(0,10);
+}
+function impJobs(){
+  const {rows,map,hasHeader}=IMP;
+  const body=hasHeader?rows.slice(1):rows;
+  const out=[];
+  body.forEach(r=>{
+    const o={};
+    (r||[]).forEach((v,c)=>{const f=IMP_FIELDS[map[c]];if(f&&f.k)o[f.k]=String(v==null?'':v).trim()});
+    const co=o.company||o.role||'';
+    if(!co)return;
+    const cc=chClean(o.channel||'');
+    const st=impNormStatus(o.status);
+    const dt=impNormDate(o.date);
+    out.push({company:co,role:o.role||'待定岗位',city:o.city||'',channel:cc.n,resume:o.resume||'',salary:o.salary||'',
+      status:st,appliedAt:(st&&st!=='pool')?dt:'',next:o.next||'',notes:o.notes||'',url:o.url||cc.u});
+  });
+  return out;
+}
+function impPreview(){
+  const jobs=impJobs();
+  const prev=$('imp-prev'),go=$('imp-go');
+  if(!jobs.length){prev.style.display='';prev.innerHTML='没解析出有效行——每行至少要有「公司」或「岗位」。检查列对应里公司那列选对没有。';go.style.display='none';return}
+  let fresh=REAL;
+  try{const d=JSON.parse(localStorage.getItem(LS_KEY)||'null');if(d&&Array.isArray(d.jobs))fresh=d}catch(e){}
+  const fp=j=>[j.company,j.role,j.city].map(s=>String(s||'').replace(/\s+/g,'').toLowerCase()).join('|');
+  const known=new Set(fresh.jobs.map(fp));
+  /* 同一文件里重复的行也只取第一行（与阵上去重同一指纹） */
+  const seen=new Set(),add=[];
+  jobs.forEach(j=>{const k=fp(j);if(!known.has(k)&&!seen.has(k)){seen.add(k);add.push(j)}});
+  IMP.pending=add;
+  prev.style.display='';
+  const stN2=s=>({pool:'想投',applied:'已投',test:'笔试',interview:'面试',offer:'转生',rejected:'落樱'}[s]||'想投');
+  prev.innerHTML='共解析 <b>'+jobs.length+'</b> 行 · 与阵上重复自动跳过 '+(jobs.length-add.length)+' 行 · 将新落 <b>'+add.length+'</b> 张牌<br>'
+    +add.slice(0,5).map(j=>'· '+esc(trim(j.company+' · '+j.role+'（'+stN2(j.status)+'）',44))).join('<br>')+(add.length>5?'<br>……':'');
+  go.style.display=add.length?'':'none';
+  go.textContent='落牌 '+add.length+' 张';
+}
+function impApply(){
+  const add=(IMP&&IMP.pending)||[];
+  if(!add.length)return;
+  if(!confirm('新落 '+add.length+' 张牌（重复已跳过，已有牌一律不动）。继续？'))return;
+  let fresh=REAL;
+  try{const d=JSON.parse(localStorage.getItem(LS_KEY)||'null');if(d&&Array.isArray(d.jobs))fresh=d}catch(e){}
+  const now=new Date().toISOString();
+  add.forEach(j=>{
+    const st=j.status||'pool';
+    const job={id:'real-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),
+      company:j.company,role:j.role,city:j.city,channel:j.channel,resume:j.resume,salary:j.salary||'',
+      status:st,createdAt:now,appliedAt:j.appliedAt||'',next:j.next,notes:j.notes,events:[],
+      history:[{status:st,at:j.appliedAt?j.appliedAt+'T12:00:00.000Z':now}]};
+    if(j.url)job.applyUrl=j.url;
+    fresh.jobs.push(job);
+  });
+  REAL=fresh;save();renderAll();closeImport();
+  $('imp-ta').value='';$('imp-map').classList.remove('on');$('imp-prev').style.display='none';$('imp-go').style.display='none';
+  go('board');toast('已落牌 '+add.length+' 张 ✓');
 }
 
 /* ═══════════ ⑥ 试炼 · 三件套 ═══════════ */
@@ -1254,6 +1601,7 @@ function init(){
   renderAll();renderPrep();renderRev();sync();
   bindCkAdd();
   loadRadarToday();
+  checkGuide();syncBell();checkNotify(false);exportHint();
   const vp=new URLSearchParams(location.search);
   const v=vp.get('view');
   if(v==='board')go('board');
@@ -1315,6 +1663,7 @@ function exportData(){
     a.download="樱帖备份-"+new Date().toISOString().slice(0,10)+".json";
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    try{localStorage.setItem('sakura-last-export',new Date().toISOString().slice(0,10))}catch(e){}
     toast("已导出 "+REAL.jobs.length+" 张牌 + "+payload.data.wrongBank.length+" 道题 ✓");
   }catch(e){toast("导出失败："+e.message)}
 }
