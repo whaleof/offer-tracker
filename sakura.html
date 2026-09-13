@@ -406,7 +406,7 @@ body:not(:has(.page:target)) #p-today{display:block}
 <section class="page" id="p-trial">
   <div class="trial-row">
     <div class="bigcard bc-a"><h3>备战资料</h3><p>选公司 → 备考清单＋资料包手记</p><button class="go" onclick="pick('prep')">选公司备战 ›</button></div>
-    <div class="bigcard bc-b"><h3>面试复盘</h3><p>面完记：被问啥 / 卡哪 / 下轮改啥</p><button class="go" onclick="pick('rev')"><span id="rev-n">0</span> 次复盘 · ＋记一笔 ›</button></div>
+    <div class="bigcard bc-b"><h3>面试复盘</h3><p>面完记被问啥/卡哪，AI 帮你盘下一轮</p><button class="go" onclick="pick('rev')"><span id="rev-n">0</span> 次复盘 · ＋记一笔 ›</button></div>
     <div class="bigcard bc-c"><h3>刷题库</h3><p>22 道种子题＋被问倒的自动收集＋AI 答题思路</p><button class="go" onclick="pick('flash')">刷卡模式 ›</button></div>
   </div>
 
@@ -435,6 +435,11 @@ body:not(:has(.page:target)) #p-today{display:block}
           <button class="btn btn-p" onclick="saveRev()">存进帖里</button>
         </div>
       </div>
+      <div class="ai-bar">
+        <button class="btn btn-p" id="rev-ai-btn" onclick="revAiThink()">✨ AI 盘下一轮</button>
+        <span class="ai-st">AI 读完你记的复盘和被问倒的题，给「下一轮重点准备」· 同一套 <a onclick="openAiKey()">DeepSeek 密钥</a> · 一条不到 1 分钱</span>
+      </div>
+      <div class="ai-out" id="rev-ai-out" style="display:none"></div>
     </div>
     <div id="wb-flash" style="display:none">
       <div class="flash" id="fc" onclick="flip()">
@@ -1545,6 +1550,7 @@ function renderRev(){
   $('rev-list').innerHTML=revs.map(r=>`<div class="rev"><b>${esc(r.co)} · ${esc(r.date)}</b>${esc(r.text)}</div>`).join('')||'<div class="rev">还没有复盘，面完记一笔</div>';
   $('rev-n').textContent=revs.length;
   $('rev-co').innerHTML=activeJobs().map(j=>`<option value="${j.id}">${esc(j.co)} · ${esc(trim(j.po,14))}</option>`).join('');
+  const ro=$('rev-ai-out');if(ro)ro.style.display='none';
 }
 function saveRev(){
   const t=$('rev-text').value.trim();if(!t){toast('先写一句再存');return}
@@ -1552,6 +1558,59 @@ function saveRev(){
   mut(id,j=>{(j.reviews=j.reviews||[]).unshift({at:isoNow(),date:fd(new Date()),round:"",questions:[t]})});
   $('rev-text').value='';document.getElementById('revform').classList.remove('on');
   renderRev();toast('复盘已记进帖里 ✓');
+}
+
+/* ---- AI 盘下一轮（9.14）：读这家公司的复盘记录 + 被问倒的题，生成「下一轮重点准备」 ----
+   与 AI 答题思路同一套密钥与缓存（AI_CACHE_LS），换密钥/计费说明见 openAiKey。 */
+let revAiBusy=false;
+function revAiThink(){
+  if(DEMO){toast('示例模式 · 不调用 AI');return}
+  if(revAiBusy)return;
+  const id=$('rev-co').value||curId;
+  const j=JOBS.find(x=>x.id===id);
+  if(!j){toast('先在上面选一家公司');return}
+  const revs=(j.raw.reviews||[]);
+  if(!revs.length){toast('这家还没有复盘——先记一笔，AI 才有得分析');return}
+  const revTxt=revs.map(r=>'· '+((r.date||fd(r.at||''))||'')+' '+(r.round||'')+'：'+(r.questions||[]).join('；')).join('\n');
+  const wrong=wrongBank().filter(w=>w.co===j.co).map(w=>'· '+w.q).join('\n');
+  const ck='revai||'+j.co+'||'+revs.length+'||'+revTxt.slice(0,120);
+  const cached=aiCacheGet()[ck];
+  if(cached){revAiShow(cached,true);return}
+  if(!aiKey()){openAiKey();toast('先填一次 DeepSeek 密钥（只存本机，一条不到 1 分钱）');return}
+  revAiBusy=true;
+  const btn=$('rev-ai-btn'),out=$('rev-ai-out');
+  btn.disabled=true;btn.textContent='✨ AI 正在盘…';
+  out.style.display='';out.innerHTML='<span style="color:var(--sumi-light)">AI 正在结合复盘记录想下一轮的重点…（约 3-10 秒）</span>';
+  fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+aiKey()},
+    body:JSON.stringify({model:'deepseek-chat',temperature:0.5,max_tokens:600,messages:[
+      {role:'system',content:'你是资深面试教练。候选人在一家公司的面试复盘记录如下，输出「下一轮重点准备」：3-5 条，每条一行，要具体可执行——点名暴露的薄弱点、该重点练的题、该补的材料，别给空话套话。全文不超过 160 字，不要 markdown 符号，用 1. 2. 3. 分行。'},
+      {role:'user',content:'公司：'+j.co+'　岗位：'+j.po+'　当前阶段：'+stN(j.st)+'\n复盘记录：\n'+revTxt+(wrong?('\n该公司被问倒过的题：\n'+wrong):'')+(j.next?('\n记下的下一步：'+j.next):'')}
+    ]})})
+  .then(r=>r.json().then(j2=>{if(!r.ok){throw new Error(r.status+'|'+((j2&&j2.error&&j2.error.message)||''))}return j2}))
+  .then(j2=>{
+    const txt=String(j2.choices&&j2.choices[0]&&j2.choices[0].message&&j2.choices[0].message.content||'').trim()||'（AI 返回了空内容，再试一次）';
+    const cache=aiCacheGet();cache[ck]=txt;
+    try{localStorage.setItem(AI_CACHE_LS,JSON.stringify(cache))}catch(e){}
+    revAiShow(txt,false);
+  })
+  .catch(e=>{
+    revAiBusy=false;
+    const btn=$('rev-ai-btn');btn.disabled=false;btn.textContent='✨ AI 盘下一轮';
+    $('rev-ai-out').style.display='none';
+    const msg=String(e.message||e);
+    if(msg.indexOf('401')===0)toast('密钥无效——检查有没有复制全，或重新生成一个');
+    else if(msg.indexOf('402')===0)toast('DeepSeek 余额不足——去 platform.deepseek.com 充值');
+    else if(msg.indexOf('429')===0)toast('请求太频繁，歇几秒再点');
+    else toast('AI 调用失败：'+trim(msg,60));
+  });
+}
+function revAiShow(txt,cached){
+  const out=$('rev-ai-out');
+  out.style.display='';
+  out.innerHTML='<div class="ai-tag">'+(cached?'✨ 下一轮重点 · 本机缓存，不重复计费':'✨ 下一轮重点 · DeepSeek 结合你的复盘生成')+'</div><div>'+esc(txt).replace(/\n/g,'<br>')+'</div>';
+  const btn=$('rev-ai-btn');btn.disabled=false;btn.textContent='✨ AI 盘下一轮';revAiBusy=false;
 }
 
 /* ---- 刷题库（22 道种子题 + 被问倒的本地收集） ---- */
