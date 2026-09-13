@@ -272,8 +272,11 @@ body:not(:has(.page:target)) #p-today{display:block}
 .gd-step{background:#fff;border:1.5px solid rgba(44,40,43,.15);border-radius:12px;padding:12px 14px}
 .gd-step b{font-family:var(--serif);font-weight:500;font-size:13.5px;color:var(--shu-deep)}
 .gd-step p{font-size:12px;color:var(--sumi-mid);margin-top:3px;line-height:1.6}
-.gd-dict{background:var(--kin-soft);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--kin-deep);line-height:1.9}
-.gd-dict b{font-weight:500}
+.gd-dict{background:var(--kin-soft);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--kin-deep);line-height:2}
+.gd-dict>b{display:block;margin-bottom:2px}
+.dict-li{display:flex;gap:10px;padding:1px 0;align-items:baseline}
+.dict-li b{flex:none;font-weight:500;min-width:2.5em;text-align:justify}
+.dict-li span{flex:1}
 .gd-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .gd-safe{margin-top:12px;font-size:11.5px;color:var(--sumi-light);background:var(--kami);border-radius:10px;padding:8px 14px;line-height:1.8}
 
@@ -499,7 +502,13 @@ body:not(:has(.page:target)) #p-today{display:block}
     <div class="gd-step"><b>③ 今日帖</b><p>打开首页就能看到：今天该投谁、该催谁（投出 7 天没音讯自动上榜）、面试约在哪天。</p></div>
     <div class="gd-step"><b>④ 导入旧记录</b><p>已经用 Excel/表格记了投递？牌阵右上角「导入表格」粘贴或选文件，一次全进来。</p></div>
   </div>
-  <div class="gd-dict"><b>术语小词典</b>｜<b>转生</b>＝拿到 Offer｜<b>落樱</b>＝这条没走通（被拒/流程终止）｜<b>撕牌</b>＝删除｜<b>该催</b>＝投出 7 天没回音</div>
+  <div class="gd-dict"><b>术语小词典</b>
+    <div class="dict-li"><b>转生</b><span>拿到 Offer——樱花落尽，化作新生的牌。</span></div>
+    <div class="dict-li"><b>落樱</b><span>这条没走通：被拒、流程终止，留个记录。</span></div>
+    <div class="dict-li"><b>撕牌</b><span>删除这张牌（有二次确认，撕了找不回）。</span></div>
+    <div class="dict-li"><b>该催</b><span>投出去 7 天还没回音，自动上榜提醒你跟进。</span></div>
+    <div class="dict-li"><b>合并</b><span>导入只加新牌，已有的牌一律不动，放心导。</span></div>
+  </div>
   <div class="gd-safe">🔒 数据只存在你自己浏览器的本地存储里，不上传任何服务器。页面最底部有「<b>导出备份</b>」按钮，建议每周导一次 JSON——换电脑、清缓存前也先导一份。</div>
   <div class="gd-actions">
     <button class="btn btn-p" onclick="closeGuide();openImport()">📥 从表格导入</button>
@@ -510,20 +519,21 @@ body:not(:has(.page:target)) #p-today{display:block}
 </div></div>
 
 <!-- ============ 导入表格（Excel 粘贴 / CSV 文件 → 列映射 → 去重合并） ============ -->
-<div class="mask" id="mask-import" onclick="if(event.target===this)closeImport()"><div class="sheet" style="width:640px">
+<div class="mask" id="mask-import" onclick="if(event.target===this)closeImport()"><div class="sheet" style="width:560px">
   <span class="x" onclick="closeImport()">✕</span>
   <div class="kind">牌 · 批量落</div>
   <h3>导入表格里的投递记录</h3>
-  <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-    <textarea class="imp-ta" id="imp-ta" placeholder="直接从 Excel 里选中区域 Ctrl+C，到这里 Ctrl+V 粘贴即可；也支持 CSV 文本。
+  <div class="sub2">从 Excel 里选中区域复制，到这里粘贴，三步落完。</div>
+  <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px">
+    <textarea class="imp-ta" id="imp-ta" style="min-height:150px" placeholder="把 Excel 里的记录直接 Ctrl+V 粘到这个框里。
 
-例：
-公司	岗位	城市	状态	投递日期
-腾讯	AI 产品经理	深圳	已投	2026-09-01"></textarea>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+例（列的顺序随意，解析完可以逐列指定含义）：
+公司　岗位　城市　状态　投递日期
+腾讯　AI 产品经理　深圳　已投　2026-09-01"></textarea>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <button class="btn btn-p" onclick="impParse()">解析预览</button>
       <button class="btn btn-s" onclick="$('imp-file').click()">选 CSV 文件…</button>
-      <span class="imp-tip">Excel 请直接复制粘贴（最稳）；CSV 文件也可以，.xlsx 请先在 Excel 里另存为 CSV。</span>
+      <span class="imp-tip">Excel 复制粘贴最稳；CSV 文件也行；.xlsx 请先在 Excel 里「另存为 → CSV」。</span>
     </div>
     <div class="imp-map" id="imp-map"></div>
     <div class="imp-prev" id="imp-prev" style="display:none"></div>
@@ -1686,6 +1696,21 @@ function copyAi(el){
   const txt=$('ai-out').innerText.replace(/^✨ AI 思路[^\n]*\n/,'').replace(/复制$/,'').trim();
   try{navigator.clipboard.writeText(txt);toast('已复制 ✓')}catch(e){toast('复制失败，手动选中的吧')}
 }
+/* 键盘习惯：Esc 关掉任何开着的弹层；添牌表单里回车＝直接落牌；密钥框回车＝保存 */
+function bindShortcuts(){
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      ['mask','mask-add','mask-guide','mask-import','mask-merge','mask-flow','mask-ai'].forEach(id=>{const m=$(id);if(m)m.classList.remove('on')});
+    }
+  });
+  ['nf-co','nf-po','nf-city','nf-ch','nf-resume'].forEach(i=>{
+    const el=$(i);if(!el||el.dataset.ek)return;
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCard()}});
+    el.dataset.ek='1';
+  });
+  const ak=$('ai-key-input');
+  if(ak&&!ak.dataset.ek){ak.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveAiKey()}});ak.dataset.ek='1'}
+}
 
 /* ═══════════ ⑦ 导航 & 启动 ═══════════ */
 function sync(){
@@ -1709,6 +1734,7 @@ function init(){
   bindCkAdd();
   loadRadarToday();
   checkGuide();syncBell();checkNotify(false);exportHint();aiSyncSt();
+  bindShortcuts();
   const vp=new URLSearchParams(location.search);
   const v=vp.get('view');
   if(v==='board')go('board');
