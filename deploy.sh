@@ -26,7 +26,7 @@ fi
 echo "  ✓ 无密钥泄漏"
 
 echo "── 3/5 推 GitHub"
-git add sakura.html README.md deploy.sh
+git add sakura.html README.md deploy.sh jing_fetch.py jing-config.json
 if ! git diff --cached --quiet; then git commit -m "deploy: $NOTE"; fi
 git push origin main
 echo "  ✓ GitHub 已推（Pages 约 1-2 分钟后生效）"
@@ -42,6 +42,16 @@ remote = "/opt/workbuddy/workspace/offer-tracker/sakura.html"
 o, e, c = run(f"cp {remote} {remote}.bak-deploy-$(date +%m%d-%H%M) && echo backed-up")
 print("  旧版备份:", (o or e).strip()[:60])
 put("sakura.html", remote)
+# 面经雷达：脚本 + 配置一起上，并确保每天 07:30 的 cron 存在
+for f in ("jing_fetch.py", "jing-config.json"):
+    if os.path.exists(f):
+        put(f, "/opt/workbuddy/workspace/offer-tracker/" + f)
+o, _, _ = run("crontab -l 2>/dev/null | grep -q jing_fetch && echo yes || echo no")
+if 'no' in o:
+    run("(crontab -l 2>/dev/null; echo '30 7 * * * cd /opt/workbuddy/workspace/offer-tracker && python3 jing_fetch.py >> jing-cron.log 2>&1') | crontab -")
+    print("  cron 已装：每天 07:30 自动抓牛客面经")
+else:
+    print("  cron 已在：每天 07:30 抓面经")
 o, _, _ = run(f"md5sum {remote}")
 md5_remote = o.split()[0] if o.strip() else ""
 print("  ✓ 云端已上传，MD5 " + ("一致" if md5_remote == md5_local else "✗ 不一致！本地 %s / 远端 %s" % (md5_local, md5_remote)))

@@ -302,6 +302,15 @@ body:not(:has(.page:target)) #p-today{display:block}
 /* 牌阵图例：术语大白话 */
 .bd-legend{font-size:11px;color:var(--sumi-light);margin-top:2px}
 /* ---- AI 答题思路（BYO DeepSeek 密钥，9.14） ---- */
+/* 面经雷达列表 */
+.fd-it{border-bottom:1px solid rgba(44,40,43,.08);padding:10px 2px;display:flex;flex-direction:column;gap:4px}
+.fd-it:last-child{border-bottom:none}
+.fd-it>b{font-weight:500;font-size:13px;cursor:pointer;color:var(--sumi)}
+.fd-it>b:hover{color:var(--shu-deep)}
+.fd-meta{font-size:10.5px;color:var(--sumi-light)}
+.fd-snip{font-size:11.5px;color:var(--sumi-mid);line-height:1.7}
+.fd-ops{font-size:11.5px}
+.fd-ops a{color:var(--shu);cursor:pointer;margin-right:10px}
 .ai-bar{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .ai-st{font-size:11px;color:var(--sumi-light);line-height:1.6}
 .ai-st a{color:var(--shu);cursor:pointer}
@@ -457,6 +466,7 @@ body:not(:has(.page:target)) #p-today{display:block}
       <div class="ai-bar" onclick="event.stopPropagation()">
         <button class="btn btn-p" id="ai-btn" onclick="aiThink()">✨ AI 答题思路</button>
         <button class="btn btn-s" onclick="openJing()" title="把牛客/小红书上的面经原文贴进来，AI 抽出真题收进这家公司的题库">📥 贴面经收题</button>
+        <button class="btn btn-s" id="btn-jing-feed" onclick="openFeed()" style="display:none" title="服务器每天自动抓牛客面经，你只管看">📡 面经雷达</button>
         <span class="ai-st" id="ai-st"></span>
       </div>
       <div class="ai-out" id="ai-out" style="display:none"></div>
@@ -607,6 +617,15 @@ body:not(:has(.page:target)) #p-today{display:block}
   </div>
   <div id="jing-list" style="margin-top:10px"></div>
   <div style="text-align:right;margin-top:8px"><button class="btn btn-p" id="jing-go" onclick="jingSave()" style="display:none">收进题库</button></div>
+</div></div>
+
+<!-- ============ 面经雷达（服务器定时抓牛客，用户只管看） ============ -->
+<div class="mask" id="mask-feed" onclick="if(event.target===this)closeFeed()"><div class="sheet" style="width:600px">
+  <span class="x" onclick="closeFeed()">✕</span>
+  <div class="kind">题库 · 面经雷达</div>
+  <h3>牛客面上的新面经</h3>
+  <div class="sub2">服务器每天早上按你的目标公司自动抓牛客面经——你只管看，看好哪篇点「收题」拆进题库。目标公司/岗位在服务器上 <b>jing-config.json</b> 里改。</div>
+  <div id="feed-list" style="margin-top:10px;max-height:52vh;overflow:auto"></div>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -1845,11 +1864,41 @@ function jingSave(){
   loadDeck();
   toast('已收 '+add.length+' 道「'+co+'」面经题 ✓ 刷这家公司时会出现');
 }
+
+/* ---- 面经雷达（9.14）：服务器定时抓牛客 → jing-latest.json（同目录静态文件）→ 这里只管看 ----
+   GitHub Pages / 本地打开没有这个文件，按钮自动藏起来；部署在服务器上才亮。 */
+let JING_FEED=null;
+function loadJingFeed(){
+  if(location.protocol==='file:'){return Promise.resolve(null)}
+  return fetch('jing-latest.json',{cache:'no-store'})
+    .then(r=>{if(!r.ok)throw 0;return r.json()})
+    .then(d=>{JING_FEED=(d&&Array.isArray(d.items)&&d.items.length)?d.items:null;jingFeedBtn();return d})
+    .catch(()=>{JING_FEED=null;jingFeedBtn();return null});
+}
+function jingFeedBtn(){
+  const b=$('btn-jing-feed');if(!b)return;
+  const n=JING_FEED?JING_FEED.length:0;
+  b.style.display=n?'':'none';
+  b.textContent='📡 面经雷达 · '+n;
+}
+function openFeed(){
+  if(DEMO){toast('示例模式 · 没有面经雷达');return}
+  if(!JING_FEED||!JING_FEED.length){toast('服务器上暂时没有面经');return}
+  $('feed-list').innerHTML=JING_FEED.map((it,i)=>`<div class="fd-it"><b onclick="window.open('${esc(it.url)}','_blank')">${esc(it.title)}</b><span class="fd-meta">${esc(it.co)}${it.role?' · '+esc(it.role):''} · 抓于 ${esc(it.fetchedAt||'')}</span><span class="fd-snip">${esc(it.content.slice(0,110))}…</span><span class="fd-ops"><a onclick="feedToJing(${i})">✂ 收题</a><a onclick="window.open('${esc(it.url)}','_blank')">看原文 ↗</a></span></div>`).join('')||'<div class="rev">暂时没有面经</div>';
+  $('mask-feed').classList.add('on');
+}
+function closeFeed(){$('mask-feed').classList.remove('on')}
+function feedToJing(i){
+  const it=(JING_FEED||[])[i];if(!it)return;
+  closeFeed();openJing();
+  $('jing-ta').value=it.content;
+  toast('已装进「'+trim(it.title,22)+'」的原文——点拆题');
+}
 /* 键盘习惯：Esc 关掉任何开着的弹层；添牌表单里回车＝直接落牌；密钥框回车＝保存 */
 function bindShortcuts(){
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
-      ['mask','mask-add','mask-guide','mask-import','mask-merge','mask-flow','mask-ai','mask-jing'].forEach(id=>{const m=$(id);if(m)m.classList.remove('on')});
+      ['mask','mask-add','mask-guide','mask-import','mask-merge','mask-flow','mask-ai','mask-jing','mask-feed'].forEach(id=>{const m=$(id);if(m)m.classList.remove('on')});
     }
   });
   ['nf-co','nf-po','nf-city','nf-ch','nf-resume'].forEach(i=>{
@@ -1882,7 +1931,7 @@ function init(){
   renderAll();renderPrep();renderRev();sync();
   bindCkAdd();
   loadRadarToday();
-  checkGuide();syncBell();checkNotify(false);exportHint();aiSyncSt();
+  checkGuide();syncBell();checkNotify(false);exportHint();aiSyncSt();loadJingFeed();
   bindShortcuts();
   const vp=new URLSearchParams(location.search);
   const v=vp.get('view');
