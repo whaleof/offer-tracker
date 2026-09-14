@@ -516,10 +516,10 @@
         <div class="stats">
           <div class="stat"><b>6 态</b><span>校招状态机</span></div>
           <div class="stat"><b>0 依赖</b><span>单文件离线可用</span></div>
-          <div class="stat"><b>22 道</b><span>面试题库种子</span></div>
-          <div class="stat acc"><b>9 版</b><span>牌背视觉迭代</span></div>
+          <div class="stat"><b>3 处</b><span>AI 辅助闭环</span></div>
+          <div class="stat acc"><b>11 版</b><span>牌背视觉迭代</span></div>
         </div>
-        <p class="p-brief">把求职追踪做成「花札牌阵」：每家公司是一张牌，拖拽推进、撕牌删除、月历看 DDL。市面竞品全是欧美流程——测评 DDL、内推、届别窗口都没有，我把默认状态机按<b>中国校招</b>重做。</p>
+        <p class="p-brief">把求职追踪做成「花札牌阵」：每家公司是一张牌，拖拽推进、撕牌删除、月历看 DDL。市面竞品全是欧美流程——测评 DDL、内推、届别窗口都没有，我把默认状态机按<b>中国校招</b>重做；AI 与资讯管道补齐了从投递到面试复盘的全流程。</p>
         <div class="p-shots four">
           <img loading="lazy" src="assets/shot-sakura-today.png" alt="今日帖">
           <img loading="lazy" src="assets/shot-sakura-kanban.png" alt="牌阵">
@@ -528,8 +528,8 @@
         </div>
         <ul class="p-points">
           <li><b>中国校招状态机</b>——竞品（Jobsync / THRIVE）缺测评 DDL、内推、网申窗口；默认流程本土化，社招 / 考公一处配置切换</li>
-          <li><b>卡牌化交互</b>——拖拽推进阶段、撕牌删除、雷达 JSON 拖入合并（指纹去重），操作全部可视化</li>
-          <li><b>单文件工程</b>——0 依赖、离线可用、BYO Key（AI 题解 / 打招呼语），数据不出浏览器</li>
+          <li><b>AI 三处闭环</b>——答题思路 / 面经收题 / 盘下一轮，全部 BYO 密钥、浏览器直连、同题本机缓存</li>
+          <li><b>单文件 + 资讯管道</b>——0 依赖离线可用；面经由服务端定时采集成静态数据，前端零后端读取</li>
         </ul>
         <button class="p-more" data-lb="lb4">查看完整项目 →</button>
       </div>
@@ -707,10 +707,10 @@
       <div class="stats">
         <div class="stat"><b>6 态</b><span>校招状态机</span></div>
         <div class="stat"><b>0 依赖</b><span>单文件离线可用</span></div>
-        <div class="stat"><b>22 道</b><span>面试题库种子</span></div>
-        <div class="stat acc"><b>9 版</b><span>牌背视觉迭代</span></div>
+        <div class="stat"><b>3 处</b><span>AI 辅助闭环</span></div>
+        <div class="stat acc"><b>11 版</b><span>牌背视觉迭代</span></div>
       </div>
-      <p class="p-intro">求职时投递状态散落在日历（测评 DDL）、邮箱（投递记录）、聊天记录（HR 进度）、备忘录（面试复盘）里，全乱。市面求职追踪器（Jobsync、THRIVE 等）大多是欧美流程：没有测评笔试、没有内推、没有网申 DDL、没有届别窗口——而这几样恰恰是<b>中国校招的主干</b>。所以我把默认状态机做成中国校招，社招 / 考公用户一处配置即可切换。</p>
+      <p class="p-intro">求职时投递状态散落在日历（测评 DDL）、邮箱（投递记录）、聊天记录（HR 进度）、备忘录（面试复盘）里，全乱。市面求职追踪器（Jobsync、THRIVE 等）大多是欧美流程：没有测评笔试、没有内推、没有网申 DDL、没有届别窗口——而这几样恰恰是<b>中国校招的主干</b>。所以我把默认状态机做成中国校招，社招 / 考公用户一处配置即可切换。上线后按自己真实使用时的摩擦点持续迭代：补了新手引导、批量导入、到点提醒，并把「找面经」整件事挪到了服务端定时任务里。</p>
       <div class="screen-only" style="text-align:center;margin-bottom:26px;">
         <a class="btn btn-primary" href="https://whaleof.github.io/offer-tracker/" target="_blank" rel="noopener">▶ 在线体验（GitHub Pages）</a>
         <a class="btn btn-ghost" href="https://github.com/whaleof/offer-tracker" target="_blank" rel="noopener" style="margin-left:10px;">查看源码仓库</a>
@@ -740,14 +740,14 @@
           <img loading="lazy" src="assets/shot-sakura-kanban.png" alt="牌阵">
           <div class="hl-body">
             <div class="hl-name">② 牌阵 · 六态流转 + 拖拽推进<span class="hl-tag">核心交互</span></div>
-            <div class="hl-desc">想投 → 已投 → 笔试 → 面试 → 已转生 → 淬殒。拖一张牌到下一列即推进，自动写历史记录；流程 / 公司 / 月历三种视角切换。点开一张牌即翻档案：公司 / 岗位 / 城市 / 渠道 / 薪资 / 简历版本 / 届别核验 / 适配度 / 下一步动作，DDL 倒计时超时自动标「需跟进」。<b>设计判断：</b>求职本身够焦虑了，界面要做的是把它变成「可摆弄的牌」。</div>
+            <div class="hl-desc">想投 → 已投 → 笔试 → 面试 → 已转生 → 落樱。拖一张牌到下一列即推进，自动写历史记录；流程 / 公司 / 月历三种视角切换，社招用户可一键切成无笔试列的精简流程。点开一张牌即翻档案：公司 / 岗位 / 城市 / 渠道 / 薪资 / 简历版本 / 届别核验 / 适配度 / 下一步动作，DDL 倒计时超时自动标「需跟进」。<b>设计判断：</b>求职本身够焦虑了，界面要做的是把它变成「可摆弄的牌」。</div>
           </div>
         </div>
         <div class="hl">
           <img loading="lazy" src="assets/shot-sakura-quiz.png" alt="试炼">
           <div class="hl-body">
             <div class="hl-name">③ 试炼 · 面试复盘长成题库<span class="hl-tag">闭环设计</span></div>
-            <div class="hl-desc">每轮面试记下「被问倒的题」，自动汇成按公司筛选的刷题库；被问倒的题可让 AI 生成答题思路（要点式 + 面试官为什么问）。<b>设计判断：</b>失败也要变成资产，复盘不是写完就死的笔记。</div>
+            <div class="hl-desc">每轮面试记下「被问倒的题」，自动汇成按公司筛选的刷题库（内置 22 道通用种子题）。三处 AI 接手：<b>答题思路</b>（破题 → 作答框架 → 亮点收尾）、<b>面经收题</b>（贴面经原文抽真题，明令禁止编题）、<b>盘下一轮</b>（读完复盘点名薄弱点）。资讯侧由服务端每天定时采集对口面经，前端只管看。<b>设计判断：</b>失败也要变成资产，复盘不是写完就死的笔记。</div>
           </div>
         </div>
         <div class="hl">
@@ -762,13 +762,15 @@
       <ul class="tech">
         <li><b>需求定义一页纸：</b>先写清问题、用户、边界与「不做什么」，再动手——避免边做边漂移。</li>
         <li><b>信息架构页面地图：</b>今日帖 / 牌阵 / 试炼三页职责划分，页面地图先行，不堆功能。</li>
-        <li><b>花札（HANAFUDA）考据 + 视觉规范 v1：</b>牌面隐喻、术语（添牌 / 撕牌 / 牌阵 / 转生）与视觉一致；牌背从风格样品 v3-v5 到候选 v6-v9 共 9 版迭代。</li>
+        <li><b>花札（HANAFUDA）考据 + 视觉规范 v1：</b>牌面隐喻、术语（添牌 / 撕牌 / 牌阵 / 转生）与视觉一致；牌背从风格样品一路迭代到 v11 手绘卷草角花。</li>
         <li><b>竞品拆解：</b>Jobsync / THRIVE 等欧美流程追踪器的缺失项（测评 DDL、内推、网申窗口、届别）即差异化清单。</li>
+        <li><b>上线后按真实摩擦迭代：</b>定版三页重构 → 新手引导 + 术语小词典 → Excel/CSV 批量导入 → 到点提醒 → 校招 / 社招流程预设 → 数据导出 / 导入备份 → AI 三处接入 + 面经采集管道。</li>
       </ul>
       <h3 class="sub-h3">工程取舍</h3>
       <ul class="tech">
-        <li><b>单文件 HTML：</b>0 构建、0 依赖、离线双击可用；GitHub Pages 直接发布，换电脑靠导出 / 导入搬家。</li>
-        <li><b>数据自主：</b>数据存浏览器本地，JSON 备份 / 迁移 + CSV 导出分析；<b>BYO Key</b>——AI 功能自带 Key，只存浏览器 localStorage，不进仓库、不经过任何服务器。</li>
+        <li><b>单文件 HTML：</b>0 构建、0 依赖、离线双击可用；GitHub Pages 直接发布，换电脑靠页脚「导出备份 / 导入备份」搬家。</li>
+        <li><b>数据自主：</b>数据存浏览器本地，备份支持<b>覆盖式</b>与<b>增量合并</b>（同指纹只加不动）两种方式；<b>BYO Key</b>——AI 功能自带 Key，只存浏览器 localStorage，不进仓库、不经过任何服务器。</li>
+        <li><b>资讯自动化管道：</b>面经采集放在服务端定时任务，产出静态 JSON，前端零后端依赖读取——把「要不要跑脚本」从使用者身上拿掉。</li>
         <li><b>演示模式：</b>一键载入虚构数据先看效果，可一键清空，降低试用门槛。</li>
       </ul>
     </div>
