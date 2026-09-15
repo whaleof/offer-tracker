@@ -195,6 +195,12 @@
   .hl-tag { display: inline-block; font-size: 11px; color: #c2416b; background: #ffe0ea; padding: 2px 8px; border-radius: 3px; margin-left: 8px; font-weight: 500; vertical-align: 2px; }
   .hl-desc { font-size: 13px; color: #555; }
   .hl-desc b { color: #c2416b; }
+  .hl-link { display: block; text-decoration: none; color: inherit; }
+  .hl-link:hover .hl-name { color: #c2416b; }
+  .docwall { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 760px) { .docwall { grid-template-columns: 1fr; } }
+  .docwall .hl img { height: 150px; }
+  .docwall .hl-body { padding: 12px 14px 14px; }
 
   .modwall { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   @media (max-width: 760px) { .modwall { grid-template-columns: repeat(2, 1fr); } }
@@ -331,6 +337,13 @@
     .gates { grid-template-columns: 1fr 1fr !important; }
     .highlights { grid-template-columns: 1fr 1fr !important; }
     .modwall { grid-template-columns: repeat(3, 1fr) !important; }
+    .docwall { grid-template-columns: repeat(3, 1fr) !important; }
+    .docwall .hl img { height: 120px; }
+    .docwall .hl-body { padding: 2.6mm 3mm 3mm; }
+    .docwall .hl-name { font-size: 9pt; }
+    .docwall .hl-desc { font-size: 8pt; }
+    /* 樱帖三视图截图略收，让该段与文档卡同页起排，避免第 5 页下部留白 */
+    #lb4 .hl img { height: 150px; }
     .depth { grid-template-columns: 1fr 1fr !important; }
     .about-grid { grid-template-columns: 1fr 1fr !important; }
 
@@ -346,14 +359,17 @@
     .gate-desc { font-size: 9pt; }
     .highlights { gap: 4mm; }
     .hl { break-inside: avoid; }
-    .hl img { height: 226px; }
+    .hl img { height: 200px; }
+    /* 第二大脑段打印收紧：EvalLab 卡与模块墙/图表略压缩，把内容收回 3 页，避免尾页半空 */
+    .evallab-card .hl img { height: 158px; }
+    .evallab-card .hl-desc { font-size: 8.2pt; }
     .hl-body { padding: 3.2mm 4mm 3.6mm; }
     .hl-name { font-size: 10pt; }
     .hl-desc { font-size: 8.8pt; }
     /* 模块墙：线上是「缩略图居中留白」，打印改成铺满裁切，不然像一排空白框 */
     .modwall figure, .depth figure, .pair figure, .uiwide { break-inside: avoid; }
     .modwall .mw-pic { min-height: 0; padding: 0; }
-    .modwall .mw-pic img { width: 100%; height: 136px; max-height: none; object-fit: cover; object-position: top; }
+    .modwall .mw-pic img { width: 100%; height: 124px; max-height: none; object-fit: cover; object-position: top; }
     .modwall figcaption { padding: 2mm 3mm 2.4mm; }
     .modwall figcaption b { font-size: 9.5pt; }
     .modwall figcaption span { font-size: 8pt; }
@@ -362,7 +378,7 @@
     .depth { gap: 4mm; }
     .depth figure { display: block; }
     .depth .dp-pic { display: block; flex: none; min-height: 0; padding: 3mm; }
-    .depth .dp-pic img { display: block; width: 100%; height: auto; max-width: none; max-height: none; object-fit: fill; }
+    .depth .dp-pic img { display: block; width: auto; max-width: 100%; height: 52mm; margin: 0 auto; max-height: none; object-fit: contain; }
     .depth figcaption { padding: 2mm 3mm 2.4mm; }
     .depth figcaption b { font-size: 9.5pt; }
     .depth figcaption span { font-size: 8pt; }
@@ -670,6 +686,18 @@
           </div>
         </div>
       </div>
+      <h3 class="sub-h3">AI 效果怎么证明 · 量衡 EvalLab 评测榜单</h3>
+      <div class="highlights" style="margin-bottom:18px;">
+        <a class="hl-link evallab-card" href="http://101.43.110.207/eval-lab-report.html" target="_blank" rel="noopener" style="grid-column:1 / -1;">
+          <div class="hl">
+            <img loading="lazy" src="assets/shot-evallab-report.png" alt="量衡 EvalLab 评测榜单报告">
+            <div class="hl-body">
+              <div class="hl-name">量衡 EvalLab · 模型选型评测榜单<span class="hl-tag">评测报告 · 可点开</span></div>
+              <div class="hl-desc">自建轻量评测框架：3 个真实业务任务 + 1 个公开基准，质量 / 成本 / 延迟三维对比，双 judge 盲评交叉 + 自偏好审计。核心发现：<b>公开基准两家打平（82.5% vs 81.7%），真实业务任务拉开 37.5pp——通用榜单选不出业务模型，必须用自家数据评。</b>换模型 / 改 prompt 先过质量红线回归，点开看完整榜单。</div>
+            </div>
+          </div>
+        </a>
+      </div>
       <h3 class="sub-h3">更多模块真实界面 · 每个模块背后都有产品判断</h3>
       <div class="modwall">
         <figure><div class="mw-pic"><img loading="lazy" src="assets/shot-timeline.png" alt="时间轴"></div><figcaption><b>时间轴</b><span>粘贴即落库 · 记录摩擦压到零</span></figcaption></figure>
@@ -714,25 +742,36 @@
       <div class="screen-only" style="text-align:center;margin-bottom:26px;">
         <a class="btn btn-primary" href="https://whaleof.github.io/offer-tracker/" target="_blank" rel="noopener">▶ 在线体验（GitHub Pages）</a>
         <a class="btn btn-ghost" href="https://github.com/whaleof/offer-tracker" target="_blank" rel="noopener" style="margin-left:10px;">查看源码仓库</a>
-        <div style="margin-top:14px;font-size:13.5px;color:#666;">
-          产品设计文档（可点开看）：
-          <a href="http://101.43.110.207/sakura-competitive-analysis.html" target="_blank" rel="noopener" style="color:#c2416b;font-weight:500;text-decoration:underline;">竞品分析报告</a><span style="color:#ddd;"> · </span>
-          <a href="http://101.43.110.207/sakura-requirements-onepager.html" target="_blank" rel="noopener" style="color:#c2416b;font-weight:500;text-decoration:underline;">需求定义一页纸</a><span style="color:#ddd;"> · </span>
-          <a href="http://101.43.110.207/sakura-ia-sitemap.html" target="_blank" rel="noopener" style="color:#c2416b;font-weight:500;text-decoration:underline;">信息架构页面地图</a>
-        </div>
       </div>
-      <!-- 打印专用：PDF 点不动，改成地址 + 二维码 -->
-      <div class="print-only po-flex po-live">
-        <div class="po-qr">
-          <img src="assets/qr-offer-tracker.png" alt="樱帖在线体验二维码">
-          <i><b>扫码直接上手玩</b>拖拽推进阶段 /<br>翻牌看完整档案 / 刷题库。</i>
-        </div>
-        <div class="po-live-txt">
-          <div class="row"><span class="k">在线体验</span>https://whaleof.github.io/offer-tracker/</div>
-          <div class="row"><span class="k">源码仓库</span>https://github.com/whaleof/offer-tracker</div>
-          <div class="row"><span class="k">产品设计文档</span>http://101.43.110.207/sakura-docs.html（索引页，含竞品分析 / 需求一页纸 / 页面地图）</div>
-          <span class="tip">PDF 里这些链接点不动——扫码，或在浏览器里粘贴地址，即可查看在线体验与完整产品设计文档。</span>
-        </div>
+      <h3 class="sub-h3">产品设计过程 · 三份文档留痕，点开看完整版</h3>
+      <div class="docwall">
+        <a class="hl-link" href="http://101.43.110.207/sakura-requirements-onepager.html" target="_blank" rel="noopener">
+          <div class="hl">
+            <img loading="lazy" src="assets/shot-sakura-doc-requirements.png" alt="需求定义一页纸">
+            <div class="hl-body">
+              <div class="hl-name">① 需求定义一页纸<span class="hl-tag">第 1 步 · 想清楚</span></div>
+              <div class="hl-desc">动手前先回答：给谁用、解决什么、不做什么。<b>先对齐再动手，避免边做边漂移。</b></div>
+            </div>
+          </div>
+        </a>
+        <a class="hl-link" href="http://101.43.110.207/sakura-competitive-analysis.html" target="_blank" rel="noopener">
+          <div class="hl">
+            <img loading="lazy" src="assets/shot-sakura-doc-competitor.png" alt="竞品分析报告">
+            <div class="hl-body">
+              <div class="hl-name">② 竞品分析报告<span class="hl-tag">第 2 步 · 看市场</span></div>
+              <div class="hl-desc">5 款竞品 + 1 类替代方案：功能矩阵 / 流程走查 / 商业模式，<b>差异化支柱从矩阵里长出来。</b></div>
+            </div>
+          </div>
+        </a>
+        <a class="hl-link" href="http://101.43.110.207/sakura-ia-sitemap.html" target="_blank" rel="noopener">
+          <div class="hl">
+            <img loading="lazy" src="assets/shot-sakura-doc-ia.png" alt="信息架构页面地图">
+            <div class="hl-body">
+              <div class="hl-name">③ 信息架构页面地图<span class="hl-tag">第 3 步 · 搭骨架</span></div>
+              <div class="hl-desc">今日帖 / 牌阵 / 试炼三页职责划分，<b>页面地图先行，不堆功能。</b></div>
+            </div>
+          </div>
+        </a>
       </div>
       <h3 class="sub-h3">三个视图 · 一份档案 · 产品判断藏在默认值里</h3>
       <div class="highlights">
@@ -780,6 +819,19 @@
         <li><b>资讯自动化管道：</b>面经采集放在服务端定时任务，产出静态 JSON，前端零后端依赖读取——把「要不要跑脚本」从使用者身上拿掉。</li>
         <li><b>演示模式：</b>一键载入虚构数据先看效果，可一键清空，降低试用门槛。</li>
       </ul>
+      <!-- 打印专用：PDF 点不动，改成地址 + 二维码（放在樱帖段末尾，让尾页填满） -->
+      <div class="print-only po-flex po-live" style="margin-top:4mm;">
+        <div class="po-qr">
+          <img src="assets/qr-offer-tracker.png" alt="樱帖在线体验二维码">
+          <i><b>扫码直接上手玩</b>拖拽推进阶段 /<br>翻牌看完整档案 / 刷题库。</i>
+        </div>
+        <div class="po-live-txt">
+          <div class="row"><span class="k">在线体验</span>https://whaleof.github.io/offer-tracker/</div>
+          <div class="row"><span class="k">源码仓库</span>https://github.com/whaleof/offer-tracker</div>
+          <div class="row"><span class="k">产品设计文档</span>http://101.43.110.207/sakura-docs.html（索引页，含竞品分析 / 需求一页纸 / 页面地图）</div>
+          <span class="tip">PDF 里这些链接点不动——扫码，或在浏览器里粘贴地址，即可查看在线体验与完整产品设计文档。</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
