@@ -195,6 +195,10 @@
   .hl-tag { display: inline-block; font-size: 11px; color: #c2416b; background: #ffe0ea; padding: 2px 8px; border-radius: 3px; margin-left: 8px; font-weight: 500; vertical-align: 2px; }
   .hl-desc { font-size: 13px; color: #555; }
   .hl-desc b { color: #c2416b; }
+  /* EvalLab 报告是竖版长页：左侧整页缩放留白（照模块墙的做法），右侧文字，不横裁 */
+  .evallab-card .hl { display: flex; align-items: stretch; }
+  .evallab-card .hl img { width: 42%; flex: none; height: auto; min-height: 300px; object-fit: contain; background: #fafafa; border-right: 1px solid #f0e6ea; }
+  .evallab-card .hl-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
   .hl-link { display: block; text-decoration: none; color: inherit; }
   .hl-link:hover .hl-name { color: #c2416b; }
   .docwall { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
@@ -361,7 +365,7 @@
     .hl { break-inside: avoid; }
     .hl img { height: 200px; }
     /* 第二大脑段打印收紧：EvalLab 卡与模块墙/图表略压缩，把内容收回 3 页，避免尾页半空 */
-    .evallab-card .hl img { height: 158px; }
+    .evallab-card .hl img { width: 38%; flex: none; min-height: 0; height: 40mm; object-fit: contain; background: #fafafa; border-right: 1px solid #f0e6ea; }
     .evallab-card .hl-desc { font-size: 8.2pt; }
     .hl-body { padding: 3.2mm 4mm 3.6mm; }
     .hl-name { font-size: 10pt; }
