@@ -219,7 +219,16 @@ body:not(:has(.page:target)) #p-today{display:block}
 .tl li b{font-weight:500;color:var(--sumi);min-width:44px;font-family:var(--serif)}
 .next{background:var(--shu-soft);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--shu-deep)}
 .sheet .x{float:right;cursor:pointer;color:var(--sumi-light);font-size:16px}
-.sheet .foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+/* 档案弹层底部：提示一行 + 三个等宽操作（推进 / 落樱 / 撕牌）
+   三格等宽等高同字号，只有颜色分主次：推进＝樱粉实心，落樱＝樱粉描边，撕牌＝墨灰描边 */
+.sheet .foot{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.sheet .foot-hint{font-size:11px;color:var(--sumi-light)}
+.sheet .foot-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:366px;margin-left:auto}
+.btn-eq{width:100%;height:34px;padding:0 4px;font-size:12px;line-height:1;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+.btn-fallen{background:#fff;color:var(--shu-deep);border:1.5px solid #E5B6C4}
+.btn-fallen:hover{background:#FDF2F5;border-color:var(--shu)}
+.btn-plain{background:#fff;color:var(--sumi-light);border:1.5px solid rgba(44,40,43,.22)}
+.btn-plain:hover{border-color:var(--shu);color:var(--shu-deep)}
 
 /* ---- 试炼 ---- */
 .trial-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px}
@@ -1098,11 +1107,13 @@ function openSheet(id){
      <span style="font-size:11px;color:var(--sumi-light)">直接改状态（落樱/推进/回退都行）</span>
    </div>
    <div class="foot">
-     <span style="font-size:11px;color:var(--sumi-light)">${tri?'三格已记，投递前扫一眼就对':'三格还是空的——核验完记一笔，投前不用翻对话'}</span>
-     <span style="display:flex;gap:8px;align-items:center">
-     ${nx?`<button class="btn btn-p" onclick="advance('${j.id}')">推进到「${stN(nx)}」</button>`:j.st==='offer'?'<span style="font-size:12px;color:var(--kin-deep)">🌕 已到终点，等着答复就好</span>':'<span style="font-size:12px;color:var(--sumi-light)">🥀 这张已落樱，留作记录</span>'}
-     <button class="btn btn-ghost" onclick="delCard('${j.id}')">撕牌</button>
-     </span>
+     <div class="foot-hint">${tri?'三格已记，投递前扫一眼就对':'三格还是空的——核验完记一笔，投前不用翻对话'}</div>
+     <div class="foot-acts">
+     ${nx?`<button class="btn btn-eq btn-p" onclick="advance('${j.id}')">推进到「${stN(nx)}」</button>`
+        :`<button class="btn btn-eq btn-p" disabled>${j.st==='offer'?'🌕 已到终点':'🥀 已落樱'}</button>`}
+     <button class="btn btn-eq btn-fallen"${j.st==='fallen'?' disabled':''} onclick="fall('${j.id}')">落樱</button>
+     <button class="btn btn-eq btn-plain" onclick="delCard('${j.id}')">撕牌</button>
+     </div>
    </div>`;
   $('mask').classList.add('on');
 }
@@ -1125,6 +1136,14 @@ function advance(id){
   const real=BACK[nx];
   mut(id,o=>{o.status=real;(o.history=o.history||[]).push({status:real,at:isoNow()});if(real==='applied')o.appliedAt=new Date().toISOString().slice(0,10)},true);
   openSheet(id);toast(j.co+' 已推进到「'+stN(nx)+'」✓');
+}
+/* 落樱：这条没走通（被拒/流程终止），只改状态留记录，不删牌——和「推进」同一条写入纪律。
+   误点也不用慌：上面的下拉随时能改回来（落樱/推进/回退都行）。 */
+function fall(id){
+  const j=JOBS.find(x=>x.id===id);if(!j)return;
+  if(j.st==='fallen'){openSheet(id);return}
+  mut(id,o=>{o.status='rejected';(o.history=o.history||[]).push({status:'rejected',at:isoNow()})},true);
+  openSheet(id);toast(j.co+' 已落樱 🥀 留作记录，改主意的用上面的下拉回退');
 }
 /* 状态任意跳转：档案弹层里下拉选状态直接改，支持前进/回退/落樱 */
 function setStatus(id,newSt){
