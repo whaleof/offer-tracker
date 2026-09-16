@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 需求定义一页纸（第 1 步交付）</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.75;padding:24px;max-width:920px;margin:0 auto}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+h1{font-size:21px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:14px}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:6px 0 16px}
+h2{font-size:15.5px;font-weight:500;margin:24px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+.card{background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:12px;padding:15px 18px;margin-bottom:12px}
+.card.feat{border:1.5px solid var(--sumi)}
+.card.warn{border-color:var(--shu);background:#fffafb}
+.card.ok{border-color:var(--kin);background:#fffdf5}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+th{background:var(--kami);text-align:left;padding:7px 10px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18);white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid rgba(44,40,43,.15);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500;white-space:nowrap}
+code{background:var(--kami);padding:1px 5px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+ul,ol{margin:6px 0 4px 22px}
+li{margin:5px 0;color:var(--sumi-mid);font-size:13.5px}
+li b{color:var(--sumi);font-weight:500}
+p{margin:6px 0;color:var(--sumi-mid)}
+p b,td b{color:var(--sumi);font-weight:500}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:11px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.no{color:var(--shu-deep);font-weight:500}
+.tag{display:inline-block;background:var(--kami);border:1px solid rgba(44,40,43,.25);border-radius:6px;padding:1px 8px;font-size:12px;color:var(--sumi-mid);margin:2px 4px 2px 0}
+.one-liner{background:var(--sumi);color:#F5EDEE;border-radius:12px;padding:14px 18px;margin:12px 0;font-size:15px;line-height:1.8}
+.one-liner b{color:#F3C8D4;font-weight:500}
+.footer{font-size:11px;color:var(--sumi-light);text-align:center;margin-top:22px}
+/* 模块示意 */
+.mods{display:flex;gap:10px;margin:12px 0 4px;flex-wrap:wrap}
+.mod{flex:1 1 180px;background:var(--kami);border:1.5px solid var(--sumi);border-radius:12px;padding:12px 14px}
+.mod h4{font-size:13.5px;font-weight:500;margin-bottom:4px;color:var(--sumi)}
+.mod p{font-size:12px;color:var(--sumi-mid);margin:2px 0}
+.mod .core{display:inline-block;margin-top:6px;font-size:11px;color:var(--shu-deep);background:var(--shu-soft);border-radius:6px;padding:1px 8px}
+.home{background:#fff;border:1.5px dashed var(--shu);border-radius:12px;padding:12px 16px;margin:10px 0;font-size:13px;color:var(--sumi-mid)}
+.home b{color:var(--shu-deep)}
+</style>
+</head>
+<body>
+
+<h1 class="serif">樱帖 · 需求定义一页纸</h1>
+<div class="sub">2026-09-08 · 流程第 1 步交付 · 依据：你本轮 8 个回答 + 同类工具调研（Huntr / Teal / Prentus）· 等你确认后才进第 2 步</div>
+<div class="gold-rule"></div>
+
+<div class="one-liner serif">
+给<b>求职季的常玉涵</b>一个人用：把散在 BOSS、备忘录和脑子里的「投了哪些、推进到哪、今天该干嘛、面试怎么准备」收进一个地方——<b>打开 3 秒，知道今天投哪个、简历在哪</b>。
+</div>
+
+<h2>① 给谁用</h2>
+<div class="card">
+<table>
+<tr><th>用户</th><th>定义</th></tr>
+<tr><td>第一用户</td><td>常玉涵本人（先把自己伺候爽——它是天天用的账本）。</td></tr>
+<tr><td>产品野心</td><td><b>公开产品</b>：已挂 GitHub Pages，别人打开就能用、存自己的数据。v1 不做账号系统（数据在各人本机 localStorage），但演示模式、首次引导按"给陌生人看"的标准做。</td></tr>
+<tr><td>使用状态</td><td>2026 届求职中，产品/体验/前端 + AI 方向；投递高峰期<b>每天打开好几次</b>；<b>电脑为主</b>（布局按桌面一栏为主，手机能看不烂就行）。</td></tr>
+<tr><td>工具寿命</td><td><b>求职季工具</b>。拿到 offer 即完成使命；「长期职业档案」记为远期灵感，v1 不背这个包袱。</td></tr>
+</table>
+</div>
+
+<h2>② 解决什么</h2>
+<div class="card">
+<p>求职信息今天散在四处：BOSS 直聘里的沟通记录、备忘录里的账号密码、脑子里的"投到哪了"。结果就是——<b>记不全、想不起该跟进谁、面试前手忙脚乱</b>。樱帖只解决三件事：</p>
+<div class="mods">
+<div class="mod"><h4>📮 投递看板</h4><p>岗位卡片按阶段推进：想投→已投→笔试→面试→offer。粘贴 JD 快速建档。</p><span class="core">高频 · 每天</span></div>
+<div class="mod"><h4>⚔️ 面试备战</h4><p>题库闪卡 + 按公司/轮次的面试笔试复盘 + 该岗位用哪份简历。</p><span class="core">高频 · 面试前后</span></div>
+<div class="mod"><h4>📊 数据统计</h4><p>投递数、各阶段转化、漏斗。"投了 10 天没回复"自己浮出来，不弹提醒。</p><span class="core">中频 · 隔天看</span></div>
+</div>
+<p style="font-size:12px;color:var(--sumi-light);margin-top:8px">参照系：Huntr 的看板 + Teal 的「岗位↔简历对应」+ Prentus 的「用真实 JD 备面试」——三个被验证过的核心，我们本土化收进一个单文件工具。</p>
+</div>
+
+<h2>③ 不解决什么（防膨胀，同样重要）</h2>
+<div class="card warn">
+<ul>
+<li><b>不做全自动投简历</b>——投递动作留在 BOSS 等平台做（要登录操作你的账号，脆且有风险），樱帖管投之前（话术/简历）和投之后（进度/复盘）的一切。</li>
+<li><b>不做页面内爬虫</b>——岗位资讯走外部管道（自动化定时搜好喂 JSON），不塞进网页里爬。</li>
+<li><b>"AI 生成简历"降级为"AI 微调建议"</b>——底简历是你的，AI 只对版 JD 给"突出什么/改哪句"的建议，不替你写。</li>
+<li><b>不做账号/云同步/多端</b>——单文件 + localStorage，导出 JSON 就是备份。</li>
+<li><b>伪功能一律不进新版</b>——你说了"深度分析/个人画像/BOSS 话术这些没实现、没体验过"。v9.2 里这类按钮级功能，默认砍掉，除非第 2 步打分翻案。</li>
+</ul>
+</div>
+
+<h2>④ 成功长什么样（可验证，4 条）</h2>
+<div class="card ok">
+<ol>
+<li><b>记录快</b>：添加一个岗位 ≤ 30 秒；改一次阶段 ≤ 2 次点击。（零摩擦是生死线）</li>
+<li><b>打开就有答案</b>：首页 3 秒内看到「今天该投/该跟进哪个 + 对应简历在哪」，不用点任何东西。</li>
+<li><b>敢回访</b>：每天主动打开 ≥ 2 次且不觉得烦——任何让你"不想点开"的设计都算失败。</li>
+<li><b>面试不慌</b>：面试前 1 分钟内，能翻到这家公司/这个岗位的复盘和题。</li>
+</ol>
+</div>
+
+<h2>⑤ 首页第一眼（你亲口定的）</h2>
+<div class="home">
+打开首页 = <b>「今天该投哪个岗位 + 它的简历在哪」</b>。今日行动清单置顶，数据大数和看板都在它下面——先干活，再看数。
+</div>
+
+<h2>⑥ 新需求入册（第 2 步打分，这里先记账）</h2>
+<div class="card">
+<table>
+<tr><th>你提的</th><th>形态理解</th><th>备注</th></tr>
+<tr><td>题库</td><td>按方向整理的面试题 + 闪卡刷法</td><td>并入「面试备战」，已有 22 题底子</td></tr>
+<tr><td>面试/笔试复盘</td><td>每轮面完记：被问啥、卡在哪、下轮改啥</td><td>挂在岗位卡片下，不单独开页</td></tr>
+<tr><td>岗位对应简历定制</td><td>每个岗位挂一份简历（文件名/位置/改动要点）</td><td>对齐 Teal 的岗位↔简历思路，<b>只记对应关系不生成简历</b></td></tr>
+<tr><td>对口岗位自动资讯</td><td>打开就看到新岗位</td><td class="no">路线（9.8 定）：自动化定时任务盯<b>各大厂/独角兽官网校招页 + 搜索引擎</b>，喂 JSON 给页面；BOSS 有登录墙+反爬不承诺。你已有可复用管道（AI 雷达、闲置的求职巡检）。第 3 步定架构</td></tr>
+<tr><td>备战资料来源</td><td>不只 AI 生成，还要<b>联网搜真题/经验帖</b>（B站/小红书/牛客等）</td><td>AI 生成 + 真题搜索两路合流，给链接和摘要；随 v2 AI 供电源头一起上</td></tr>
+<tr><td>AI 能力路线（9.8 定）</td><td>改简历对版、备战资料、话术都用 AI</td><td><b>主路线＝你的云服务器中转</b>（密钥只存服务器，页面看不到；需加防滥用限制防别人刷额度）；本地 BYOK（用户自填密钥）留为备胎。v9.2 已有 AI 设置入口，只换供电源头</td></tr>
+<tr><td>全流程愿景</td><td>筛岗位→改简历→投→看进度→备战→今日作战汇总，一站式</td><td>按阶段落地：<b>v1 本地核心</b>（看板+进度+作战汇总）→ <b>v2 接 AI</b>（改简历+备战资料）→ 产品化打磨。每步都可用，不烂尾</td></tr>
+</table>
+<p style="font-size:12px;color:var(--sumi-light)">另外：你说昨天在其他对话里提过功能清单——我搜了记忆库没搜到那段（只到 9 月 3 日）。<b>漏了什么直接补一句，我追加进这张表。</b></p>
+</div>
+
+<h2>⑦ 硬约束（改不得）</h2>
+<div class="card feat">
+<ul>
+<li>单文件 HTML + localStorage，部署 GitHub Pages，改完必须 push 并验证线上。</li>
+<li>视觉素材<b>全部冻结</b>：色板粉<code>#C2416B</code>/金<code>#C9A227</code>/纸<code>#FBF7EC</code>/墨<code>#2C282B</code>、月亮向、转生=红→粉、守护兽与 logo 候选——第 5 步线框图前一个都不碰。</li>
+<li>零摩擦 + 安静工具铁律：不加提醒条、不加常驻提示，数据在该在的地方可见。</li>
+<li>流程铁律：每步做完等你确认再进下一步，先功能后视觉。</li>
+</ul>
+</div>
+
+<div class="callout gold"><b>确认点：</b>这页纸哪里不对、哪里缺，直接说；你说"确认"，我就进第 2 步——把 v9.2 全部功能列出来给你打「必须/应该/可以」。</div>
+
+<div class="footer">樱帖重启 · 第 1 步 / 共 5 步 · 2026-09-08</div>
+</body>
+</html>

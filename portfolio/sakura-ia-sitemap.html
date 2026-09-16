@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 第 3 步 信息架构页面地图</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.75;padding:24px;max-width:940px;margin:0 auto}
+h1{font-size:21px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:14px}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:6px 0 16px}
+h2{font-size:15.5px;font-weight:500;margin:24px 0 10px;padding-left:11px;border-left:3px solid var(--shu)}
+p{margin:6px 0;color:var(--sumi-mid)}
+p b,li b,td b{color:var(--sumi);font-weight:500}
+.card{background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:12px;padding:15px 18px;margin-bottom:12px}
+.card.warn{border-color:var(--shu);background:#fffafb}
+.card.ok{border-color:var(--kin);background:#fffdf5}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+th{background:var(--kami);text-align:left;padding:7px 10px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18)}
+td{padding:7px 10px;border-bottom:1px solid rgba(44,40,43,.15);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500;white-space:nowrap}
+ul,ol{margin:6px 0 4px 22px}
+li{margin:5px 0;color:var(--sumi-mid);font-size:13.5px}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:11px 14px;border-radius:8px;margin:10px 0;font-size:13px;color:var(--shu-deep)}
+.tag{display:inline-block;font-size:11px;border-radius:5px;padding:0 7px;margin-left:6px;vertical-align:1px}
+.tag.v2{background:var(--kin-soft);color:#6B5410}
+.tag.ai{background:#E6F1FB;color:#185FA5}
+.tag.low{background:var(--kami);color:var(--sumi-light)}
+/* 页面地图树 */
+.tree{background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:12px;padding:18px;margin-bottom:12px}
+.lvl{display:flex;gap:10px;margin:0;flex-wrap:wrap}
+.top{flex:1;min-width:150px;border:1.5px solid var(--sumi);border-radius:10px;background:var(--kami);padding:10px 12px}
+.top h4{font-size:13.5px;font-weight:500}
+.top p{font-size:11.5px;color:var(--sumi-mid);margin:3px 0 0;line-height:1.55}
+.subpage{border:1px dashed rgba(44,40,43,.4);border-radius:8px;background:#fffdf8;padding:7px 10px;margin-top:8px}
+.subpage p{font-size:11.5px;margin:0;color:var(--sumi-mid);line-height:1.55}
+.subpage b{font-size:12px}
+.arrowrow{text-align:center;color:var(--sumi-light);font-size:12px;margin:6px 0}
+.freq{display:inline-block;font-size:10.5px;color:var(--shu-deep);background:var(--shu-soft);border-radius:5px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.footer{font-size:11px;color:var(--sumi-light);text-align:center;margin-top:22px}
+</style>
+</head>
+<body>
+
+<h1>樱帖 · 第 3 步 信息架构页面地图</h1>
+<div class="sub">2026-09-08 · 依据你刚回传的打分（AI 备战/简历对版/资讯管道→必须；旧简历视图→应该）· 等你确认后进第 4 步核心流程</div>
+<div class="gold-rule"></div>
+
+<div class="one" style="background:var(--sumi);color:#F5EDEE;border-radius:12px;padding:13px 18px;margin-bottom:14px;font-size:14.5px;line-height:1.8">
+整站只有 <b style="color:#F3C8D4">4 个顶层区</b>：今天在<b style="color:#F3C8D4">首页看任务</b>，去<b style="color:#F3C8D4">看板推进岗位</b>，进<b style="color:#F3C8D4">备战页准备面试</b>，<b style="color:#F3C8D4">设置</b>只放低频的。AI 不单独开页——它是长在岗位和备战里的能力。
+</div>
+
+<h2>一、页面地图（全景）</h2>
+<div class="tree">
+  <div class="lvl">
+    <div class="top">
+      <h4>🏠 今日作战<span class="freq">默认首页</span></h4>
+      <p>打开第一眼＝今天该干嘛</p>
+      <div class="subpage"><p><b>今日行动卡</b><br>该投哪个·该跟进谁·最近面试·对应简历在哪（每条可点跳转）</p></div>
+      <div class="subpage"><p><b>统计大数条</b><br>投递数 / 进行中 / offer 数</p></div>
+      <div class="subpage"><p><b>新岗位雷达</b><span class="tag v2">v2</span><br>自动化喂来的对口岗位，一键转正式岗位卡</p></div>
+    </div>
+    <div class="top">
+      <h4>📮 投递看板</h4>
+      <p>岗位推进的主战场</p>
+      <div class="subpage"><p><b>工具条</b><br>搜索 + 阶段筛选 + ＋添加岗位</p></div>
+      <div class="subpage"><p><b>看板（默认）/ 列表</b><br>两种视图切换；月历<span class="tag low">可以档</span>以后加</p></div>
+      <div class="subpage"><p><b>岗位详情弹层</b> → 点任何卡片进入（见下）</p></div>
+    </div>
+    <div class="top">
+      <h4>⚔️ 面试备战</h4>
+      <p>面试前后的弹药库</p>
+      <div class="subpage"><p><b>复盘</b><br>全部面试/笔试复盘时间线</p></div>
+      <div class="subpage"><p><b>题库</b><br>被问倒的题跨岗位汇总</p></div>
+      <div class="subpage"><p><b>闪卡</b><br>题库的刷题形态（22 题底子）</p></div>
+      <div class="subpage"><p><b>AI 备战资料</b><span class="tag ai">AI</span><span class="tag v2">v2</span><br>选岗位→AI 出考题+作战卡，联网搜真题/经验帖</p></div>
+    </div>
+    <div class="top" style="border-style:solid;border-color:rgba(44,40,43,.45)">
+      <h4>⚙️ 设置<span class="tag low">低频 · 原位不动</span></h4>
+      <p>设一次就不再碰的都在这</p>
+      <div class="subpage"><p><b>AI 设置 + 我的亮点</b><br>连云服务器中转<span class="tag v2">v2</span>，本地 Key 留备胎</p></div>
+      <div class="subpage"><p><b>导出导入 / 演示数据</b></p></div>
+      <div class="subpage"><p><b>功能导览</b><br>随时重看新手教学</p></div>
+    </div>
+  </div>
+  <div class="arrowrow">▼ 点任何岗位卡片，进入同一个「岗位详情」弹层 ▼</div>
+  <div class="lvl">
+    <div class="top" style="flex:100%;border-color:var(--shu)">
+      <h4>🗂 岗位详情（弹层，不是独立页）</h4>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+        <div class="subpage" style="flex:1;min-width:130px"><p><b>基本信息 + JD</b><br>公司·阶段推进·JD 原文</p></div>
+        <div class="subpage" style="flex:1;min-width:130px"><p><b>复盘记录</b><br>每轮面完记：被问啥/卡哪/下轮改啥</p></div>
+        <div class="subpage" style="flex:1;min-width:130px"><p><b>简历对应</b><br>这份岗位用哪份简历·放哪·改了啥（旧简历视图并进来）</p></div>
+        <div class="subpage" style="flex:1;min-width:130px"><p><b>AI 对版</b><span class="tag ai">AI</span><span class="tag v2">v2</span><br>底简历 vs JD 微调建议</p></div>
+        <div class="subpage" style="flex:1;min-width:130px"><p><b>话术</b><span class="tag low">可以档</span><br>BOSS 打招呼话术</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>二、三条关键决策（为什么这么摆）</h2>
+<div class="card warn">
+<ol>
+<li><b>AI 设置不突出——你说得对，采纳。</b>它低频（设一次永不再碰），留在设置里。但补一个<b>「功能导览」</b>：第一次打开带你走一遍"有什么、在哪"，设置里可随时重看。治"有功能但我看不见"的病，又不把低频功能抬成常驻按钮。</li>
+<li><b>旧简历视图与「岗位↔简历对应」合并成一个功能。</b>你给旧视图打了"应该"，但它和新需求「岗位↔简历对应」是同一件事的两个壳——架构上合并为一个（挂在岗位详情里），保留功能、不做两个入口，你随时能从岗位卡看到"用哪份简历、放哪"。</li>
+<li><b>AI 是能力不是页面。</b>AI 备战、AI 对版、话术都不单独开页——分别长在备战页和岗位详情里，随用随出现。这样必须档的三个 AI 功能（备战/对版/资讯管道）全部有了明确落点，且不会把导航撑爆。</li>
+</ol>
+</div>
+
+<h2>三、打分结果如何落进架构（对账表）</h2>
+<div class="card ok">
+<table>
+<tr><th>你定的档</th><th>落点</th></tr>
+<tr><td>必须 · 看板/搜索/添加</td><td>投递看板页主体</td></tr>
+<tr><td>必须 · 今日卡/统计大数</td><td>首页「今日作战」</td></tr>
+<tr><td>必须 · 复盘</td><td>备战页时间线 + 岗位详情挂件（两边入口，同一份数据）</td></tr>
+<tr><td>必须 · 漏斗</td><td>统计大数条点开即达（不占独立导航位）</td></tr>
+<tr><td>必须 · AI 备战 / AI 简历对版</td><td>备战页 / 岗位详情挂件，v2 随服务器供电源头点亮</td></tr>
+<tr><td>必须 · 岗位资讯管道</td><td>首页「新岗位雷达」区，v2 由自动化喂 JSON</td></tr>
+<tr><td>应该 · 题库/闪卡</td><td>备战页两卡；复盘里被问倒的题自动进题库</td></tr>
+<tr><td>应该 · 岗位↔简历对应</td><td>岗位详情挂件（吸收旧简历视图）</td></tr>
+<tr><td>应该 · 演示数据/首次引导</td><td>设置内 + 首次打开自动触发功能导览</td></tr>
+<tr><td>可以 · 月历/BOSS话术/CSV</td><td>月历=看板第二视图；话术=详情挂件；CSV=设置内。都不占导航</td></tr>
+<tr><td>可以 · 个人画像</td><td>降级为设置里「我的亮点」一小节（AI 的原料）</td></tr>
+</table>
+</div>
+
+<div class="callout"><b>确认点：</b>页面地图哪里不对、哪块放错了直接说；确认后进<b>第 4 步核心流程</b>——把「添加岗位 → 跟踪推进 → 面试复盘」画成路径图。</div>
+
+<div class="footer">樱帖重启 · 第 3 步 / 共 5 步 · 2026-09-08</div>
+</body>
+</html>

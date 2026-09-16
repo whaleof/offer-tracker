@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱帖 · 竞品分析报告</title>
+<style>
+:root{
+  --kinari:#FBF7EC; --kami:#F4EFE2;
+  --sumi:#2C282B; --sumi-mid:#6B625C; --sumi-light:#9A9189;
+  --shu:#C2416B; --shu-deep:#A83358; --shu-soft:#F5DCE3;
+  --kin:#C9A227; --kin-soft:#EDE0C0;
+  --midori:#3A7D5C; --midori-soft:#E0F0E8;
+  --aka:#B3541E; --aka-soft:#FBE8D8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--kinari);color:var(--sumi);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:1.75;padding:28px;max-width:960px;margin:0 auto}
+.serif{font-family:"Songti SC","Noto Serif SC",Georgia,serif}
+h1{font-size:24px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sumi-light);margin-bottom:14px}
+.gold-rule{height:1px;background:var(--kin);opacity:.45;margin:6px 0 20px}
+h2{font-size:17px;font-weight:500;margin:28px 0 12px;padding-left:11px;border-left:3px solid var(--shu)}
+h3{font-size:15px;font-weight:500;margin:18px 0 8px;color:var(--shu-deep)}
+p{margin:6px 0;color:var(--sumi-mid)}
+p b,td b{color:var(--sumi);font-weight:500}
+.card{background:#fff;border:1px solid rgba(44,40,43,.35);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card.highlight{border-color:var(--shu);background:#fffafb}
+.card.gold{border-color:var(--kin);background:#fffdf5}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;background:#fff}
+th{background:var(--kami);text-align:left;padding:8px 10px;font-weight:500;font-size:12px;border-bottom:1px solid rgba(44,40,43,.18);white-space:nowrap;vertical-align:top}
+td{padding:8px 10px;border-bottom:1px solid rgba(44,40,43,.12);color:var(--sumi-mid);vertical-align:top}
+td:first-child{color:var(--sumi);font-weight:500;white-space:nowrap}
+.yes{color:var(--midori);font-weight:600}
+.no{color:var(--aka);font-weight:600}
+.partial{color:var(--kin);font-weight:600}
+.tag{display:inline-block;background:var(--shu-soft);color:var(--shu-deep);border-radius:6px;padding:1px 8px;font-size:11px;margin:2px 4px 2px 0;font-weight:500}
+.tag.gold{background:var(--kin-soft);color:#6B5410}
+.tag.green{background:var(--midori-soft);color:var(--midori)}
+.tag.orange{background:var(--aka-soft);color:var(--aka)}
+ul,ol{margin:8px 0 6px 22px}
+li{margin:5px 0;color:var(--sumi-mid);font-size:13.5px}
+li b{color:var(--sumi);font-weight:500}
+.callout{background:var(--shu-soft);border-left:3px solid var(--shu);padding:12px 16px;border-radius:8px;margin:12px 0;font-size:13px;color:var(--shu-deep)}
+.callout.gold{background:var(--kin-soft);border-color:var(--kin);color:#6B5410}
+.callout.green{background:var(--midori-soft);border-color:var(--midori);color:var(--midori)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+.comp-card{background:#fff;border:1px solid rgba(44,40,43,.2);border-radius:10px;padding:14px 16px}
+.comp-card h4{font-size:14px;font-weight:600;color:var(--sumi);margin-bottom:4px}
+.comp-card .type{font-size:11px;color:var(--sumi-light);margin-bottom:8px}
+.comp-card p{font-size:12.5px;margin:4px 0}
+.score-bar{height:8px;background:var(--kami);border-radius:4px;margin:4px 0;overflow:hidden}
+.score-bar .fill{height:100%;border-radius:4px}
+.priority-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(44,40,43,.1)}
+.priority-row:last-child{border-bottom:none}
+.p-badge{flex-shrink:0;width:32px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.p0{background:var(--shu)}
+.p1{background:var(--kin)}
+.p2{background:var(--sumi-light)}
+.p-text{font-size:13px;color:var(--sumi-mid)}
+.p-text b{color:var(--sumi)}
+.footer{font-size:11px;color:var(--sumi-light);text-align:center;margin-top:30px;padding-top:16px;border-top:1px solid rgba(44,40,43,.15)}
+</style>
+</head>
+<body>
+
+<h1 class="serif">樱帖 · 竞品分析报告</h1>
+<div class="sub">2026-09-14 · 产品设计阶段交付 · 覆盖 5 款竞品 + 1 类替代方案 · 用于指导樱帖 v1 功能定位与迭代优先级</div>
+<div class="gold-rule"></div>
+
+<div class="callout gold">
+<b>报告目的：</b>回答三个问题——①市面上的求职追踪工具都怎么做的？②樱帖的差异化机会在哪？③下一步该做什么、按什么顺序做？
+</div>
+
+<!-- ==================== 1. 分析背景 ==================== -->
+<h2>一、分析背景与范围</h2>
+
+<div class="card">
+<p><b>产品定位：</b>樱帖是一款面向中国校招求职者的单文件求职追踪工具，核心解决"投递状态散落各处、面试备考缺乏体系"的问题。</p>
+<p><b>分析时间：</b>2026 年 9 月（产品设计阶段，v1 上线前）</p>
+<p><b>分析方法：</b>功能对比矩阵 + 核心流程走查 + 商业模式拆解 + 差异化机会识别</p>
+</div>
+
+<h3>竞品筛选逻辑</h3>
+<p>不是所有"找工作 APP"都是竞品。按"与樱帖解决同一问题的程度"分三层：</p>
+
+<div class="two-col" style="margin-top:10px">
+<div class="comp-card">
+<h4>直接竞品 <span class="tag green">国内主流</span></h4>
+<div class="type">解决同一问题，用户重叠度高</div>
+<p><b>实习僧</b>：国内校招主流平台，含投递记录功能</p>
+<p><b>牛客网</b>：笔面试题库 + 求职进程追踪</p>
+</div>
+<div class="comp-card">
+<h4>间接竞品 <span class="tag gold">海外工具</span></h4>
+<div class="type">产品形态最接近，但市场不同</div>
+<p><b>Huntr</b>：欧美求职看板工具，拖拽 Kanban 形态</p>
+<p><b>Teal</b>：欧美职业管理平台，含岗位追踪 + 简历管理</p>
+</div>
+<div class="comp-card">
+<h4>同类独立项目 <span class="tag">个人开发</span></h4>
+<div class="type">本土化尝试，形态相近</div>
+<p><b>秋招航海志</b>：抖音博主个人项目，本地化状态机 + AI</p>
+</div>
+<div class="comp-card">
+<h4>替代方案 <span class="tag orange">用户现状</span></h4>
+<div class="type">用户现在用什么</div>
+<p><b>Excel / 备忘录 / 日历</b>：灵活但无体系，靠人工维护</p>
+</div>
+</div>
+
+<!-- ==================== 2. 功能对比矩阵 ==================== -->
+<h2>二、功能对比矩阵</h2>
+
+<p>横轴为竞品，纵轴为功能维度。<span class="yes">●</span> 完整支持，<span class="partial">◐</span> 部分支持/需付费，<span class="no">○</span> 不支持。</p>
+
+<div class="card" style="overflow-x:auto">
+<table>
+<tr>
+<th style="width:18%">功能维度</th>
+<th>樱帖</th>
+<th>实习僧</th>
+<th>牛客网</th>
+<th>Huntr</th>
+<th>Teal</th>
+<th>秋招航海志</th>
+</tr>
+<tr>
+<td colspan="7" style="background:var(--shu-soft);color:var(--shu-deep);font-weight:600;padding:6px 10px">投递管理</td>
+</tr>
+<tr>
+<td>看板视图（拖拽推进）</td>
+<td class="yes">●</td><td class="partial">◐</td><td class="no">○</td><td class="yes">●</td><td class="yes">●</td><td class="partial">◐</td>
+</tr>
+<tr>
+<td>中国校招状态机（含笔试）</td>
+<td class="yes">●</td><td class="yes">●</td><td class="partial">◐</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>月历视图（DDL 标记）</td>
+<td class="yes">●</td><td class="partial">◐</td><td class="no">○</td><td class="partial">◐</td><td class="no">○</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>岗位↔简历对应</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td><td class="no">○</td>
+</tr>
+<tr>
+<td>批量导入（Excel/CSV）</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="partial">◐</td><td class="partial">◐</td><td class="no">○</td>
+</tr>
+<tr>
+<td colspan="7" style="background:var(--shu-soft);color:var(--shu-deep);font-weight:600;padding:6px 10px">面试备考</td>
+</tr>
+<tr>
+<td>面试复盘记录</td>
+<td class="yes">●</td><td class="no">○</td><td class="partial">◐</td><td class="partial">◐</td><td class="partial">◐</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>题库（按公司分类）</td>
+<td class="yes">●</td><td class="no">○</td><td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="partial">◐</td>
+</tr>
+<tr>
+<td>闪卡刷题</td>
+<td class="yes">●</td><td class="no">○</td><td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>面经采集/搜索</td>
+<td class="yes">●</td><td class="partial">◐</td><td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="no">○</td>
+</tr>
+<tr>
+<td colspan="7" style="background:var(--shu-soft);color:var(--shu-deep);font-weight:600;padding:6px 10px">AI 能力</td>
+</tr>
+<tr>
+<td>AI 答题思路</td>
+<td class="yes">●</td><td class="no">○</td><td class="partial">◐</td><td class="no">○</td><td class="partial">◐</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>AI 面试复盘/优化</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>AI 简历优化/JD 匹配</td>
+<td class="no">○</td><td class="partial">◐</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>AI 打招呼话术</td>
+<td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td>
+</tr>
+<tr>
+<td colspan="7" style="background:var(--shu-soft);color:var(--shu-deep);font-weight:600;padding:6px 10px">数据与体验</td>
+</tr>
+<tr>
+<td>投递漏斗/转化率</td>
+<td class="yes">●</td><td class="partial">◐</td><td class="no">○</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td>
+</tr>
+<tr>
+<td>到点提醒（系统通知）</td>
+<td class="yes">●</td><td class="partial">◐</td><td class="no">○</td><td class="yes">●</td><td class="yes">●</td><td class="no">○</td>
+</tr>
+<tr>
+<td>数据导出/备份</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="partial">◐</td><td class="partial">◐</td><td class="no">○</td>
+</tr>
+<tr>
+<td>多端同步</td>
+<td class="partial">◐</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="no">○</td>
+</tr>
+<tr>
+<td colspan="7" style="background:var(--shu-soft);color:var(--shu-deep);font-weight:600;padding:6px 10px">产品形态</td>
+</tr>
+<tr>
+<td>零安装即用</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td>
+</tr>
+<tr>
+<td>数据本地存储（隐私）</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="partial">◐</td>
+</tr>
+<tr>
+<td>开源/可定制</td>
+<td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td><td class="no">○</td>
+</tr>
+<tr>
+<td>价格</td>
+<td class="yes">免费</td><td class="partial">免费+增值</td><td class="partial">免费+会员</td><td class="partial">免费版有限</td><td class="partial">免费版有限</td><td class="partial">AI 自费</td>
+</tr>
+</table>
+</div>
+
+<div class="callout">
+<b>矩阵速览：</b>樱帖在"中国校招状态机 + 单文件零部署 + 数据本地 + 面试备考闭环"四个维度上是独一档的组合。最大的功能缺口是 <b>AI 简历优化/JD 匹配</b>（Teal 和秋招航海志都有）和 <b>多端同步</b>（但这是单文件架构的取舍，不是缺陷）。
+</div>
+
+<!-- ==================== 3. 核心流程体验对比 ==================== -->
+<h2>三、核心流程体验对比</h2>
+
+<p>以"从发现一个岗位到完成面试复盘"为标准流程，走查各竞品的操作路径：</p>
+
+<div class="card">
+<table>
+<tr><th style="width:14%">流程节点</th><th>樱帖</th><th>实习僧</th><th>牛客网</th><th>Huntr</th><th>秋招航海志</th></tr>
+<tr>
+<td><b>添加岗位</b></td>
+<td>粘贴 JD / 手动录入，≤30 秒</td>
+<td>平台内投递自动记录，外部岗位需手动加</td>
+<td>无投递管理入口</td>
+<td>手动录入，表单字段多</td>
+<td>手动录入，自动生成后续界面</td>
+</tr>
+<tr>
+<td><b>推进状态</b></td>
+<td>拖拽到下一列，2 次点击</td>
+<td>状态标签手动改，无拖拽</td>
+<td>—</td>
+<td>拖拽 Kanban，体验流畅</td>
+<td>弹窗选时间，自动记录节点</td>
+</tr>
+<tr>
+<td><b>笔试/面试提醒</b></td>
+<td>系统通知 + 卡片倒计时</td>
+<td>APP 推送（需授权）</td>
+<td>无</td>
+<td>邮件/浏览器通知</td>
+<td>月历标记，无主动提醒</td>
+</tr>
+<tr>
+<td><b>面试复盘</b></td>
+<td>挂在岗位卡下，被问倒的题自动进题库</td>
+<td>无</td>
+<td>社区发帖式，非结构化</td>
+<td>备注字段，无体系</td>
+<td>有 + AI 加持</td>
+</tr>
+<tr>
+<td><b>面试前刷题</b></td>
+<td>按公司筛选题库，闪卡模式</td>
+<td>无</td>
+<td>题库强大，但和投递记录不打通</td>
+<td>无</td>
+<td>闪卡 + AI 生成</td>
+</tr>
+<tr>
+<td><b>数据统计</b></td>
+<td>首页大数 + 转化率，一眼可见</td>
+<td>投递记录列表，无漏斗</td>
+<td>无</td>
+<td>漏斗分析 + 图表</td>
+<td>漏斗分析卡</td>
+</tr>
+</table>
+</div>
+
+<h3>各竞品体验断点</h3>
+<div class="two-col">
+<div class="comp-card">
+<h4>实习僧</h4>
+<p>✅ 岗位资源丰富，投递自动记录</p>
+<p>❌ 投递记录是列表不是看板，无法拖拽</p>
+<p>❌ 无面试复盘、无题库、无提醒体系</p>
+<p>❌ 数据锁在平台内，无法导出</p>
+</div>
+<div class="comp-card">
+<h4>牛客网</h4>
+<p>✅ 题库是全行业最强，面经社区活跃</p>
+<p>❌ 没有投递追踪功能，投递和备考是割裂的</p>
+<p>❌ 面试复盘靠社区发帖，非个人结构化记录</p>
+</div>
+<div class="comp-card">
+<h4>Huntr / Teal</h4>
+<p>✅ 看板交互成熟，数据分析专业</p>
+<p>❌ 状态机是欧美流程（无笔试、无内推、无网申 DDL）</p>
+<p>❌ 免费版功能受限，高级功能需订阅</p>
+<p>❌ 全英文界面，国内用户有门槛</p>
+</div>
+<div class="comp-card">
+<h4>秋招航海志</h4>
+<p>✅ 本土化到位，AI 功能丰富</p>
+<p>❌ 需本地部署 + 自配 API Key，上手门槛高</p>
+<p>❌ 未开源，仅群分享，无法验证代码质量</p>
+<p>❌ 无提醒、无数据导出</p>
+</div>
+</div>
+
+<!-- ==================== 4. 商业模式 ==================== -->
+<h2>四、商业模式与定价</h2>
+
+<div class="card">
+<table>
+<tr><th>产品</th><th>模式</th><th>价格</th><th>盈利点</th></tr>
+<tr><td><b>樱帖</b></td><td>免费开源</td><td>0 元（AI 为 BYO Key）</td><td>暂无（个人项目）</td></tr>
+<tr><td><b>实习僧</b></td><td>平台佣金 + 企业服务</td><td>C 端免费</td><td>企业招聘付费、内推服务、培训课程</td></tr>
+<tr><td><b>牛客网</b></td><td>会员 + 企业服务</td><td>免费 + 会员（百元/年）</td><td>求职会员、企业校招服务、在线考试</td></tr>
+<tr><td><b>Huntr</b></td><td>SaaS 订阅</td><td>免费版（限岗位数）+ $19/月 Pro</td><td>高级分析、无限岗位、团队协作</td></tr>
+<tr><td><b>Teal</b></td><td>SaaS 订阅</td><td>免费版 + $24/月 Premium</td><td>AI 简历优化、高级追踪、职业教练</td></tr>
+<tr><td><b>秋招航海志</b></td><td>免费分享</td><td>0 元（AI 自费）</td><td>暂无（个人项目）</td></tr>
+</table>
+</div>
+
+<div class="callout green">
+<b>关键发现：</b>欧美工具（Huntr/Teal）已经验证了"求职追踪工具可以收费"的商业模式，且客单价不低（$19-24/月）。国内市场目前没有纯求职追踪的付费产品——实习僧和牛客都是靠招聘服务/题库赚钱，追踪只是附属功能。<b>这意味着樱帖如果做到足够好用，未来有商业化空间。</b>
+</div>
+
+<!-- ==================== 5. 差异化机会 ==================== -->
+<h2>五、差异化机会分析</h2>
+
+<div class="card highlight">
+<h3>樱帖的独特价值（别人抄不走的）</h3>
+<ol>
+<li><b>中国校招全流程状态机</b>：想投→已投→笔试→面试→已转生+落樱旁路，这是欧美工具永远不会做的，国内平台又不屑于做的"中间地带"。</li>
+<li><b>单文件零部署</b>：打开链接即用，不注册、不下载、不依赖后端。对比秋招航海志要装环境配 Key，樱帖的上手门槛是零。</li>
+<li><b>数据完全自主</b>：localStorage 本地存储 + 导出备份，求职数据不被任何平台锁定。这在"数据隐私"越来越受关注的当下是差异化卖点。</li>
+<li><b>投递→复盘→题库 闭环</b>：面试中被问倒的题自动汇成按公司分类的题库，面试前直接刷。牛客题库虽强但和投递记录割裂，樱帖是唯一打通的。</li>
+<li><b>AI 备考辅助（BYO Key）</b>：答题思路 + 盘下一轮 + 面经收题，用户自带 Key 不花平台的钱，也没有平台抽成。</li>
+</ol>
+</div>
+
+<h3>功能缺口（竞品有但樱帖没有的）</h3>
+<div class="card">
+<table>
+<tr><th>缺口</th><th>谁有</th><th>优先级</th><th>说明</th></tr>
+<tr><td><b>AI 简历优化 / JD 匹配度</b></td><td>Teal、秋招航海志、实习僧</td><td class="tag gold">P1</td><td>用户最高频痛点之一，樱帖已有"岗位↔简历对应"基础，加 AI 对版是自然延伸</td></tr>
+<tr><td><b>AI 打招呼话术生成</b></td><td>秋招航海志</td><td class="tag gold">P1</td><td>BOSS 直聘是主投渠道，打招呼语是高频动作</td></tr>
+<tr><td><b>岗位自动推荐/雷达</b></td><td>—（差异化机会）</td><td class="tag">P2</td><td>樱帖已有服务端面经采集管道，可扩展为岗位资讯雷达</td></tr>
+<tr><td><b>多端同步</b></td><td>所有商业产品</td><td class="tag orange">P3</td><td>单文件架构的天然限制，可通过导出/导入缓解，不是 v1 必须</td></tr>
+</table>
+</div>
+
+<!-- ==================== 6. 结论与迭代建议 ==================== -->
+<h2>六、结论与迭代建议</h2>
+
+<div class="callout gold">
+<b>核心结论：</b>樱帖不需要"大而全"，要守住"中国校招 + 零部署 + 数据自主 + 备考闭环"四个差异化支柱，在此基础上补齐 AI 简历对版和打招呼话术两个高频缺口。
+</div>
+
+<h3>迭代优先级（按 ROI 排序）</h3>
+
+<div class="card">
+<div class="priority-row">
+<div class="p-badge p0">P0</div>
+<div class="p-text"><b>AI 简历对版（JD 匹配度分析）</b>——粘贴 JD → 对照简历给出匹配度 + 短板建议 + 微调方向。用户最高频痛点，Teal 验证了付费意愿，樱帖已有岗位↔简历对应的数据基础。</div>
+</div>
+<div class="priority-row">
+<div class="p-badge p0">P0</div>
+<div class="p-text"><b>AI 打招呼话术生成</b>——岗位卡一键生成 BOSS 直聘打招呼语。高频动作，秋招航海志已验证需求，实现成本低（一次 API 调用）。</div>
+</div>
+<div class="priority-row">
+<div class="p-badge p1">P1</div>
+<div class="p-text"><b>岗位雷达自动化</b>——把现有面经采集管道扩展为岗位资讯采集，每日定时抓目标公司官方校招页，推送增量岗位。这是所有竞品都没有的差异化王牌。</div>
+</div>
+<div class="priority-row">
+<div class="p-badge p1">P1</div>
+<div class="p-text"><b>面试复盘 AI 增强</b>——复盘写完后 AI 自动整理成题卡 + 给出改进建议。已有复盘功能，加 AI 是自然延伸，和"被问倒的题自动进题库"形成闭环。</div>
+</div>
+<div class="priority-row">
+<div class="p-badge p2">P2</div>
+<div class="p-text"><b>数据可视化增强</b>——在现有大数条基础上加投递趋势图、各阶段转化率漏斗、公司分布饼图。Huntr 的数据分析是付费点，樱帖可以免费提供作为差异化。</div>
+</div>
+<div class="priority-row">
+<div class="p-badge p2">P2</div>
+<div class="p-text"><b>团队/共享功能</b>——求职搭子之间共享岗位信息、互相提醒。远期功能，v1 不背这个包袱。</div>
+</div>
+<div class="priority-row">
+<div class="p-badge p3">P3</div>
+<div class="p-text"><b>多端同步方案</b>——单文件架构的天然限制，可通过云端备份（可选）缓解。不是核心需求，用户主要在电脑上用。</div>
+</div>
+</div>
+
+<h3>一句话定位（对外传播用）</h3>
+<div class="card highlight" style="text-align:center;padding:20px">
+<p class="serif" style="font-size:16px;color:var(--sumi);line-height:1.8">
+<b>樱帖 = 中国校招版 Huntr + 牛客题库的个人版 + 零部署单文件</b><br>
+<span style="font-size:13px;color:var(--sumi-mid)">不注册、不下载、数据在自己手里，从投递到面试复盘一个文件搞定。</span>
+</p>
+</div>
+
+<div class="footer">
+樱帖 · 竞品分析报告 · 2026-09-14 · 基于公开信息与产品实测整理 · 仅供产品决策参考
+</div>
+
+</body>
+</html>

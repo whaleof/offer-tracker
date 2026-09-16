@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量衡 EvalLab · 试点榜单报告 v1</title>
+<style>
+  :root { --pink:#F58BA8; --pink-deep:#E8557F; --ink:#2b2b33; --sub:#8a8a95;
+          --line:#efe6ea; --bg:#fdf8fa; --card:#ffffff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg);
+        color:var(--ink); max-width:960px; margin:0 auto; padding:40px 24px 80px; line-height:1.7; }
+  h1 { font-size:26px; margin-bottom:4px; }
+  h2 { font-size:18px; margin:40px 0 12px; padding-left:10px; border-left:4px solid var(--pink); }
+  .sub { color:var(--sub); font-size:13px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
+          padding:20px 22px; margin-top:14px; box-shadow:0 2px 10px rgba(245,139,168,.06); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; }
+  th { color:var(--sub); font-weight:500; font-size:13px; }
+  .win-cell { background:#fdeef3; }
+  .win { color:var(--pink-deep); font-size:12px; }
+  .alert { color:#d33; font-weight:600; }
+  .bar-row { display:flex; align-items:center; gap:8px; margin:8px 0; font-size:13px; }
+  .bar-label { width:90px; color:var(--sub); }
+  .bar-track { flex:1; height:12px; background:#f6edf1; border-radius:6px; overflow:hidden; }
+  .bar { height:100%; border-radius:6px; }
+  .b1 { background:var(--pink); } .b2 { background:#9ED5C5; }
+  .bar-row b { width:36px; font-size:13px; }
+  .legend { font-size:12px; color:var(--sub); margin-top:6px; }
+  .dec { border-left:3px solid var(--pink); padding:6px 14px; margin:12px 0; background:#fff;
+         border-radius:0 10px 10px 0; }
+  .dec b { color:var(--pink-deep); }
+  ul { padding-left:20px; font-size:14px; }
+  li { margin:5px 0; }
+  .tag { display:inline-block; background:#fdeef3; color:var(--pink-deep); border-radius:6px;
+         padding:1px 8px; font-size:12px; margin-right:6px; }
+  footer { margin-top:48px; color:var(--sub); font-size:12px; text-align:center; }
+</style></head><body>
+
+<h1>量衡 EvalLab · 试点榜单报告 v1</h1>
+<p class="sub">2026-09-15 · 候选：deepseek-chat vs glm-4-flash（免费档，牌价 ¥0） ·
+数据：任务A 81 条金标 / 任务B 8 段 / 任务C 100 条 / 任务D 120 条（公开基准） ·
+双 judge 匿名交叉盲评 · 全部结论仅作相对排序</p>
+
+<h2>一、三维总榜（质量 × 成本 × 延迟）</h2>
+<div class="card"><table>
+<tr><th>指标</th><th>deepseek-chat</th><th>glm-4-flash</th></tr>
+<tr><td>任务 A · 分类准确率</td><td class=win-cell>85.2% <span class="win">✓ 占优</span></td><td class=>72.8% </td></tr><tr><td>任务 A · macro-F1</td><td class=win-cell>0.839 <span class="win">✓ 占优</span></td><td class=>0.774 </td></tr><tr><td>任务 B · 规则通过率</td><td class=win-cell>100.0% <span class="win">✓ 占优</span></td><td class=>62.5% </td></tr><tr><td>任务 B · judge 语义分(1-5)</td><td class=win-cell>3.06 <span class="win">✓ 占优</span></td><td class=>3.00 </td></tr><tr><td>任务 C · rubric 总分(1-5)</td><td class=win-cell>4.29 <span class="win">✓ 占优</span></td><td class=>3.33 </td></tr><tr><td>任务 D · 公开基准准确率</td><td class=win-cell>82.5% <span class="win">✓ 占优</span></td><td class=>81.7% </td></tr><tr><td>成本 · ¥/千条任务</td><td class=>0.938 </td><td class=win-cell>0.000 <span class="win">✓ 占优</span></td></tr><tr><td>延迟 · P50(ms)</td><td class=win-cell>730 <span class="win">✓ 占优</span></td><td class=>1203 </td></tr><tr><td>延迟 · P95(ms)</td><td class=win-cell>1129 <span class="win">✓ 占优</span></td><td class=>3206 </td></tr>
+</table>
+<p class="legend">✓ 占优 = 该指标横向更优。成本仅计候选模型跑批；judge 开销约为候选调用的 1.7 倍，未计入。</p></div>
+
+<h2>二、任务 A · 时间轴语义分类（客观题）</h2>
+<div class="card">
+<p style="font-size:14px">deepseek-chat 准确率 <b>85.2% ±7.7</b>（95% CI），
+glm-4-flash <b>72.8% ±9.7</b>。两者置信区间接近相接，方向明确但幅度待复测确认。</p>
+<table style="margin-top:12px">
+<tr><th>类别</th><th>金标数</th><th>deepseek-chat 召回</th><th>glm-4-flash 召回</th></tr>
+<tr><td>黑洞（刷/躺/看）</td><td>13</td><td>92.3%</td><td>84.6%</td></tr><tr><td>身体投资（动）</td><td>0</td><td>0.0%</td><td>0.0%</td></tr><tr><td>建设产出（干）</td><td>33</td><td>78.8%</td><td>60.6%</td></tr><tr><td>内容输出（发）</td><td>3</td><td>66.7%</td><td>100.0%</td></tr><tr><td>情绪 / 关系</td><td>9</td><td>100.0%</td><td>66.7%</td></tr><tr><td>生活维持（必须）</td><td>10</td><td>80.0%</td><td>80.0%</td></tr><tr><td>事务 / 移动</td><td>13</td><td>92.3%</td><td>84.6%</td></tr>
+</table>
+<p class="legend">「身体投资（动）」类经人工复核确认本窗口无真实正样本（21 条「代谢」全部为词典误归），已从金标剔除，
+类别不均衡为真实分布，故报 macro-F1。</p></div>
+
+<h2>三、任务 B · 时间轴拟稿（规则 + 语义）</h2>
+<div class="card"><table>
+<tr><th>指标</th><th>deepseek-chat</th><th>glm-4-flash</th></tr>
+<tr><td>规则通过率（≤12字/禁括号箭头冒号/小时归属）</td>
+    <td>100.0%</td><td>62.5%</td></tr>
+<tr><td>小时归属命中率</td>
+    <td>100.0%</td><td>100.0%</td></tr>
+<tr><td>judge 完整性 / 准确性（1-5）</td>
+    <td>2.438 / 3.688</td>
+    <td>2.438 / 3.562</td></tr>
+<tr><td>典型违规</td><td colspan="2" style="font-size:13px">
+    glm-4-flash：{"unparsed_lines": 0, "len_over_12": 3, "forbidden_chars": 0}</td></tr>
+</table></div>
+
+<h2>四、任务 C · 随想 AI 回应（rubric 主观题）</h2>
+<div class="card">
+<div class="bar-row"><span class="bar-label">共情准确</span>
+  <div class="bar-track"><div class="bar b1" style="width:75%"></div></div><b>3.73</b>
+  <div class="bar-track"><div class="bar b2" style="width:50%"></div></div><b>2.52</b>
+</div><div class="bar-row"><span class="bar-label">不轰炸建议</span>
+  <div class="bar-track"><div class="bar b1" style="width:92%"></div></div><b>4.605</b>
+  <div class="bar-track"><div class="bar b2" style="width:81%"></div></div><b>4.04</b>
+</div><div class="bar-row"><span class="bar-label">贴合人设</span>
+  <div class="bar-track"><div class="bar b1" style="width:85%"></div></div><b>4.24</b>
+  <div class="bar-track"><div class="bar b2" style="width:55%"></div></div><b>2.755</b>
+</div><div class="bar-row"><span class="bar-label">简洁</span>
+  <div class="bar-track"><div class="bar b1" style="width:92%"></div></div><b>4.595</b>
+  <div class="bar-track"><div class="bar b2" style="width:80%"></div></div><b>4.005</b>
+</div>
+<p class="legend">■ deepseek-chat（粉）　■ glm-4-flash（绿）　双 judge 合并均分，1-5 分制。
+差距最大的维度是「共情准确」（3.73 vs 2.52）。</p></div>
+
+<h2>五、公开基准 · 情感分类 sanity check（ChnSentiCorp）</h2>
+<div class="card">
+<p style="font-size:14px">公开基准上 deepseek-chat 准确率 <b>82.5% ±6.8</b>（macro-F1 0.820），glm-4-flash <b>81.7% ±6.9</b>（macro-F1 0.811）。</p>
+<p class="legend">数据集：ChnSentiCorp 酒店评论（ChineseNlpCorpus 收录，7766 条，抽样 120 条：正负各 60，固定种子可复现）。
+用途＝行业公开基准对照，回答「评测集是否只有自家数据」——自建业务任务之外补一块公共标尺。</p></div>
+
+<h2>六、判分可信度（评测的评测）</h2>
+<div class="card">
+<table><tr><th>维度</th><th>双 judge 一致率(分差≤1)</th><th>Cohen's κ</th></tr><tr><td>B.completeness</td><td>93.8%</td><td>0.385</td></tr><tr><td>B.accuracy</td><td>87.5%</td><td>0.000</td></tr><tr><td>C.empathy</td><td>91.0%</td><td>0.104</td></tr><tr><td>C.no_advice_flood</td><td>81.0%</td><td>0.183</td></tr><tr><td>C.persona_fit</td><td>76.5%</td><td>0.052</td></tr><tr><td>C.concise</td><td>99.0%</td><td>0.109</td></tr></table>
+<p class="legend">一致率尚可但 κ 偏低：因分数高度集中在 4-5 分，期望一致率被抬高，κ 对小方差评分分布天然苛刻——如实呈现，不藏。</p>
+<table style="margin-top:14px"><tr><th>judge × 任务</th><th>评自己</th><th>评对方</th><th>自偏好 Δ</th></tr><tr><td>B.deepseek-chat</td><td>3.375</td><td>2.875</td><td class='alert'>+0.500</td></tr><tr><td>B.glm-4-flash</td><td>3.125</td><td>2.75</td><td class=''>+0.375</td></tr><tr><td>C.deepseek-chat</td><td>4.5</td><td>2.91</td><td class='alert'>+1.590</td></tr><tr><td>C.glm-4-flash</td><td>3.75</td><td>4.085</td><td class=''>-0.335</td></tr></table>
+<p class="legend">⚠️ 检测到 <b>deepseek-chat 作为 judge 在任务 C 上自偏好 Δ=+1.59</b>（n=100，超过 0.5 警戒线）：
+其给自家输出打分系统性偏高。本报告任务 C 分数为双 judge 合并值，已部分对冲；残余偏差方向仍可能利好 deepseek-chat，解读时保留余地。</p>
+<p class="legend"><b>对冲修正</b>（剔除自评、仅保留跨评分数）：任务 C 总分 deepseek-chat <b>4.085</b> vs glm-4-flash <b>2.91</b>（合并口径 4.293 vs 3.33）。剔除自评后方向不变 → 排序更可信。</p>
+<p class="legend">judge 稳定性（20% 样本隔轮重评）：任务 B 平均漂移 0.125 分、
+任务 C 0.054 分（1-5 制），judge 自身稳定。</p></div>
+
+<h2>七、三个可执行决策</h2>
+<div class="card">
+<div class="dec"><b>决策 1 · 降级链依据</b>：deepseek-chat 在全部三项任务质量占优（A +12.3pp、
+B 规则 +37.5pp、C +0.96 分），
+成本 ¥0.94/千条、P50 730ms。
+→ 工作台「质量敏感」链路（随想回应、时间轴拟稿）主模型锁定 deepseek-chat；glm-4-flash 免费但只能做「失败兜底」而非「主动降级档」——它省的 ~¥1/千条 买不回质量损失。</div>
+<div class="dec"><b>决策 2 · 词典替换（已做全量替换实验验证）</b>：180 条候选人工复核后剔除 99 行（52 种误归/歧义内容，其余为「睡觉/刷手机」重复封顶），
+保留 81 条金标；deepseek-chat 对金标准确率 85.2%。
+<b>全量 806 条替换实验（任务 E）</b>：词典未归类 105 条（13.0%）→ deepseek-chat 未归类 <b>0 条（0.0%）</b>，
+LLM 与词典标签一致率 71.1%（分歧集中于人工复核确认的「做/写/到/游戏/聊」关键词碰撞误归，两路证据互证）。
+→ 时间轴分类从关键词典迁 LLM 值得做：以约 ¥1/千条的成本同时消掉未归类与误归，产品迁移列入 M5。</div>
+<div class="dec"><b>决策 3 · 质量红线（回归基线）</b>：任务 A 准确率 ≥85%、任务 B 规则通过率 ≥95%（硬性，违规即线上脏数据）、
+任务 C rubric 总分 ≥4.0。今后任何换模型/改 prompt，一键重跑本评测集，低于红线即不上线。</div>
+</div>
+
+<h2>八、竞品对照（对标开源，明确边界）</h2>
+<div class="card" style="overflow-x:auto"><table>
+<tr><th>项目</th><th>Stars*</th><th>形态</th><th>许可证</th><th>评测集来源</th><th>judge 可信度审计</th><th>成本埋点</th><th>适合谁</th></tr>
+<tr><td><b>量衡 EvalLab（本项目）</b></td><td>—</td><td>Python 脚本链 + 单文件报告</td><td>个人项目</td>
+    <td>真实业务数据金标 + 人工复核留痕</td><td><b>有实测：κ / 自偏好 / 漂移</b></td><td>有（¥/千条）</td><td>个人产品的贴身模型决策</td></tr>
+<tr><td>langfuse</td><td>34.6k</td><td>自托管可观测平台</td><td>MIT（ee 除外）</td><td>线上 traces + 数据集</td><td>部分（标注队列）</td><td>有</td><td>团队级 LLM 工程平台</td></tr>
+<tr><td>promptfoo</td><td>25.1k</td><td>CLI + 库 + Web viewer</td><td>MIT</td><td>声明式配置 / 断言</td><td>断言模型可配</td><td>有限</td><td>工程团队 CI/红队</td></tr>
+<tr><td>deepeval</td><td>18.3k</td><td>Python SDK（pytest 式）</td><td>Apache-2.0</td><td>合成数据集 + golden 集</td><td>G-Eval 研究背书</td><td>有限</td><td>工程团队单测/CI</td></tr>
+<tr><td>ragas</td><td>15.7k</td><td>Python 库</td><td>Apache-2.0</td><td>生产数据生成测试集</td><td>—</td><td>有限</td><td>RAG 应用评测</td></tr>
+<tr><td>lm-eval-harness</td><td>14k</td><td>CLI / Python API</td><td>MIT</td><td>60+ 学术基准</td><td>—</td><td>—</td><td>模型能力横评（HF 榜单后端）</td></tr>
+<tr><td>OpenCompass</td><td>7.4k</td><td>平台 + CompassRank 榜单</td><td>Apache-2.0</td><td>70+ 数据集 / 40 万题</td><td>—</td><td>—</td><td>中文模型生态基准</td></tr>
+</table>
+<p class="legend">*Stars 取 2026-09-14。定位陈述：本项目不重复造轮子——声明式配置学 promptfoo、指标分层学 deepeval、
+「从生产数据构建评测集」学 ragas、榜单呈现学 OpenCompass；差异点＝①贴身真实业务（自己的产品、自己的数据、自己的钱包）
+②把「评测的评测」做成一等公民（judge 一致性/自偏好/漂移有实测数字）③个人成本尺度（¥ 级预算下的决策）
+④零部署门槛、单文件报告可直接进作品集。团队级 CI/多模型大规模评测请直接用 promptfoo / deepeval；线上 tracing 用 langfuse。</p></div>
+
+<h2>九、已知局限（如实声明）</h2>
+<div class="card"><ul>
+<li>金标含词典先验，「做/写/修→建设」类硬规则对 LLM 略不公平；已通过人工复核剔除 89 条（含重复封顶）缓解。</li>
+<li>judge 与被评模型同源（试点期仅 2 家 key），且检测到 deepseek-chat 自偏好 → 全部结论只作相对排序；M4 接第三方 judge 消除。</li>
+<li>样本量：A 81 / B 8 / C 100（v2 已扩样）；任务 C 的 κ 受评分低方差影响仍偏保守，简历口径只报相对结论。</li>
+<li>成本按牌价折算、未计缓存命中；glm-4-flash 为免费档（¥0），计费策略变动会影响结论。</li>
+<li>延迟为整请求延迟，未测首字延迟；GLM 免费档存在限流，P95 受其影响。</li>
+</ul></div>
+
+<footer>量衡 EvalLab · Owner 常玉涵 · 数据全部来自产品真实生产快照（806 条时间轴 / 490 条随想），零构造数据 ·
+金标复核过程留痕于 data/tasks/taskA_review.tsv</footer>
+</body></html>
