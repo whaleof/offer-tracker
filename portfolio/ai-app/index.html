@@ -540,11 +540,12 @@
           <div class="stat"><b>13.0%→0%</b><span>未归类率</span></div>
         </div>
         <p class="p-brief">给「哪个模型又准又便宜」一个数据答案。工作台有 5 条 AI 链路在用 LLM，选型却一直靠手感——所以我把它做成评测：<b>真实业务数据造金标 → 规则 + LLM-as-judge 双层指标 → 双 judge 盲评交叉 → 质量 × 成本 × 延迟三维榜单</b>。核心发现：公开榜单选不出业务模型，评测集必须用自家数据造。</p>
-        <div class="p-shots">
-          <img loading="lazy" style="aspect-ratio:16/9;height:auto;object-fit:contain;background:#fff;" src="../assets/eval-lab-1-reclass.png" alt="806 条全量替换实验：未归类 105 → 0">
-          <img loading="lazy" style="aspect-ratio:16/9;height:auto;object-fit:contain;background:#fff;" src="../assets/eval-lab-2-bench-vs-biz.png" alt="公开基准 vs 真实业务：差 0.8pp vs 差 37.5pp">
-          <img loading="lazy" style="aspect-ratio:16/9;height:auto;object-fit:contain;background:#fff;" src="../assets/eval-lab-3-selfpref.png" alt="judge 自偏好审计：Δ +1.59">
-          <img loading="lazy" style="aspect-ratio:16/9;height:auto;object-fit:contain;background:#fff;" src="../assets/eval-lab-4-cost.png" alt="质量 × 成本 × 延迟三维榜单">
+        <!-- 4 张缩略图四列一行（与工作流项目同形态）：完整大图 + 逐张解读在「查看完整项目 →」弹层里 -->
+        <div class="p-shots four">
+          <img loading="lazy" style="object-fit:contain;background:#fff;" src="../assets/eval-lab-1-reclass.png" alt="806 条全量替换实验：未归类 105 → 0">
+          <img loading="lazy" style="object-fit:contain;background:#fff;" src="../assets/eval-lab-2-bench-vs-biz.png" alt="公开基准 vs 真实业务：差 0.8pp vs 差 37.5pp">
+          <img loading="lazy" style="object-fit:contain;background:#fff;" src="../assets/eval-lab-3-selfpref.png" alt="judge 自偏好审计：Δ +1.59">
+          <img loading="lazy" style="object-fit:contain;background:#fff;" src="../assets/eval-lab-4-cost.png" alt="质量 × 成本 × 延迟三维榜单">
         </div>
         <ul class="p-points">
           <li><b>评测的评测</b>——抓出 deepseek-chat 当 judge 时给自己多打 <b>+1.59</b> 分，改用剔除自评口径；隔轮重评漂移 ≤0.13</li>
