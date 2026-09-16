@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量衡 EvalLab · 评测集样本示例（脱敏）</title>
+<style>
+  :root { --pink:#F58BA8; --pink-deep:#E8557F; --mint:#9ED5C5; --ink:#2b2b33; --sub:#8a8a95;
+          --line:#efe6ea; --bg:#fdf8fa; --card:#ffffff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg);
+        color:var(--ink); max-width:960px; margin:0 auto; padding:40px 24px 80px; line-height:1.7; }
+  h1 { font-size:26px; margin-bottom:4px; }
+  h2 { font-size:18px; margin:40px 0 12px; padding-left:10px; border-left:4px solid var(--pink); }
+  .sub { color:var(--sub); font-size:13px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
+          padding:20px 22px; margin-top:14px; box-shadow:0 2px 10px rgba(245,139,168,.06); }
+  .qa { display:flex; flex-direction:column; gap:8px; }
+  .row { display:flex; gap:10px; align-items:flex-start; }
+  .lbl { flex:0 0 76px; font-size:12px; color:var(--sub); padding-top:4px; }
+  .bubble { flex:1; background:#faf4f6; border:1px solid var(--line); border-radius:10px;
+            padding:8px 12px; font-size:14px; }
+  .bubble.model-ds { background:#fdeef3; border-color:#f6d3de; }
+  .bubble.model-glm { background:#eef7f4; border-color:#d5ebe4; }
+  .verdict { font-size:13px; margin-top:4px; }
+  .ok { color:#1a9e77; font-weight:600; }
+  .bad { color:#d3365c; font-weight:600; }
+  .why { font-size:13px; color:var(--sub); background:#fbf7f8; border-left:3px solid var(--line);
+         padding:6px 12px; border-radius:0 8px 8px 0; margin-top:8px; }
+  .why b { color:var(--ink); }
+  .tag { display:inline-block; background:#fdeef3; color:var(--pink-deep); border-radius:6px;
+         padding:1px 8px; font-size:12px; margin-right:6px; vertical-align:2px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  th { color:var(--sub); font-weight:500; font-size:13px; }
+  .score { font-size:12px; color:var(--sub); }
+  .score b { color:var(--ink); font-size:13px; }
+  footer { margin-top:48px; color:var(--sub); font-size:12px; text-align:center; line-height:1.9; }
+  a { color:var(--pink-deep); }
+  code { background:#f6edf1; border-radius:4px; padding:0 5px; font-size:13px; }
+</style></head><body>
+
+<h1>量衡 EvalLab · 评测集样本示例（脱敏）</h1>
+<p class="sub">这一页回答三个面试必问的问题：<b>数据哪来的？金标谁定的？定错了怎么办？</b>
+每类任务抽 2–3 条真实样本，展示「输入 → 金标 → 模型输出 → 判定理由」。</p>
+
+<div class="card">
+  <b>脱敏说明</b><br>
+  <span class="sub">样本来自本人产品（「第二大脑」工作台）的真实生产数据快照。页面已做脱敏：
+  具体日期与数据 gid 隐去、仅保留样本 ID 前缀，涉及第三方的名称做泛化；句子结构原样保留——
+  因为分类难点恰恰在语言结构里。全量数据（含每条请求的输出 / tokens / 延迟留痕）在本地
+  <code>eval-lab/results/</code>，可现场展示。</span>
+</div>
+
+<h2>〇、先说结论：数据与金标的来源</h2>
+<div class="card">
+<table>
+<tr><th>任务</th><th>数据来源</th><th>金标（标准答案）怎么定</th><th>判分方式</th></tr>
+<tr><td><b>A · 时间轴语义分类</b><br><span class="score">81 条</span></td>
+    <td>产品现网时间轴日志快照，180 条候选分层抽取</td>
+    <td>三道保险：现网在跑的关键词典产出<b>银标</b> → 逐条<b>人工复核</b>（和词典不一致的直接剔除出金标）→ 抽检 10%。
+    52 种误归/歧义全部留痕在复核表</td>
+    <td>规则：与金标精确匹配</td></tr>
+<tr><td><b>B · 时间轴拟稿</b><br><span class="score">8 段</span></td>
+    <td>现网真实工作日志（拟稿功能的真实输入）</td>
+    <td>不需要人标——任务是<b>硬约束</b>：每条 ≤12 字、禁括号箭头冒号、小时归属正确。答案空间是规则定的</td>
+    <td>规则 + judge 语义分双层</td></tr>
+<tr><td><b>C · 随想 AI 回应</b><br><span class="score">100 条</span></td>
+    <td>产品随想模块真实输入，按 feel/spark/q 分层抽样</td>
+    <td>不标「正确答案」，改标<b>评分标准（rubric）</b>：共情准确 / 不轰炸建议 / 贴合人设 / 简洁，4 维 × 5 分制。
+    标准来自产品对回应方式的明确禁令（如「不许正确的废话」）</td>
+    <td>双 judge 匿名盲评交叉</td></tr>
+<tr><td><b>D · 公开基准</b><br><span class="score">120 条</span></td>
+    <td>ChnSentiCorp 酒店评论（公开数据集，固定种子抽样可复现）</td>
+    <td>数据集自带标签，<b>不是我标的</b>——用途是公共标尺，回答「评测集是否只有自家数据」</td>
+    <td>规则：与标签精确匹配</td></tr>
+</table>
+</div>
+
+<h2>一、任务 A · 时间轴语义分类 —— 客观题，判分零主观</h2>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">样本 1 · 双方都对</span>
+    <div style="flex:1">
+      <div class="bubble">玩抖音小游戏，给车子充电</div>
+      <div class="verdict">金标：<span class="tag">黑洞（刷/躺/看）</span>
+      　deepseek-chat → 黑洞（刷/躺/看） <span class="ok">✓</span>
+      　glm-4-flash → 黑洞（刷/躺/看） <span class="ok">✓</span></div>
+      <div class="why"><b>判定理由</b>：模型输出与金标精确匹配。前半句娱乐、后半句生活琐事，
+      关键在「整体时段的主导性质」——娱乐占主导，归黑洞。</div>
+    </div>
+  </div>
+</div>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">样本 2 · 一家踩坑</span>
+    <div style="flex:1">
+      <div class="bubble">到家</div>
+      <div class="verdict">金标：<span class="tag">事务 / 移动</span>
+      　deepseek-chat → 事务 / 移动 <span class="ok">✓</span>
+      　glm-4-flash → 生活维持（必须） <span class="bad">✗</span></div>
+      <div class="why"><b>判定理由</b>：「到家」是移动的终点事件，金标归「事务 / 移动」。
+      glm 把「回家=生活」的语义先验带了进来，输在两字边界题上——这类 2 字超短样本正是两模型拉开差距的地方。</div>
+    </div>
+  </div>
+</div>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">样本 3 · 双方都错</span>
+    <div style="flex:1">
+      <div class="bubble">翻来覆去睡不着，大脑疯狂运转</div>
+      <div class="verdict">金标：<span class="tag">生活维持（必须）</span>
+      　deepseek-chat → 情绪 / 关系 <span class="bad">✗</span>
+      　glm-4-flash → 情绪 / 关系 <span class="bad">✗</span></div>
+      <div class="why"><b>判定理由</b>：失眠属于生理起居 → 金标「生活维持」。两家都被「大脑疯狂运转」的情绪化措辞带偏。
+      <b>这条特意留在金标里不改</b>：金标不跟着模型走，难例写进局限声明，下轮复测看它是否仍是系统性误归。</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <b>「金标谁定的？定错了怎么办？」——人工复核留痕（真实记录摘录）</b>
+  <table style="margin-top:10px">
+    <tr><th>原始内容</th><th>词典给的标签</th><th>人工裁决</th><th>理由</th></tr>
+    <tr><td>做饭吃饭-虾滑杏鲍菇牛肉鸡蛋</td><td>建设产出（干）</td>
+        <td class="bad">reject（剔除出金标）</td><td>纯吃饭。词典「做」字碰撞误归——「做饭」的「做」≠「建设」的「做」</td></tr>
+    <tr><td>重建KPT复盘卡 + 做战略盘点卡</td><td>建设产出（干）</td>
+        <td class="ok">keep（保留）</td><td>真正的建设动作，「做」附着的宾语是「卡」不是饭</td></tr>
+  </table>
+  <p class="why" style="margin-top:10px">180 条候选里共剔除 89 条，52 种误归/歧义全部写进复核表
+  <code>taskA_review.tsv</code>。这就是「我承认金标带了词典先验，所以我人工清洗了」的直接证据——
+  复核表本身就是可展示资产。</p>
+</div>
+
+<h2>二、任务 B · 时间轴拟稿 —— 硬约束题，规则判分没有主观空间</h2>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">同一段日志</span>
+    <div style="flex:1">
+      <div class="bubble"><b>输入（现网真实日志）</b>：22:39 岗位方向定版：数据×AI 交叉带。搜了市场数据，AI PM 岗应届生仅占 0.6%、80% 要 1-5 年经验。产出卡片《岗位定位-数据×AI交叉带》。</div>
+      <div class="verdict" style="margin-top:8px">硬约束：每条 ≤12 字 · 禁括号/箭头/冒号 · 小时归属正确（金标 22 时）</div>
+      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 输出</b>：<br>· 22时｜岗位定版数据AI交叉<br>· 22时｜产出岗位定位卡片<br>
+      <span class="ok">→ 2 条全过，规则通过 ✓（12 字内、无禁符、小时命中）</span></div>
+      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 输出</b>：<br>· 22时｜39 岗位方向定版<br>· 22时｜39 数据搜查，AI经验分析<br>
+      <span class="bad">→ 违规 ✗：「39 数据搜查，AI经验分析」= 13 字超长 + 含逗号禁符（len_over_12=1）</span></div>
+      <div class="why"><b>判定理由</b>：判分器是代码不是 judge——超长就是超长，含禁符就是含禁符，没有商量空间。
+      这题 glm-4-flash 8 段里挂了 3 段（通过率 62.5%），deepseek-chat 全过（100%）。
+      拟稿是要直接写进产品时间轴的，<b>格式违规 = 用户手改成本</b>，所以这条指标权重最高。</div>
+    </div>
+  </div>
+</div>
+
+<h2>三、任务 C · 随想 AI 回应 —— 主观题，用 rubric + 双 judge 盲评</h2>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">样本 1</span>
+    <div style="flex:1">
+      <div class="bubble"><b>输入（随想）</b>：是不是我太好说话了，所以想理我就理我，不想就可以不说话？</div>
+      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 回应</b>：不是你好说话，是对方压根没把你放到需要交代一声的位置——这两件事差很远。你想想，你会对谁想理就理、不想就消失？</div>
+      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 回应</b>：哎呀，这事儿也得分人啊，有的人就是喜欢简单直接，有的人就喜欢慢慢来。你这样也挺好的，反正你开心最重要嘛。</div>
+      <table style="margin-top:10px">
+        <tr><th>judge（盲评）</th><th>被评对象</th><th>共情</th><th>不轰炸建议</th><th>贴合人设</th><th>简洁</th><th>judge 评语（原样摘录）</th></tr>
+        <tr><td>judge-1</td><td>deepseek-chat</td><td>4</td><td>5</td><td>4</td><td>5</td>
+            <td class="score">「准确接住被冷落的委屈并给出更锋利的归因，不灌建议、简短有力」</td></tr>
+        <tr><td>judge-2</td><td>deepseek-chat</td><td>3</td><td>5</td><td>4</td><td>5</td>
+            <td class="score">「准确捕捉到用户对被忽视的担忧，没有提供过多建议」</td></tr>
+        <tr><td>judge-1</td><td>glm-4-flash</td><td>1</td><td>3</td><td>1</td><td>3</td>
+            <td class="score">「用'分人''你开心最重要'把情绪糊弄过去……踩了'正确的废话'红线」</td></tr>
+        <tr><td>judge-2</td><td>glm-4-flash</td><td>3</td><td>5</td><td>3</td><td>4</td>
+            <td class="score">「回应体现了对用户情绪的理解，但建议部分可以更具体」</td></tr>
+      </table>
+      <div class="why"><b>判定理由</b>：① 两个 judge <b>不知道自己评的是谁</b>（prompt 已抹除模型身份，匿名盲评）；
+      ② 评语必须落到 rubric 维度上，不是打一个笼统总分；③ 注意两个 judge 对同一回应的分差（1 vs 3）——
+      这正是要报<b>双 judge 一致率</b>而不是只报均值的原因。</div>
+    </div>
+  </div>
+</div>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">样本 2 · 自偏好现场</span>
+    <div style="flex:1">
+      <div class="bubble"><b>输入（随想）</b>：距离上一次练舞已经过去5天了，好难再开始啊！</div>
+      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 回应</b>：5 天而已，身体没忘，是你的脑子在门口磨叽。别想着"恢复训练"，今晚就放首歌，跳 10 分钟，跳完就停——上瘾那台发动机你自己清楚，它缺的从来不是意志力，是一个启动信号。</div>
+      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 回应</b>：哎呀，练舞中断确实挺难再开始的，但想想上次跳得那么开心，是不是也有些小期待呢？😉</div>
+      <div class="why" style="margin-top:8px"><b>判定理由</b>：deepseek 给了「一个极轻的落地动作」（放首歌跳 10 分钟），
+      glm 用「想想上次跳得开心」泛泛反问把球踢回去——judge 评语原文：「属正确废话，违反她明确禁止的回应方式」。
+      <br><b>这一题还抓到了更重要的东西</b>：deepseek-chat 当 judge 时评自己 4.50、评对方 2.91，
+      <b>自偏好 Δ=+1.59</b>（100 条样本系统性偏高）——检测出来后，全部结论改用「剔除自评」口径对冲。
+      这是「评测的评测」最直接的一块证据。</div>
+    </div>
+  </div>
+</div>
+
+<h2>四、任务 D · 公开基准 —— 公共标尺，标签不是我标的</h2>
+
+<div class="card qa">
+  <div class="row"><span class="lbl">公开样本</span>
+    <div style="flex:1">
+      <div class="bubble"><b>输入（ChnSentiCorp 酒店评论，公开数据）</b>：商务大床房，房间很大，床有2M宽，整体感觉经济实惠不错!</div>
+      <div class="verdict">数据集标签：<span class="tag">正面</span>
+      　deepseek-chat → 正面 <span class="ok">✓</span>　glm-4-flash → 正面 <span class="ok">✓</span></div>
+      <div class="why"><b>判定理由</b>：与数据集自带标签匹配。120 条固定种子抽样（正负各 60，可复现）。
+      结果：两家 82.5% vs 81.7%，几乎打平——<b>和真实业务任务上 12.4pp 的差距形成对照</b>，
+      这就是「通用榜单选不出业务模型」的实验依据。</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  全量留痕：eval-lab/results/runs/*.jsonl（每条请求的输出 / tokens / 延迟） · judges/*.jsonl（每次盲评原始记录）<br>
+  完整榜单与决策：<a href="eval-lab-report.html">量衡 EvalLab · 试点榜单报告</a> ·
+  方法论：评测方案 v1.0 · 数据轮次 2026-09-14/15<br>
+  量衡 EvalLab — 给「哪个模型又准又便宜」一个数据答案
+</footer>
+
+</body></html>

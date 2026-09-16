@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量衡 EvalLab · AI 效果评测体系 · 一页纸摘要</title>
+<style>
+  :root { --pink:#F58BA8; --deep:#E8557F; --mint:#9ED5C5; --ink:#26262e; --sub:#84848f; --line:#eee3e8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:#f3f3f5; }
+  body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); line-height:1.55;
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .page { width:210mm; min-height:297mm; margin:16px auto; background:#fff; padding:17mm 16mm;
+          box-shadow:0 4px 24px rgba(0,0,0,.12); }
+  @page { size:A4; margin:0; }
+  @media print { html,body { background:#fff; } .page { margin:0; box-shadow:none; width:auto; } }
+
+  header { display:flex; justify-content:space-between; align-items:flex-end;
+           border-bottom:3px solid var(--pink); padding-bottom:8px; }
+  h1 { font-size:21px; letter-spacing:.5px; }
+  h1 span { color:var(--deep); }
+  .who { font-size:10.5px; color:var(--sub); text-align:right; line-height:1.6; }
+  .oneline { margin-top:10px; font-size:13.5px; background:#fdf2f5; border-left:4px solid var(--pink);
+             padding:7px 12px; border-radius:0 8px 8px 0; }
+
+  h2 { font-size:14px; margin:16px 0 8px; color:var(--deep); letter-spacing:1px; }
+  h2 .n { display:inline-block; background:var(--pink); color:#fff; border-radius:50%;
+          width:17px; height:17px; text-align:center; line-height:17px; font-size:11px; margin-right:6px; }
+
+  .cols { display:flex; gap:10px; }
+  .cols > div { flex:1; }
+  .step { font-size:12.5px; background:#faf6f8; border:1px solid var(--line); border-radius:8px; padding:7px 9px; }
+  .step b { display:block; font-size:12.5px; margin-bottom:2px; }
+  .step + .step { margin-top:6px; }
+
+  .nums { display:flex; gap:10px; }
+  .num { flex:1; border:1.5px solid var(--pink); border-radius:10px; padding:8px 10px; background:#fff; }
+  .num .big { font-size:25px; font-weight:700; color:var(--deep); }
+  .num .cap { font-size:12px; margin-top:2px; }
+  .num .cap b { color:var(--ink); }
+
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  td { padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td.k { width:34px; font-weight:700; color:var(--deep); }
+
+  .limits { font-size:12px; color:#5c5c66; background:#faf8f4; border:1px solid #efe8da;
+            border-radius:8px; padding:7px 11px; }
+  .limits b { color:var(--ink); }
+  footer { margin-top:14px; font-size:10.5px; color:var(--sub); display:flex; justify-content:space-between; }
+</style></head><body>
+<div class="page">
+
+  <header>
+    <h1>量衡 EvalLab <span>· AI 效果评测体系</span></h1>
+    <div class="who">常玉涵 · 独立设计与开发<br>2026-09 · 试点已完成（M0–M3）</div>
+  </header>
+  <div class="oneline">把自研 AI 产品里「哪个模型又准又便宜」这个靠手感的问题，变成了可以用数据说话的问题——
+  真实生产数据金标 → 规则 + LLM 双层指标 → 双 judge 匿名盲评（含可信度审计）→ 三维榜单 → 可执行决策。</div>
+
+  <h2><span class="n">1</span>问题</h2>
+  <div style="font-size:13px">产品有 5 条 AI 链路要做模型选型。公开基准上两个候选几乎打平（82.5% vs 81.7%），
+  但真实业务任务差距悬殊——<b>通用榜单选不出业务模型，必须用自家数据评</b>。且评测要的不是一次性榜单，
+  是以后每次换模型、改 prompt 都能一键重跑的<b>回归基线</b>。</div>
+
+  <h2><span class="n">2</span>做法（4 类任务 + 1 次全量实验）</h2>
+  <div class="cols">
+    <div>
+      <div class="step"><b>① 造金标：只用真实生产数据</b>时间轴分类 180 候选 → 词典银标 → 逐条人工复核剔除 89 条 → 81 条金标；拟稿 / 回应 / 公开基准各一组</div>
+      <div class="step"><b>② 双层指标</b>客观题规则判分（零主观）；主观题 rubric 4 维 × 5 分，双 judge <b>匿名盲评</b>交叉</div>
+    </div>
+    <div>
+      <div class="step"><b>③ 可信度审计（评测的评测）</b>双 judge 一致率、Cohen's κ、<b>自偏好检测</b>、隔轮重评漂移——不只看均值</div>
+      <div class="step"><b>④ 三维榜单 → 决策</b>质量 × 成本 × 延迟 + 竞品对照（promptfoo / deepeval / ragas）+ 已知局限，全量请求留痕</div>
+    </div>
+  </div>
+
+  <h2><span class="n">3</span>三个数字</h2>
+  <div class="nums">
+    <div class="num"><div class="big">12.4pp</div><div class="cap">真实任务准确率差距（<b>85.2% vs 72.8%</b>），
+      公开基准仅差 0.8pp → 通用榜单选不出业务模型</div></div>
+    <div class="num"><div class="big">+1.59</div><div class="cap"><b>抓到 judge 自偏好</b>：评自己 4.50、评对方 2.91
+      （100 条样本系统性偏高），已用「剔除自评」口径对冲</div></div>
+    <div class="num"><div class="big">13.0%→0%</div><div class="cap">评测结论直接落地：806 条全量迁移验证，
+      词典未归类清零，成本 <b>¥0.50</b></div></div>
+  </div>
+
+  <h2><span class="n">4</span>三个可执行决策</h2>
+  <table>
+    <tr><td class="k">①</td><td>质量敏感链路主模型<b>锁定 deepseek-chat</b>，GLM 免费档只做兜底（B 任务规则通过率 100% vs 62.5%）</td></tr>
+    <tr><td class="k">②</td><td>时间轴分类从关键词典迁移到 LLM，<b>已完成 806 条全量验证</b>并列入产品 M5</td></tr>
+    <tr><td class="k">③</td><td>立质量红线：分类 ≥85% · 拟稿规则 100% · 回应 ≥4.0——<b>以后换模型先过同一套回归</b></td></tr>
+  </table>
+
+  <h2><span class="n">5</span>局限（写在最明显的地方）</h2>
+  <div class="limits"><b>金标含词典先验</b>（已人工复核缓解，52 种误归全留痕）· <b>judge 与被评模型同源</b>
+  （M4 接第三方 judge，当前结论仅作相对排序）· 试点样本量 · 成本按牌价、延迟未测首字。
+  ——敢把局限写在标题旁边，比声称评测绝对公正可信。</div>
+
+  <footer>
+    <span>详版报告（9 章）：whaleof.github.io/offer-tracker/portfolio/eval-lab-report.html</span>
+    <span>评测集样本示例（脱敏）：同目录 eval-lab-samples.html</span>
+  </footer>
+
+</div>
+</body></html>
