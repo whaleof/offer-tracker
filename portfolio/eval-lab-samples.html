@@ -3,39 +3,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>量衡 EvalLab · 评测集样本示例（脱敏）</title>
 <style>
-  :root { --pink:#F58BA8; --pink-deep:#E8557F; --mint:#9ED5C5; --ink:#2b2b33; --sub:#8a8a95;
-          --line:#efe6ea; --bg:#fdf8fa; --card:#ffffff; }
+  /* 与作品集同一套色彩语汇：中性画布 + 单一酒红强调色
+     2026-09-16 由「樱花粉 + 粉底」改为对齐 portfolio/_src/base.html */
+  :root { --accent:#C2416B; --accent-deep:#A83559; --accent-tint:#FFF5F8;
+          --ink:#1A1A1A; --sub:#666; --line:#E9E9E9; --bg:#FAFAFA; --card:#ffffff; }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg);
         color:var(--ink); max-width:960px; margin:0 auto; padding:40px 24px 80px; line-height:1.7; }
   h1 { font-size:26px; margin-bottom:4px; }
-  h2 { font-size:18px; margin:40px 0 12px; padding-left:10px; border-left:4px solid var(--pink); }
+  h2 { font-size:18px; margin:40px 0 12px; padding-left:10px; border-left:4px solid var(--accent); }
   .sub { color:var(--sub); font-size:13px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
-          padding:20px 22px; margin-top:14px; box-shadow:0 2px 10px rgba(245,139,168,.06); }
+          padding:20px 22px; margin-top:14px; box-shadow:0 1px 3px rgba(26,26,26,.05); }
   .qa { display:flex; flex-direction:column; gap:8px; }
   .row { display:flex; gap:10px; align-items:flex-start; }
   .lbl { flex:0 0 76px; font-size:12px; color:var(--sub); padding-top:4px; }
-  .bubble { flex:1; background:#faf4f6; border:1px solid var(--line); border-radius:10px;
+  /* 两个模型的输出用同一种中性底：颜色不再暗示「哪个模型更好」 */
+  .bubble { flex:1; background:#FAFAFA; border:1px solid var(--line); border-radius:10px;
             padding:8px 12px; font-size:14px; }
-  .bubble.model-ds { background:#fdeef3; border-color:#f6d3de; }
-  .bubble.model-glm { background:#eef7f4; border-color:#d5ebe4; }
   .verdict { font-size:13px; margin-top:4px; }
-  .ok { color:#1a9e77; font-weight:600; }
-  .bad { color:#d3365c; font-weight:600; }
-  .why { font-size:13px; color:var(--sub); background:#fbf7f8; border-left:3px solid var(--line);
+  .ok { color:#1A7F5A; font-weight:600; }
+  .bad { color:#C0392B; font-weight:600; }
+  .why { font-size:13px; color:var(--sub); background:#FAFAFA; border-left:3px solid #DCDCDC;
          padding:6px 12px; border-radius:0 8px 8px 0; margin-top:8px; }
   .why b { color:var(--ink); }
-  .tag { display:inline-block; background:#fdeef3; color:var(--pink-deep); border-radius:6px;
+  /* 全页唯一用强调色的地方：金标＝我方定的标准 */
+  .tag { display:inline-block; background:var(--accent-tint); color:var(--accent); border-radius:6px;
          padding:1px 8px; font-size:12px; margin-right:6px; vertical-align:2px; }
   table { width:100%; border-collapse:collapse; font-size:14px; }
   th, td { padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
-  th { color:var(--sub); font-weight:500; font-size:13px; }
+  th { color:var(--sub); font-weight:500; font-size:13px; white-space:nowrap; }
   .score { font-size:12px; color:var(--sub); }
   .score b { color:var(--ink); font-size:13px; }
   footer { margin-top:48px; color:var(--sub); font-size:12px; text-align:center; line-height:1.9; }
-  a { color:var(--pink-deep); }
-  code { background:#f6edf1; border-radius:4px; padding:0 5px; font-size:13px; }
+  a { color:var(--accent-deep); }
+  code { background:#F5F5F5; color:#444; border-radius:4px; padding:0 5px; font-size:13px; }
 </style></head><body>
 
 <h1>量衡 EvalLab · 评测集样本示例（脱敏）</h1>
@@ -153,22 +155,23 @@
 <div class="card qa">
   <div class="row"><span class="lbl">样本 1</span>
     <div style="flex:1">
-      <div class="bubble"><b>输入（随想）</b>：是不是我太好说话了，所以想理我就理我，不想就可以不说话？</div>
-      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 回应</b>：不是你好说话，是对方压根没把你放到需要交代一声的位置——这两件事差很远。你想想，你会对谁想理就理、不想就消失？</div>
-      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 回应</b>：哎呀，这事儿也得分人啊，有的人就是喜欢简单直接，有的人就喜欢慢慢来。你这样也挺好的，反正你开心最重要嘛。</div>
+      <div class="bubble"><b>输入（随想）</b>：找准主线任务去做？我又到处发散了？没找到要害？</div>
+      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 回应</b>：你又开始拿"主线任务"当鞭子抽自己了。其实你不是没找到要害，是发散本身就是你摸要害的方式——先别急着收，把你刚发散出来的东西挑一个最想接着往下想的，那个就是今天的要害。</div>
+      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 回应</b>：哎呀，发散点也没啥，有时候灵感就来了呢。别太焦虑，慢慢来，说不定下一个想法就是关键呢！😄</div>
       <table style="margin-top:10px">
         <tr><th>judge（盲评）</th><th>被评对象</th><th>共情</th><th>不轰炸建议</th><th>贴合人设</th><th>简洁</th><th>judge 评语（原样摘录）</th></tr>
-        <tr><td>judge-1</td><td>deepseek-chat</td><td>4</td><td>5</td><td>4</td><td>5</td>
-            <td class="score">「准确接住被冷落的委屈并给出更锋利的归因，不灌建议、简短有力」</td></tr>
-        <tr><td>judge-2</td><td>deepseek-chat</td><td>3</td><td>5</td><td>4</td><td>5</td>
-            <td class="score">「准确捕捉到用户对被忽视的担忧，没有提供过多建议」</td></tr>
-        <tr><td>judge-1</td><td>glm-4-flash</td><td>1</td><td>3</td><td>1</td><td>3</td>
-            <td class="score">「用'分人''你开心最重要'把情绪糊弄过去……踩了'正确的废话'红线」</td></tr>
-        <tr><td>judge-2</td><td>glm-4-flash</td><td>3</td><td>5</td><td>3</td><td>4</td>
-            <td class="score">「回应体现了对用户情绪的理解，但建议部分可以更具体」</td></tr>
+        <tr><td>judge-1</td><td>deepseek-chat</td><td>5</td><td>4</td><td>5</td><td>5</td>
+            <td class="score">「精准接住她自我鞭打的情绪并反转'发散=摸要害'的认知，只给一个轻动作不堆建议，语气像懂她的朋友」</td></tr>
+        <tr><td>judge-2</td><td>deepseek-chat</td><td>4</td><td>5</td><td>4</td><td>5</td>
+            <td class="score">「准确理解用户情绪，没有给出过多建议，语气贴合人设，回应简洁」</td></tr>
+        <tr><td>judge-1</td><td>glm-4-flash</td><td>1</td><td>2</td><td>1</td><td>3</td>
+            <td class="score">「用'慢慢来''说不定'这类被明令禁止的正确废话敷衍，完全没接住焦虑，也没给任何可落地成分」</td></tr>
+        <tr><td>judge-2</td><td>glm-4-flash</td><td>2</td><td>4</td><td>3</td><td>4</td>
+            <td class="score">「体现了对用户情绪的理解，但建议过于泛泛，没有贴合用户的具体情况」</td></tr>
       </table>
       <div class="why"><b>判定理由</b>：① 两个 judge <b>不知道自己评的是谁</b>（prompt 已抹除模型身份，匿名盲评）；
-      ② 评语必须落到 rubric 维度上，不是打一个笼统总分；③ 注意两个 judge 对同一回应的分差（1 vs 3）——
+      ② 评语必须落到 rubric 维度上，不是打一个笼统总分；③ 注意两个 judge 对<b>同一段 glm 回应</b>的 rubric 均分差——
+      <b>1.75 vs 3.25</b>（共情维度一个给 1 分、一个给 2 分，不轰炸建议 2 vs 4）——
       这正是要报<b>双 judge 一致率</b>而不是只报均值的原因。</div>
     </div>
   </div>
@@ -177,14 +180,17 @@
 <div class="card qa">
   <div class="row"><span class="lbl">样本 2 · 自偏好现场</span>
     <div style="flex:1">
-      <div class="bubble"><b>输入（随想）</b>：距离上一次练舞已经过去5天了，好难再开始啊！</div>
-      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 回应</b>：5 天而已，身体没忘，是你的脑子在门口磨叽。别想着"恢复训练"，今晚就放首歌，跳 10 分钟，跳完就停——上瘾那台发动机你自己清楚，它缺的从来不是意志力，是一个启动信号。</div>
-      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 回应</b>：哎呀，练舞中断确实挺难再开始的，但想想上次跳得那么开心，是不是也有些小期待呢？😉</div>
-      <div class="why" style="margin-top:8px"><b>判定理由</b>：deepseek 给了「一个极轻的落地动作」（放首歌跳 10 分钟），
-      glm 用「想想上次跳得开心」泛泛反问把球踢回去——judge 评语原文：「属正确废话，违反她明确禁止的回应方式」。
-      <br><b>这一题还抓到了更重要的东西</b>：deepseek-chat 当 judge 时评自己 4.50、评对方 2.91，
-      <b>自偏好 Δ=+1.59</b>（100 条样本系统性偏高）——检测出来后，全部结论改用「剔除自评」口径对冲。
-      这是「评测的评测」最直接的一块证据。</div>
+      <div class="bubble"><b>输入（随想）</b>：我总是盯着 WB 工作，想着让它快点快点再快点，我好立刻摁下下一个按钮，来不及去想我真正的任务或者是明天的计划</div>
+      <div class="bubble model-ds" style="margin-top:8px"><b>deepseek-chat 回应</b>：你不是在等它跑完，你是在用它的进度条躲开那个真正让你发怵的问题——今天到底要干嘛。它快一点，你就能晚一点面对那张空白的明天。要不咱先别管它，就花两分钟写一行明天的事？</div>
+      <div class="bubble model-glm" style="margin-top:8px"><b>glm-4-flash 回应</b>：哎，我也是这样，总感觉时间不够用，得赶紧做下一件事。但有时候停下来想想，真正重要的还是把眼前的事情做好。别急，慢慢来。</div>
+      <div class="why" style="margin-top:8px"><b>判定理由</b>：deepseek 点破了「用进度条躲开真正任务」的机制，
+      只给一个两分钟的小动作；glm 用「我也是……慢慢来」泛泛共情把球踢回去——judge 评语原文：
+      「用『别急慢慢来』这类被明令禁止的正确废话，且『我也是』式共情没接住她『被按钮驱动、来不及想真正任务』的具体机制，人设完全跑偏」。
+      <br><b>这一题还抓到了更重要的东西</b>：同一段输入，deepseek-chat 当 judge 时给自己打 <b>4.75</b>、
+      给对方只打 <b>2.00</b>（本样本 Δ=+2.75）。这不是个例——<b>首轮 100 条样本配对口径</b>下，
+      deepseek 评自己 <b>4.50</b>、评对方 <b>2.91</b>，<b>自偏好 Δ=+1.59</b>；
+      而 glm 当 judge 时对同一批样本的偏向是负的（自评 3.74 / 评对方 4.09）。
+      检测出来后，全部结论改用「剔除自评」口径对冲——这是「评测的评测」最直接的一块证据。</div>
     </div>
   </div>
 </div>

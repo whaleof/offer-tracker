@@ -3,7 +3,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>量衡 EvalLab · AI 效果评测体系 · 一页纸摘要</title>
 <style>
-  :root { --pink:#F58BA8; --deep:#E8557F; --mint:#9ED5C5; --ink:#26262e; --sub:#84848f; --line:#eee3e8; }
+  /* 与作品集同一套色彩语汇：中性画布 + 单一酒红强调色
+     2026-09-16 由「樱花粉 + 暖米底」改为对齐 portfolio/_src/base.html */
+  :root { --accent:#C2416B; --accent-deep:#A83559; --accent-tint:#FFF5F8;
+          --ink:#1A1A1A; --sub:#666; --line:#E9E9E9; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html,body { background:#f3f3f5; }
   body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); line-height:1.55;
@@ -14,34 +17,34 @@
   @media print { html,body { background:#fff; } .page { margin:0; box-shadow:none; width:auto; } }
 
   header { display:flex; justify-content:space-between; align-items:flex-end;
-           border-bottom:3px solid var(--pink); padding-bottom:8px; }
+           border-bottom:3px solid var(--accent); padding-bottom:8px; }
   h1 { font-size:21px; letter-spacing:.5px; }
-  h1 span { color:var(--deep); }
+  h1 span { color:var(--accent-deep); }
   .who { font-size:10.5px; color:var(--sub); text-align:right; line-height:1.6; }
-  .oneline { margin-top:10px; font-size:13.5px; background:#fdf2f5; border-left:4px solid var(--pink);
+  .oneline { margin-top:10px; font-size:13.5px; background:var(--accent-tint); border-left:4px solid var(--accent);
              padding:7px 12px; border-radius:0 8px 8px 0; }
 
-  h2 { font-size:14px; margin:16px 0 8px; color:var(--deep); letter-spacing:1px; }
-  h2 .n { display:inline-block; background:var(--pink); color:#fff; border-radius:50%;
+  h2 { font-size:14px; margin:16px 0 8px; color:var(--accent-deep); letter-spacing:1px; }
+  h2 .n { display:inline-block; background:var(--accent); color:#fff; border-radius:50%;
           width:17px; height:17px; text-align:center; line-height:17px; font-size:11px; margin-right:6px; }
 
   .cols { display:flex; gap:10px; }
   .cols > div { flex:1; }
-  .step { font-size:12.5px; background:#faf6f8; border:1px solid var(--line); border-radius:8px; padding:7px 9px; }
+  .step { font-size:12.5px; background:#FAFAFA; border:1px solid var(--line); border-radius:8px; padding:7px 9px; }
   .step b { display:block; font-size:12.5px; margin-bottom:2px; }
   .step + .step { margin-top:6px; }
 
   .nums { display:flex; gap:10px; }
-  .num { flex:1; border:1.5px solid var(--pink); border-radius:10px; padding:8px 10px; background:#fff; }
-  .num .big { font-size:25px; font-weight:700; color:var(--deep); }
+  .num { flex:1; border:1.5px solid var(--accent); border-radius:10px; padding:8px 10px; background:#fff; }
+  .num .big { font-size:25px; font-weight:700; color:var(--accent-deep); }
   .num .cap { font-size:12px; margin-top:2px; }
   .num .cap b { color:var(--ink); }
 
   table { width:100%; border-collapse:collapse; font-size:12.5px; }
   td { padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
-  td.k { width:34px; font-weight:700; color:var(--deep); }
+  td.k { width:34px; font-weight:700; color:var(--accent-deep); }
 
-  .limits { font-size:12px; color:#5c5c66; background:#faf8f4; border:1px solid #efe8da;
+  .limits { font-size:12px; color:#666; background:#FAFAFA; border:1px solid #E9E9E9;
             border-radius:8px; padding:7px 11px; }
   .limits b { color:var(--ink); }
   footer { margin-top:14px; font-size:10.5px; color:var(--sub); display:flex; justify-content:space-between; }
